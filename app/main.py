@@ -11,7 +11,7 @@ description = """
 UniverseLM is All You Need
 """
 
-app = FastAPI(
+api = FastAPI(
     title="UniverseLM",
     description=description,
     version="0.0.1",
@@ -23,7 +23,7 @@ app = FastAPI(
 origin_whitelist = ["*"]
 
 
-app.add_middleware(
+api.add_middleware(
     CORSMiddleware,
     allow_origins=origin_whitelist,
     allow_credentials=True,
@@ -32,14 +32,14 @@ app.add_middleware(
 )
 
 
-@app.get("/")
+@api.get("/")
 async def read_root():
     return {"Hello": "World"}
 
 
 # uvicorn main:api --reload
 def start():
-    uvicorn.run("main:app", reload=True)
+    uvicorn.run("main:api", reload=True)
 
 
 if __name__ == "__main__":
