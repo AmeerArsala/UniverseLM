@@ -6,12 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import uvicorn
 
+from app.core.routes import apotheosis, chat, functions
+
 
 description = """
 UniverseLM is All You Need
 """
 
-api = FastAPI(
+app = FastAPI(
     title="UniverseLM",
     description=description,
     version="0.0.1",
@@ -23,7 +25,7 @@ api = FastAPI(
 origin_whitelist = ["*"]
 
 
-api.add_middleware(
+app.add_middleware(
     CORSMiddleware,
     allow_origins=origin_whitelist,
     allow_credentials=True,
@@ -32,14 +34,19 @@ api.add_middleware(
 )
 
 
-@api.get("/")
+app.include_router(apotheosis.router, prefix="/apotheosis")
+app.include_router(chat.router, prefix="/chat")
+app.include_router(functions.router)
+
+
+@app.get("/")
 async def read_root():
     return {"Hello": "World"}
 
 
-# uvicorn main:api --reload
+# uvicorn main:app --reload
 def start():
-    uvicorn.run("main:api", reload=True)
+    uvicorn.run("main:app", reload=True)
 
 
 if __name__ == "__main__":

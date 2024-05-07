@@ -895,6 +895,24 @@ files = [
 ]
 
 [[package]]
+name = "kdbai-client"
+version = "1.1.0"
+description = "KDB.AI Client for Python"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = [
+    {file = "kdbai_client-1.1.0-py3-none-any.whl", hash = "sha256:fee2bd8de4e3b473a362824a3f761f75f2f2767b35df7dcf992e6065cbf39247"},
+]
+
+[package.dependencies]
+pandas = ">=1.5.0"
+pykx = ">=2.1.1,<3.0.0"
+
+[package.extras]
+lint = ["mypy", "mypy-gitlab-code-quality"]
+test = ["pytest (>=7.3.2,<8.0.0)", "pytest-cov (>=4.0.0,<5.0.0)", "pytest-mock"]
+
+[[package]]
 name = "langchain"
 version = "0.1.17"
 description = "Building applications with LLMs through composability"
@@ -1817,6 +1835,51 @@ docs = ["sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
 tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
+name = "pykx"
+version = "2.3.0"
+description = "An interface between Python and q"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pykx-2.3.0-cp310-cp310-macosx_10_10_arm64.macosx_11_0_arm64.macosx_12_0_arm64.macosx_13_0_arm64.whl", hash = "sha256:e94533cd1974a898c027ab513ef96882ed032cca479812efb00241f897810ff5"},
+    {file = "pykx-2.3.0-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:019dcca2654f912c9cae94f05c7af0cc2546b5c8c10b4a8b848b51e174fc49b1"},
+    {file = "pykx-2.3.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ebddfd835f31271d4db35eac417b13a8b0f30c4083c881a74bead58de3bb12a0"},
+    {file = "pykx-2.3.0-cp310-cp310-win_amd64.whl", hash = "sha256:639330bdb5dc21beffc7b293c8e0d63f78a3d263af31545823bb2e58a29f21fd"},
+    {file = "pykx-2.3.0-cp311-cp311-macosx_10_10_arm64.macosx_11_0_arm64.macosx_12_0_arm64.macosx_13_0_arm64.whl", hash = "sha256:80d4a8be97d352da437af62abd49e06d454a25aa79deb15b3d8a2d2b0b71fd5b"},
+    {file = "pykx-2.3.0-cp311-cp311-manylinux2014_aarch64.whl", hash = "sha256:10fd588ee5c92fb0088c62ed0d4e4c8a689e5ed3ded97595ccf498d0b00d2f52"},
+    {file = "pykx-2.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:561e5f7290933890f0108528c863b331bcd8ee02926c1658c1284b163319584f"},
+    {file = "pykx-2.3.0-cp311-cp311-win_amd64.whl", hash = "sha256:2a119480e1a60e36cd0f31e4e905b98fda4b044c4a44aff509eadcd506dd52ad"},
+    {file = "pykx-2.3.0-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:ee0e8e86fc39296e8ed249bc82c160bd727a4ed580288ce5a52e36725acb40f5"},
+    {file = "pykx-2.3.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:32c762ef7e1ec6963d2c7b683dd8d1c476ed1f346093b8a21b834d2365a0cced"},
+    {file = "pykx-2.3.0-cp37-cp37m-win_amd64.whl", hash = "sha256:72edf8fae293ee969577f71a8e2c721e119f9dbedbad7502830bf7dc0d8f5c6e"},
+    {file = "pykx-2.3.0-cp38-cp38-macosx_10_10_arm64.macosx_11_0_arm64.macosx_12_0_arm64.macosx_13_0_arm64.whl", hash = "sha256:1929887c6ad037438d2c24c5bea4db82eab511ec45d0952ebac96dd4649b4965"},
+    {file = "pykx-2.3.0-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:f1cd7c23947c46b8e21a7d76ba29456d864f84949da443703166e9d75024b371"},
+    {file = "pykx-2.3.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:eedbbe3c98c1cfec4cfa5ca9b474e45da1c6323c6d0448846669b9be9f78922f"},
+    {file = "pykx-2.3.0-cp38-cp38-win_amd64.whl", hash = "sha256:3077a58fb92f4be6991447579ed7ebb2a6c37428b6b37f97ce286538b2bf1146"},
+    {file = "pykx-2.3.0-cp39-cp39-macosx_10_10_arm64.macosx_11_0_arm64.macosx_12_0_arm64.macosx_13_0_arm64.whl", hash = "sha256:8a68cb9e89deb5f8a716929ed9471f80e7a88b55fd36b5f84f79d2646e3e3bef"},
+    {file = "pykx-2.3.0-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:06fccdb70d31ca03ac9d134f67ac887f3d221f2c1db6a9288685a7940169a311"},
+    {file = "pykx-2.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5d0921afcb2312510210108cce4ed6b4a7b4f85f4392070010ea56c562a10bef"},
+    {file = "pykx-2.3.0-cp39-cp39-win_amd64.whl", hash = "sha256:4be71646f0c6f89f4fb346d1e61718cf479abcc3c3ec90753c1073055fb0e7ff"},
+]
+
+[package.dependencies]
+numpy = [
+    {version = ">=1.22,<2.0", markers = "python_version == \"3.10\" or python_version == \"3.9\""},
+    {version = ">=1.23,<2.0", markers = "python_version >= \"3.11\""},
+]
+pandas = ">=1.2"
+pytz = ">=2022.1"
+toml = ">=0.10.2,<0.11.0"
+
+[package.extras]
+all = ["Cython (>=3.0.0,<3.1.0)", "black (==22.1.0)", "coverage[toml] (==6.3.2)", "find-libpython (>=0.2,<1.0)", "flake8 (==4.0.1)", "flake8-bugbear (==22.1.11)", "flake8-colors (==0.1.9)", "flake8-docstrings (==1.6.0)", "flake8-import-order (==0.18.1)", "griffe (==0.14.0)", "jupyter (==1.0.0)", "markdown (==3.3.7)", "markdown-grid-tables (==0.0.1)", "mkdocs (>=1.5.0,<1.6.0)", "mkdocs-autorefs (==0.4.1)", "mkdocs-click (==0.5.0)", "mkdocs-exclude (==1.0.2)", "mkdocs-jupyter (>=0.24,<1.0)", "mkdocs-material (>=9.4.5,<9.5.0)", "mkdocs-render-swagger-plugin (==0.0.3)", "mkdocs-spellcheck (==0.2.0)", "mkdocstrings[python] (==0.18.0)", "pep8-naming (==0.12.1)", "plotly (==5.10.0)", "psutil (==5.9.5)", "pyarrow (>=3.0.0,<10.0.0)", "pygments (>=2.12,<3.0)", "pymdown-extensions (>=9.3)", "pyproject-flake8 (==0.0.1a2)", "pytest (==7.1.2)", "pytest-asyncio (==0.18.3)", "pytest-benchmark (==3.4.1)", "pytest-cov (==3.0.0)", "pytest-monitor (==1.6.5)", "pytest-order (==1.1.0)", "pytest-randomly (==3.11.0)", "pytest-timeout (>=2.0.0)", "pytest-xdist (==2.5.0)"]
+debug = ["find-libpython (>=0.2,<1.0)"]
+doc = ["black (==22.1.0)", "griffe (==0.14.0)", "jupyter (==1.0.0)", "markdown (==3.3.7)", "markdown-grid-tables (==0.0.1)", "mkdocs (>=1.5.0,<1.6.0)", "mkdocs-autorefs (==0.4.1)", "mkdocs-click (==0.5.0)", "mkdocs-exclude (==1.0.2)", "mkdocs-jupyter (>=0.24,<1.0)", "mkdocs-material (>=9.4.5,<9.5.0)", "mkdocs-render-swagger-plugin (==0.0.3)", "mkdocs-spellcheck (==0.2.0)", "mkdocstrings[python] (==0.18.0)", "pygments (>=2.12,<3.0)", "pymdown-extensions (>=9.3)"]
+lint = ["flake8 (==4.0.1)", "flake8-bugbear (==22.1.11)", "flake8-colors (==0.1.9)", "flake8-docstrings (==1.6.0)", "flake8-import-order (==0.18.1)", "pep8-naming (==0.12.1)", "pyproject-flake8 (==0.0.1a2)"]
+pyarrow = ["pyarrow (>=3.0.0,<10.0.0)"]
+test = ["Cython (>=3.0.0,<3.1.0)", "coverage[toml] (==6.3.2)", "plotly (==5.10.0)", "psutil (==5.9.5)", "pytest (==7.1.2)", "pytest-asyncio (==0.18.3)", "pytest-benchmark (==3.4.1)", "pytest-cov (==3.0.0)", "pytest-monitor (==1.6.5)", "pytest-order (==1.1.0)", "pytest-randomly (==3.11.0)", "pytest-timeout (>=2.0.0)", "pytest-xdist (==2.5.0)"]
+
+[[package]]
 name = "pytest"
 version = "8.2.0"
 description = "pytest: simple powerful testing with Python"
@@ -2213,6 +2276,17 @@ files = [
 
 [package.extras]
 doc = ["reno", "sphinx", "tornado (>=4.5)"]
+
+[[package]]
+name = "toml"
+version = "0.10.2"
+description = "Python Library for Tom's Obvious, Minimal Language"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+files = [
+    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
+    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
+]
 
 [[package]]
 name = "tomli"
@@ -2664,4 +2738,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "549f56eb6effd755103fb73e79eff80ad824a6d9007d1ac0384fbfc84d2b8bde"
+content-hash = "805b9a99d3b85b2ebc4a5ce2e04b88f7c44979d24a4ec0068a704b2c7ad4d773"

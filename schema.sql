@@ -7,10 +7,11 @@ DROP TABLE IF EXISTS belongings;
 
 -- Create tables
 
+-- Human Users; There can be AI users, but the human users must be registered with email
 CREATE TABLE users(
   id SERIAL PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
-  chunk_name INTEGER REFERENCES chunks(name)
+  chunk_name TEXT REFERENCES chunks(name)
 );
 
 CREATE TABLE chunks(
