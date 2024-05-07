@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "universelm"
+version = "0.1.0"
+description = ""
+authors = ["Ameer Arsala <ameer.arsala03@gmail.com>"]
+license = "LICENSE"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pydantic = ">=2.0"
+chainlit = "^1.0.506"
+pytest = "^8.2.0"
+sqlalchemy = "^2.0.30"
+psycopg2-binary = "^2.9.9"
+python-dotenv = "^1.0.1"
+pre-commit = "^3.7.0"
+numpy = "^1.26.4"
+pandas = "^2.2.2"
+langchain = "^0.1.17"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
