@@ -39,7 +39,7 @@ async def read_root():
 
 # uvicorn main:api --reload
 def start():
-    uvicorn.run("main:api", reload=True)
+    uvicorn.run("main:app", reload=True)
 
 
 if __name__ == "__main__":
