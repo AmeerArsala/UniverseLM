@@ -10,6 +10,7 @@ from langchain_core.runnables import (
 
 from langchain_core.messages import AIMessage
 from app.core.schemas.entities import Chunk
+import json
 
 
 # COMMUNITY DESC GENERATION CHAIN
@@ -102,10 +103,21 @@ llm = HuggingFaceHub(
 def parse_chunks(ai_message: AIMessage, community_id: int) -> List[Chunk]:
     chunks: List[Chunk] = []
 
-    content: str = ai_message.content
+    output: str = ai_message.content
 
-    # TODO: parse chunks
     # Given the output of the llm and a `community_id`, parse into a List[Chunk]
+    chunk_dicts: List[Dict] = json.loads(output)
+
+    # TODO: The LLM must be gaslighted into returning a list of dicts as described below
+    chunks = [
+        Chunk(
+            name=chunk_dict["name"],
+            profile=chunk_dict["description"],
+            community_id=community_id,
+            parent_chunk=chunk_dict["affiliation"],
+        )
+        for chunk_dict in chunk_dicts
+    ]
 
     return chunks
 

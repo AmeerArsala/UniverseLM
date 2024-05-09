@@ -30,5 +30,17 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 4. (Optional) Run the front end (make sure you have pnpm installed)
 
 ```
-cd frontend && pnpm run dev
+cd frontend && pnpm install
 ```
+
+```
+pnpm run dev
+```
+
+## Roadmap
+
+- [ ] Finish the technology
+- [ ] Finish the application (the backend + database)
+- [ ] Finish the front end
+- [ ] CLI Tool
+- [ ] User Authentication
