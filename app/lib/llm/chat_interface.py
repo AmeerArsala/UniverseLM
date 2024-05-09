@@ -1,3 +1,6 @@
+import os
+import time
+
 from typing import List, Dict, Tuple, Any
 
 # from abc import ABC, abstractmethod
@@ -154,13 +157,18 @@ class RAGQAChat(Chat):
 
     # TODO: have it update the buffer every single time so it can store the memories
     async def generate_chat_response_events(
-        self, msg: str, add_to_history: bool = True
+        self, msg: str, add_to_history: bool = True, sleep_time: float = 0.1
     ):
+        # Initialize a flag to track if any data was yielded
+        data_yielded = False
+
+        response: str = ""
+
         # response_buffer: str = ""
         async for chunk in self.chain.astream(msg):
             print(f"\nCHUNK: {chunk}\n")
 
-            chunk_text = chunk.get("answer")
+            chunk_text: str = chunk.get("answer")
             if chunk_text is None:
                 chunk_docs = chunk.get("context")
 
@@ -170,5 +178,19 @@ class RAGQAChat(Chat):
                 else:
                     chunk_text = "".join([doc.page_content for doc in chunk_docs])
 
+            response += chunk_text
+            data_yielded = True  # Indicate that data was yielded
+
             chunk_content_html: str = chunk_text.replace("\n", "<br>")
             yield f"data: {chunk_content_html}\n\n"
+
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+
+        # Check if any data was yielded
+        if not data_yielded:
+            # onFinish
+            print("Streaming complete")
+
+            if add_to_history:
+                self.add_to_chat_history([("human", msg), ("ai", response)])

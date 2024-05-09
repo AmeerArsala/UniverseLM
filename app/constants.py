@@ -1,5 +1,9 @@
+from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 
+
+# Load .env file
+load_dotenv()
 
 # Options
 # gpt-4-turbo-2024-04-09
@@ -10,7 +14,9 @@ HF_MODEL = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 TEMP = 0.75
 K_NEIGHBORS = 5
 
+OPENAI_EMBEDDINGS_MODEL = "text-embedding-ada-002"
+
 
 # For semantic search; might not be needed but who gives af!!! I like it!
-encoder_repo_id: str = "all-MiniLM-L6-v2"
-encoder = SentenceTransformer(encoder_repo_id)
+HF_ENCODER_REPO_ID = "all-MiniLM-L6-v2"
+encoder = SentenceTransformer(HF_ENCODER_REPO_ID)

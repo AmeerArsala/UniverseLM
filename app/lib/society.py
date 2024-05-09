@@ -83,6 +83,7 @@ def join_community(user_email: str, community_name: str):
 
 
 # later, make a route that calls this
+# This is the update method and the main driver of the society
 def update():
     """Update the society by a tick"""
     pass
@@ -178,7 +179,8 @@ async def upload_belongings(belongings: List[Belonging], owner: str, community_i
                 **rows,
             )
         )
-
+    
+    # Pull belongings
     states.pull_belongings(community_id)
 
 
@@ -201,7 +203,8 @@ async def set_profile(community_id: int, chunk_name: str, content: str):
                 ],
             )
         )
-
+    
+    # Pull profiles
     states.pull_profiles(community_id)
 
 

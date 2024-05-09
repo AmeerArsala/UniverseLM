@@ -28,22 +28,15 @@ class ChatParams(BaseModel):
     stream_response: bool
 
 
-@router.post("/agents/{chunk_name}")
-async def chat_with_agent(chunk_name: str, params: ChatParams) -> str:
+@router.post("/community/{community_id}/agents/{chunk_name}")
+async def chat_with_agent(
+    community_id: int, chunk_name: str, params: ChatParams
+) -> str:
     # manifest the chat from nothing or a cache
-    chat: AgentChat = manifest_chat(chunk_name)
-
-    chat: PapersChat = manifest_chat(
-        chat_id,
-        paper_ids=params.paper_ids,
-        chatbot_generator=lambda: manifest_rag_chatbot(
-            unique_doc_id=unique_doc_id,
-            session=kdbai_session,
-            text_chunks=flattened_text_chunks,
-            stream_response=params.stream_response,
-        ),
+    chat: AgentChat = manifest_chat(
+        community_id, chunk_name, stream_response=params.stream_response
     )
 
-    # RAG the docs
+    # Chat response
     print("Generating response...")
     return retrieve_chat_response(chat, params.message, params.stream_response)

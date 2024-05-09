@@ -15,8 +15,11 @@ from app.lib.llm.prompts import sysprompts
 from app.lib.llm.prompts.sysprompts import AgentSystemPrompt
 from app.lib.llm.prompts import confirm_memorize, extract_lore, loreworthy
 
+from app.lib.llm.rag import ModelType, create_retriever, get_llm_responder
+
 from app.lib import society, states
 
+from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 
@@ -34,6 +37,7 @@ class AgentChat(RAGQAChat):
         community_id: int,
         chat_history: List[Tuple[str, str]] = [],
         recontextualize_if_chat_history: bool = False,
+        **kwargs,
     ):
         self.community_id = community_id
         self.chunk_name = chunk_name
@@ -53,8 +57,16 @@ class AgentChat(RAGQAChat):
             # Refresh the known chunks, because this agent wouldn't exist without it being in the DB
             states.refresh_known_chunks(self.community_id)
 
+        self.chatbot_kwargs = kwargs
+
     def _getknownchunks(self) -> List[str]:
         return states.known_chunks.get(self.community_id)
+
+    def update_retriever(self):
+        docs: List[Document] = states.community_states[self.community_id].to_docs()
+        embedder_type: ModelType = ModelType.HUGGINGFACE  # for now
+
+        self.retriever = create_retriever(embedder_type, docs, **self.chatbot_kwargs)
 
     # Dynamic routing; happens at the call level
     # Returns a chain
@@ -109,6 +121,8 @@ class AgentChat(RAGQAChat):
         rag: bool = loreworthy.chain.invoke({"input": message})
 
         if rag:
+            # Update retriever
+            self.update_retriever()
             return super()._recreate_chain()
         else:
             # Just use regular language model + prompting
@@ -138,7 +152,7 @@ chats: Dict[str, AgentChat] = {}
 
 # TODO:
 # Assumes the chunk is already in the DB
-def create_chat(community_id: int, chunk_name: str) -> AgentChat:
+def create_chat(community_id: int, chunk_name: str, **kwargs) -> AgentChat:
     with db.engine.begin() as conn:
         results = conn.execute(
             sqlalchemy.text(
@@ -150,10 +164,14 @@ def create_chat(community_id: int, chunk_name: str) -> AgentChat:
         chunk: Chunk = Chunk.wrap_result(results.first())
 
         # Generate retriever
-        retriever = None
+        docs: List[Document] = states.community_states[community_id].to_docs()
+        embedder_type: ModelType = ModelType.HUGGINGFACE  # for now
+
+        retriever = create_retriever(embedder_type, docs, **kwargs)
 
         # Get response model
-        response_model = None
+        llm_type: ModelType = ModelType.HUGGINGFACE  # try gemini as the default
+        response_model = get_llm_responder(llm_type, **kwargs)
 
         # Get agent desc
         agent_desc: str = chunk.profile
@@ -164,20 +182,22 @@ def create_chat(community_id: int, chunk_name: str) -> AgentChat:
             chunk_name=chunk.name,
             agent_desc=agent_desc,
             community_id=chunk.community_id,
+            **kwargs,
         )
-
-        chats[chunk_name] = chat
 
     return chat
 
 
-def manifest_chat(chunk_name: str) -> AgentChat:
+def manifest_chat(community_id: int, chunk_name: str, **kwargs) -> AgentChat:
     global chats
 
-    chat = chats.get(chunk_name)
+    chat_id: str = f"{community_id}::{chunk_name}"
+
+    chat = chats.get(chat_id)
 
     if chat is None:
         # Make a new one
-        chat = create_chat(chunk_name)
+        chat = create_chat(chunk_name, **kwargs)
+        chats[chat_id] = chat
 
     return chat

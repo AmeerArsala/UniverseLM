@@ -24,11 +24,5 @@ poetry install
 3. Run the app
 
 ```
-python3 app/main.py
-```
-
-OR
-
-```
 uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```

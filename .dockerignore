@@ -1,0 +1,14 @@
+.github/
+.ruff_cache/
+notebooks/
+__pycache__/
+.gitkeep
+
+# Individual files to ignore 
+./README.md
+./LICENSE
+./test_index.http
+./.pre-commit-config.yaml
+./.gitignore
+./schema.sql
+./environment.yml
