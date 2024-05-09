@@ -18,7 +18,8 @@ pre-commit = "^3.7.0"
 numpy = "^1.26.4"
 pandas = "^2.2.2"
 langchain = "^0.1.17"
-kdbai-client = "^1.1.0"
+faiss-cpu = "^1.8.0"
+sentence-transformers = "^2.7.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -13,8 +13,16 @@ In general, you should be memorizing information if:
     1:-1
 ]
 
+HUMAN_PROMPT = """
+CONTEXT:
+{context}
+
+INFO:
+{info}
+"""
+
 prompt = ChatPromptTemplate.from_messages(
-    [("system", system_prompt_message), ("human", "{input}")]
+    [("system", system_prompt_message), ("human", HUMAN_PROMPT)]
 )
 
 # LLM
@@ -26,3 +34,38 @@ llm = HuggingFaceHub(
 
 # Create the chain
 chain = prompt | llm
+
+# ----------------------------------------------------------------------------------------
+
+about_system_prompt_message = """
+Your role is to determine which entities are being referred to within a given piece of information, given context and a list of entities. You are to return a list of these names as a Python list and nothing else.
+Your list should represent the entities that are the subjects of the given piece of information (given the context).
+"""[
+    1:-1
+]
+
+ABOUT_HUMAN_PROMPT = """
+ENTITIES:
+{entities}
+
+CONTEXT:
+{context}
+
+INFO:
+{info}
+"""
+
+about_prompt = ChatPromptTemplate.from_messages(
+    [("system", about_system_prompt_message), ("human", ABOUT_HUMAN_PROMPT)]
+)
+
+
+# LLM
+ABOUT_LLM_ID = "mistralai/Mixtral-8x7B-Instruct-v0.1"
+about_llm = HuggingFaceHub(
+    repo_id=ABOUT_LLM_ID, model_kwargs={"temperature": 0.5, "max_length": 500}
+)
+
+
+# Create the chain
+about_chain = about_prompt | about_llm

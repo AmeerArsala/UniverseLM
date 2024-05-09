@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 
 
 class Chunk(BaseModel):
+    id: str
     name: str
     profile: str
     community_id: int
@@ -14,8 +15,3 @@ class Chunk(BaseModel):
         cls_dict = {col: val for (col, val) in zip(columns, values)}
 
         return Chunk(**cls_dict)
-
-
-class User(BaseModel):
-    email: str
-    chunk_name: str

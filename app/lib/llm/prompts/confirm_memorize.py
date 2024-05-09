@@ -22,8 +22,16 @@ In general, you should be memorizing information if:
     1:-1
 ]
 
+HUMAN_PROMPT = """
+CONTEXT:
+{context}
+
+INFO:
+{info}
+"""
+
 prompt = ChatPromptTemplate.from_messages(
-    [("system", system_prompt_message), ("human", "{input}")]
+    [("system", system_prompt_message), ("human", HUMAN_PROMPT)]
 )
 
 # LLM
