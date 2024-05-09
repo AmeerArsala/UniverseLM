@@ -11,6 +11,7 @@ from app.core.schemas.entities import Chunk
 from app.core.schemas.info import Lore, Belonging
 
 from app.lib.llm.prompts import chunk_summarizer
+from app.lib.llm.prompts import chunk_generation  # .with_chunk_descs and .without_chunk_descs
 
 import numpy as np
 import pandas as pd
@@ -99,24 +100,40 @@ def update(community_id: int):
 
 # later, make a route that calls this
 # the `count` parameter is ignored if `chunk_descs` is specified
-def generate_chunks(chunk_descs: List[str] = [], desc: str = "", count: int = -1) -> List[Chunk]:
+#TODO: now actually make these llm prompts of `chunk_generation.with_chunk_descs` and `chunk_generation.without_chunk_descs`
+def generate_chunks(community_id: int, chunk_descs: List[str] = [], desc: str = "", count: int = -1) -> List[Chunk]:
     """Agent Generation (for the lazy)"""
     chunks: List[Chunk] = []
+    lazy_chunk_descs: List[str] = chunk_descs.copy()
     
     MIN_DESC_LENGTH = 3  # minimum length of word that we care about is 3
     
     has_community_desc: bool = len(desc) > MIN_DESC_LENGTH
 
-    if len(chunk_descs) > 0:
+    if len(lazy_chunk_descs) > 0:
         # Generate a description of the community if not already
         if not has_community_desc:
             # Generate from the chunk descs
             # Wow, this is lowkey an inherent form of prompt tuning
-            # TODO:
-            pass
+            # (chunk_descs[]) -> community_desc: str
+            desc = chunk_generation.with_chunk_descs.community_desc_chain.invoke(chunk_descs=lazy_chunk_descs)
         
         # From the community desc and chunk_descs, generate descriptions for each chunk
-        # TODO:
+        # (lazy_chunk_descs[], community_desc) -> chunk_descs[str]
+        X = 3
+        while len(lazy_chunk_descs) > 0:
+            # Pop out the first X items
+            x = min(X, len(lazy_chunk_descs))
+            selected_lazy_chunk_descs: List[str] = lazy_chunk_descs[:x]
+            del lazy_chunk_descs[:x]
+            
+            # Postprocess into List[Chunk]
+            generated_chunks: List[Chunk] = chunk_generation.with_chunk_descs.chain.invoke(lazy_chunk_descs=selected_lazy_chunk_descs, 
+                                                                                           community_desc=desc, 
+                                                                                           community_id=community_id)
+            
+            # Add them all to the list
+            chunks += generated_chunks
     else:
         if count == -1:
             # Calculate a count
@@ -130,14 +147,15 @@ def generate_chunks(chunk_descs: List[str] = [], desc: str = "", count: int = -1
         
         if not has_community_desc:
             # Generate from nothing
-            # TODO:
-            pass
+            # (count) -> community_desc
+            desc = chunk_generation.without_chunk_descs.community_desc_chain.invoke(count=count)
         
         # Now we have a count and community desc
         # Generate descriptions for each chunk given these
-        # TODO:
-
-    pass
+        # (count, community_desc) -> chunk_descs[str]
+        chunks = chunk_generation.without_chunk_descs.chain.invoke(count=count, community_desc=desc)
+        
+    return chunks
 
 
 # "Summary Statistics"
@@ -218,9 +236,11 @@ async def upload_lore(lore: List[Lore], community_id: int):
 
         lore_text_vars = {f"lore_text{i}": lore_piece.lore_text for (i, lore_piece) in enumerate(lore)}
         
+        vals = ",".join([f":{placeholder}" for placeholder in lore_text_vars.keys()])
+        
         results = conn.execute(
             sqlalchemy.text(
-                f"INSERT INTO lore(lore_text) VALUES {",".join([f":{placeholder}" for placeholder in lore_text_vars.keys()])} RETURNING id",
+                f"INSERT INTO lore(lore_text) VALUES {vals} RETURNING id",
                 **lore_text_vars,
             )
         ).fetchall()

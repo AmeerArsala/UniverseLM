@@ -21,8 +21,14 @@ micromamba activate universe-lm
 poetry install
 ```
 
-3. Run the app
+3. Run the app (you can remove/change the host)
 
 ```
-uvicorn app.main:app --host 0.0.0.0 --port $PORT
+uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+```
+
+4. (Optional) Run the front end (make sure you have pnpm installed)
+
+```
+cd frontend && pnpm run dev
 ```
