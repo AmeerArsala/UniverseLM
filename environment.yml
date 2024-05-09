@@ -6,3 +6,4 @@ dependencies:
   - poetry
   # Dev Dependencies
   - jupyter
+  - ollama
