@@ -18,10 +18,13 @@ class RawInfo(BaseModel):
     # re-pull (async) on update (set_profile)
     profiles_texts: List[str] = Field(default=[])
 
-    def to_docs(self) -> List[Document]:
+    def to_docs(self, return_strs: bool = False) -> List:
         all_texts: List[str] = (
-            self.lore_texts + self.belongings_texts + self.profiles_texts
+            self.profiles_texts + self.lore_texts + self.belongings_texts
         )
+
+        if return_strs:
+            return all_texts
 
         return [Document(page_content=text) for text in all_texts]
 
@@ -29,6 +32,11 @@ class RawInfo(BaseModel):
 # GameState
 known_chunks: Dict[int, List[str]] = {}
 community_states: Dict[int, RawInfo] = {}
+
+
+def reset_state():
+    known_chunks = {}
+    community_states = {}
 
 
 async def refresh_all_known_chunks() -> Dict[int, List[str]]:

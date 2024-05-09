@@ -5,9 +5,16 @@ import app.core.db.database as db
 import sqlalchemy
 
 from app.lib import states
+from app.lib.states import RawInfo
 
 from app.core.schemas.entities import Chunk
 from app.core.schemas.info import Lore, Belonging
+
+from app.lib.llm.prompts import chunk_summarizer
+
+import numpy as np
+import pandas as pd
+
 
 
 # CREATION
@@ -84,25 +91,122 @@ def join_community(user_email: str, community_name: str):
 
 # later, make a route that calls this
 # This is the update method and the main driver of the society
-def update():
+def update(community_id: int):
     """Update the society by a tick"""
-    pass
+    
+    return 0
 
 
-# make a route that calls this
-def generate_chunks() -> List[Chunk]:
+# later, make a route that calls this
+# the `count` parameter is ignored if `chunk_descs` is specified
+def generate_chunks(chunk_descs: List[str] = [], desc: str = "", count: int = -1) -> List[Chunk]:
     """Agent Generation (for the lazy)"""
+    chunks: List[Chunk] = []
+    
+    MIN_DESC_LENGTH = 3  # minimum length of word that we care about is 3
+    
+    has_community_desc: bool = len(desc) > MIN_DESC_LENGTH
+
+    if len(chunk_descs) > 0:
+        # Generate a description of the community if not already
+        if not has_community_desc:
+            # Generate from the chunk descs
+            # Wow, this is lowkey an inherent form of prompt tuning
+            # TODO:
+            pass
+        
+        # From the community desc and chunk_descs, generate descriptions for each chunk
+        # TODO:
+    else:
+        if count == -1:
+            # Calculate a count
+            MEAN_COUNT = 10
+            MAX_DIFF = 5
+            
+            sign: int = int(np.sign(np.random.randn()))
+            diff: int = sign * int(np.random.rand() * (MAX_DIFF + 1))
+
+            count = MEAN_COUNT + diff
+        
+        if not has_community_desc:
+            # Generate from nothing
+            # TODO:
+            pass
+        
+        # Now we have a count and community desc
+        # Generate descriptions for each chunk given these
+        # TODO:
+
     pass
 
 
 # "Summary Statistics"
-async def summarize_chunk(chunk_name: str) -> str:
+async def summarize_chunk(community_id: int, chunk_name: str) -> str:
     """
     Summarize findings (lore + belongings + profiles) about a chunk into a string. This can be used to profile a chunk
     """
-    pass
+    info: RawInfo = RawInfo()
+
+    def add_to_info(profile_text: str, lore_text: str = "", belongings_text: str = ""):
+        info.profiles_texts.append(profile_text)
+        
+        # if lore text exists
+        if len(lore_text) > 0:
+            info.lore_texts.append(lore_text)
+
+        # if belongings text exists
+        if len(belongings_text) > 0:
+            info.belongings_texts.append(belongings_text)
 
 
+    affiliation: str = ""
+    
+    # Steps:
+    # 1. get all findings about the chunk from DB
+    # 2. create a summarizer.py prompt 
+    # 3. run it through
+    with db.engine.begin() as conn:
+        query = """
+            SELECT chunks.profile, lore.lore_text, belongings.content
+            FROM chunks
+            INNER JOIN chunks_lore ON chunks.id = chunks_lore.chunk_id
+            INNER JOIN lore ON chunks_lore.lore_id = lore.id
+            INNER JOIN belongings ON chunks.id = belongings.owner
+            WHERE chunks.community_id = :community_id AND chunks.name = :name
+        """
+
+        results = conn.execute(sqlalchemy.text(query, community_id=community_id, name=chunk_name)).fetchall()
+        
+        for result in results:
+            add_to_info(*result)
+
+        # Get affiliation now
+        query = """
+            SELECT c2.name
+            FROM chunks c1 INNER JOIN chunks c2 ON c1.parent_chunk = c2.id
+            WHERE c1.community_id = :community_id AND c1.name = :name
+        """
+        
+        result = conn.execute(sqlalchemy.text(query, community_id=community_id, name=chunk_name)).first()
+        
+        (affiliation,) = result
+        
+    # Clean the duplicates out
+    info.profiles_texts = pd.unique(info.profiles_texts).tolist()
+    info.lore_texts = pd.unique(info.lore_texts).tolist()
+    info.belongings_texts = pd.unique(info.belongings_texts).tolist()
+    
+    # Run the summarizer prompt
+    summary: str = chunk_summarizer.chain.invoke(
+            profile=info.profiles_texts[0],
+            lore=info.lore_texts,
+            belongings=info.belongings_texts,
+            affiliation=affiliation
+    )
+    
+    return summary
+
+    
 # Upload new lore to DB
 async def upload_lore(lore: List[Lore], community_id: int):
     lore_count: int = len(lore)
@@ -209,3 +313,44 @@ async def set_profile(community_id: int, chunk_name: str, content: str):
 
 
 # --------
+
+def reset(community_id: int):
+    """Reset everything in the community"""
+    # Clear the stuff in memory
+    states.reset_state()
+
+    # Now clear the whole database of the communities
+    with db.engine.begin() as conn:
+        # Delete the lore first
+        query = """
+        DELETE FROM lore
+        WHERE EXISTS (
+            SELECT 1 FROM chunks_lore
+            JOIN chunks ON chunks_lore.chunk_id = chunks.id
+            WHERE chunks_lore.lore_id = lore.id AND chunks.community_id = :community_id
+        )
+        """
+        
+        query2 = """
+        DELETE FROM chunks_lore
+        WHERE chunks_id IN (SELECT id FROM chunks WHERE chunks.community_id = :community_id)
+        """
+
+        query3 = """
+        DELETE FROM belongings
+        USING chunks
+        WHERE belongings.owner = chunks.id AND chunks.community_id = :community_id
+        """
+
+        query4 = """
+        DELETE FROM chunks
+        WHERE community_id = :community_id
+        """
+
+        queries: List[str] = [query, query2, query3, query4]
+
+        for query in queries:
+            conn.execute(sqlalchemy.text(query, community_id=community_id))
+        
+        
+    return "OK"

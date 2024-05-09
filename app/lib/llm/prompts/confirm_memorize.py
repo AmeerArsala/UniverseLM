@@ -13,6 +13,7 @@ load_dotenv()
 
 
 # Prompting
+# TODO: p-tune this
 system_prompt_message = """
 Your role is to determine whether you should memorize a piece of information or not. Given a piece of info and context about the user/the conversation, you are to determine whether you should memorize this information or not by returning either "YES" or "NO". Do not say anything more.
 In general, you should be memorizing information if:

@@ -4,6 +4,7 @@ from langchain.llms import HuggingFaceHub
 
 
 # Prompting
+# TODO: GPT-orchestration (p-tuning) + few-shot this
 system_prompt_message = """
 Your role is to determine which piece of information to memorize as a record. Given a piece of info and context about the user/the conversation, you are to determine which of this information you should memorize. Your output should reflect what new key information was learned.
 In general, you should be memorizing information if:
@@ -36,6 +37,7 @@ llm = HuggingFaceHub(
 chain = prompt | llm
 
 # ----------------------------------------------------------------------------------------
+# TODO: GPT-orchestration (p-tuning) + few-shot this
 
 about_system_prompt_message = """
 Your role is to determine which entities are being referred to within a given piece of information, given context and a list of entities. You are to return a list of these names as a Python list and nothing else.

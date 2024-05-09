@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 
 
+# TODO: p-tune this
 class AgentSystemPrompt(BaseModel):
     DESC: str = ""
 

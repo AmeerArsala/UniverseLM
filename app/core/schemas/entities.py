@@ -1,8 +1,11 @@
 from pydantic import BaseModel, Field
 
 
+ID_PENDING = -1
+
+
 class Chunk(BaseModel):
-    id: str
+    id: int = Field(default=ID_PENDING)
     name: str
     profile: str
     community_id: int
