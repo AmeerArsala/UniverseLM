@@ -46,7 +46,7 @@ def stringify_lore(lore: List[str]) -> str:
     aggregated_lore: str = ""
 
     for i, lore_piece in enumerate(lore):
-        aggregated_lore += f"""Lore Piece #{i}:
+        aggregated_lore += f"""Lore Piece #{i+1}:
         {lore_piece}
         """
 
@@ -57,7 +57,7 @@ def stringify_belongings(belongings: List[str]) -> str:
     aggregated_belongings: str = ""
 
     for i, belonging in enumerate(belongings):
-        aggregated_belongings += f"""Belonging/Document #{i}:
+        aggregated_belongings += f"""Belonging/Document #{i+1}:
         {belonging}
         """
 

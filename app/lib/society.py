@@ -116,7 +116,7 @@ def generate_chunks(community_id: int, chunk_descs: List[str] = [], desc: str = 
             # Generate from the chunk descs
             # Wow, this is lowkey an inherent form of prompt tuning
             # (chunk_descs[]) -> community_desc: str
-            desc = chunk_generation.with_chunk_descs.community_desc_chain.invoke(chunk_descs=lazy_chunk_descs)
+            desc = chunk_generation.with_chunk_descs.community_desc_chain.invoke(lazy_chunk_descs=lazy_chunk_descs)
         
         # From the community desc and chunk_descs, generate descriptions for each chunk
         # (lazy_chunk_descs[], community_desc) -> chunk_descs[str]
