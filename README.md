@@ -8,7 +8,7 @@ UniverseLM is a multi-agent system simulator / text adventure that allows users 
 
 ## Setup (locally)
 
-1. Create & Activate the Conda/Mamba/Micromamba environment if not already
+1. (Optional; for dev) Create & Activate the Conda/Mamba/Micromamba environment if not already
 
 ```
 micromamba create -f environment.yml
