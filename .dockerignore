@@ -12,3 +12,6 @@ __pycache__/
 ./.gitignore
 ./schema.sql
 ./environment.yml
+
+# Ignore the front end
+frontend/
