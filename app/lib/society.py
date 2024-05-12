@@ -17,6 +17,22 @@ import numpy as np
 import pandas as pd
 
 
+"""
+HOW THE GAME WORKS:
+
+1. Create User
+2. Create Community & Have User join community
+3. From inside the community, a variety of things can happen:
+    - User may view lore of everyone
+    - User may create chunks and upload their own lore, belongings, and set profiles of chunks
+    - Community global update tick
+    - Chunks may be auto-generated via an overall community desc, a chunk count, and/or a list of rudimentary chunk descriptions
+    - User inhabits a chunk
+    - User may chat with other chunks and generate lore that is automatically updated and uploaded to a DB
+    - Reset everything
+"""
+
+
 
 # CREATION
 # --------

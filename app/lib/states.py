@@ -35,6 +35,8 @@ community_states: Dict[int, RawInfo] = {}
 
 
 def reset_state():
+    global known_chunks, community_states
+
     known_chunks = {}
     community_states = {}
 

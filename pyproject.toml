@@ -5,6 +5,7 @@ description = ""
 authors = ["Ameer Arsala <ameer.arsala03@gmail.com>"]
 license = "LICENSE"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.9"

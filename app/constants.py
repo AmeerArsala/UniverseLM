@@ -1,9 +1,19 @@
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
+import torch
 
 
 # Load .env file
 load_dotenv()
+
+
+if torch.cuda.is_available():
+    DEVICE = torch.device("cuda")
+    print("Using CUDA")
+else:
+    DEVICE = torch.device("cpu")
+    print("Using CPU")
+
 
 # Options
 # gpt-4-turbo-2024-04-09

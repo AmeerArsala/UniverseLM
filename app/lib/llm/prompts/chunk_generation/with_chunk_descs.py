@@ -17,27 +17,22 @@ import json
 # (lazy_chunk_descs[str]) -> community_desc: str
 
 # TODO: GPT-orchestration (p-tuning) + few-shot this
-system_prompt_message = """
-Your role is 
+community_system_prompt_message = """
+Your role is to describe what a society is like given the individuals, groups, groups of groups, etc. that inhabit it. Given a bunch of descriptions of entities (which refer to individuals, groups of individuals, groups of groups, etc.), you must generate an accurate all-encompassing big-picture description of said society. Don't be afraid to be creative, but the description MUST be accurate.
 """[
     1:-1
 ]
 
 COMMUNITY_DESC_HUMAN_PROMPT = """
-ENTITY NAME: {name}
-
-CONTEXT - EXISTING ENTITY PROFILE:
-{profile}{affiliation}
-
-CONTEXT - LORE INVOLVING ENTITY:
-{lore}
-
-CONTEXT - DOCUMENTS BELONGING TO ENTITY:
-{belongings}
+BASELINE ENTITY DESCRIPTIONS:
+{lazy_chunk_descs}
 """
 
 community_desc_prompt = ChatPromptTemplate.from_messages(
-    [("system", system_prompt_message), ("human", COMMUNITY_DESC_HUMAN_PROMPT)]
+    [
+        ("system", community_system_prompt_message),
+        ("human", COMMUNITY_DESC_HUMAN_PROMPT),
+    ]
 )
 
 # LLM
@@ -53,6 +48,7 @@ def stringify_lazy_chunks(lazy_chunk_descs: List[str]) -> str:
     for i, lazy_chunk_desc in enumerate(lazy_chunk_descs):
         aggregated_chunks += f"""Entity #{i+1} - Description:
         {lazy_chunk_desc}
+
         """
 
     return aggregated_chunks
@@ -70,28 +66,27 @@ community_desc_chain = (
 # (lazy_chunk_descs[], community_desc) -> List[Chunk]
 # TODO: GPT-orchestration (p-tuning) + few-shot this
 system_prompt_message = """
-Your role is 
+Your role is to generate profiles for entities in a given community. Given a description of what the community is like as well as a baseline description for each entity (an entity can be a single individual, a group of individuals, a group of groups, etc.), you are to generate full profiles for each entity. Each profile must consist of:
+    - Name: name of entity (which may refer to an individual, a group, a group of groups, etc.)
+    - Description: complete description of entity as it relates to the community as a whole. More detailed and complete than its baseline counterpart
+    - Affiliation: name of entity that it is affiliated with/belongs to (if an individual belonged to a group for example, they would be 'affiliated' with the name of the entity that represents said group). If no affiliation (not required), put 'NONE'
+
+You must respond in a JSON format, with the keys to each object being the 3 bullet points up above.
 """[
     1:-1
 ]
 
 HUMAN_PROMPT = """
-ENTITY NAME: {name}
+COMMUNITY DESCRIPTION:
+{community_desc}
 
-CONTEXT - EXISTING ENTITY PROFILE:
-{profile}{affiliation}
-
-CONTEXT - LORE INVOLVING ENTITY:
-{lore}
-
-CONTEXT - DOCUMENTS BELONGING TO ENTITY:
-{belongings}
+BASELINE ENTITY DESCRIPTIONS:
+{lazy_chunk_descs}
 """
 
 prompt = ChatPromptTemplate.from_messages(
     [("system", system_prompt_message), ("human", HUMAN_PROMPT)]
 )
-
 
 # LLM
 LLM_ID = "mistralai/Mixtral-8x7B-Instruct-v0.1"
@@ -123,7 +118,7 @@ def parse_chunks(ai_message: AIMessage, community_id: int) -> List[Chunk]:
 
 
 def dynamic_route(info: Dict):
-    inputs: Dict = {
+    inputs: Dict[str, str] = {
         "lazy_chunk_descs": info["lazy_chunk_descs"],
         "community_desc": info["community_desc"],
     }

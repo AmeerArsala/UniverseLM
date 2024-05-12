@@ -150,7 +150,6 @@ class AgentChat(RAGQAChat):
 chats: Dict[str, AgentChat] = {}
 
 
-# TODO:
 # Assumes the chunk is already in the DB
 def create_chat(community_id: int, chunk_name: str, **kwargs) -> AgentChat:
     with db.engine.begin() as conn:
