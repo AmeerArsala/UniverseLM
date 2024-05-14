@@ -30,7 +30,7 @@ class RawInfo(BaseModel):
 
 
 # GameState
-known_chunks: Dict[int, List[str]] = {}
+known_chunks: Dict[int, List[str]] = {}  # known chunk names for LLMs to keep track of
 community_states: Dict[int, RawInfo] = {}
 
 

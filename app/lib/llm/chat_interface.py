@@ -157,7 +157,7 @@ class RAGQAChat(Chat):
 
     # TODO: have it update the buffer every single time so it can store the memories
     async def generate_chat_response_events(
-        self, msg: str, add_to_history: bool = True, sleep_time: float = 0.1
+        self, msg, add_to_history: bool = True, sleep_time: float = 0.1
     ):
         # Initialize a flag to track if any data was yielded
         data_yielded = False

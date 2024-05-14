@@ -11,9 +11,10 @@ from app.core.schemas.entities import Chunk
 from app.core.schemas.info import Lore, Belonging
 
 from app.lib.llm.prompts import chunk_summarizer
-from app.lib.llm.prompts import (
-    chunk_generation,
-)  # .with_chunk_descs and .without_chunk_descs
+from app.lib.llm.prompts.chunk_generation import (
+    with_chunk_descs as chunk_generation_with_chunk_descs,
+    without_chunk_descs as chunk_generation_without_chunk_descs,
+)
 
 import numpy as np
 import pandas as pd
@@ -25,6 +26,7 @@ HOW THE GAME WORKS:
 1. Create User
 2. Create Community & Have User join community
 3. From inside the community, a variety of things can happen:
+    - USER MUST INHABIT A CHUNK BEFORE TALKING TO OTHER CHUNKS
     - User may view lore of everyone
     - User may create chunks and upload their own lore, belongings, and set profiles of chunks
     - Community global update tick
@@ -66,12 +68,16 @@ def create_chunks(chunks: List[Chunk]):
         )
 
 
-def create_user(email: str):
+def create_user(email: str) -> int:
     with db.engine.begin() as conn:
-        conn.execute(
-            sqlalchemy.text("INSERT INTO users(email) VALUES (:email)"),
+        result: Tuple = conn.execute(
+            sqlalchemy.text("INSERT INTO users(email) VALUES (:email) RETURNING id"),
             [{"email": email}],
-        )
+        ).first()
+
+        id_: int = result[0]
+
+    return id_
 
 
 def join_community(user_email: str, community_name: str):
@@ -116,7 +122,7 @@ def generate_chunks(
             # Generate from the chunk descs
             # Wow, this is lowkey an inherent form of prompt tuning
             # (chunk_descs[]) -> community_desc: str
-            desc = chunk_generation.with_chunk_descs.community_desc_chain.invoke(
+            desc = chunk_generation_with_chunk_descs.community_desc_chain.invoke(
                 lazy_chunk_descs=lazy_chunk_descs
             )
 
@@ -131,10 +137,12 @@ def generate_chunks(
 
             # Postprocess into List[Chunk]
             generated_chunks: List[Chunk] = (
-                chunk_generation.with_chunk_descs.chain.invoke(
-                    lazy_chunk_descs=selected_lazy_chunk_descs,
-                    community_desc=desc,
-                    community_id=community_id,
+                chunk_generation_with_chunk_descs.chain.invoke(
+                    dict(
+                        lazy_chunk_descs=selected_lazy_chunk_descs,
+                        community_desc=desc,
+                        community_id=community_id,
+                    )
                 )
             )
 
@@ -154,15 +162,15 @@ def generate_chunks(
         if not has_community_desc:
             # Generate from nothing
             # (count) -> community_desc
-            desc = chunk_generation.without_chunk_descs.community_desc_chain.invoke(
-                count=count
+            desc = chunk_generation_without_chunk_descs.community_desc_chain.invoke(
+                dict(num_chunks=count)
             )
 
         # Now we have a count and community desc
         # Generate descriptions for each chunk given these
         # (count, community_desc) -> chunk_descs[str]
-        chunks = chunk_generation.without_chunk_descs.chain.invoke(
-            count=count, community_desc=desc
+        chunks = chunk_generation_without_chunk_descs.chain.invoke(
+            dict(num_chunks=count, community_desc=desc)
         )
 
     return chunks

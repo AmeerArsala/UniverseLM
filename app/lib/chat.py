@@ -26,6 +26,11 @@ from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 
+class AgentChatParams(BaseModel):
+    question: str
+    sender_chunk_name: str
+
+
 # Create an interface for chatting with the agents
 class AgentChat(RAGQAChat):
     def __init__(
@@ -68,14 +73,8 @@ class AgentChat(RAGQAChat):
 
         self.retriever = create_retriever(embedder_type, docs, **self.chatbot_kwargs)
 
-    # Dynamic routing; happens at the call level
-    # Returns a chain
-    def agent_route(self, params: Dict):
-        # Question can be just a message
+    def attempt_lore_update(self, params: Dict, formatted_chat_history: str):
         message: str = params["question"]
-        formatted_chat_history: str = self.format_chat_history(
-            include_system_prompt=False
-        )
 
         # (A) Find out whether this needs to be stored as Lore
         # Is the info key info that you need to memorize? Is the user asking you to remember it?
@@ -104,10 +103,12 @@ class AgentChat(RAGQAChat):
 
         # (B) Re-profile the chunk based on the new info if new enough
         # Does the info change the view of the user enough to justify re-profiling?
-        should_reprofile: bool = should_memorize  # change later
+        should_reprofile: bool = False  # TODO: change later
 
         if should_reprofile:
             print("Reprofiling...")
+
+            # First of all, the question that needs to be answered here is: WHO to reprofile?
 
             async def update_profile(chunk_name: str):
                 chunk_summary: str = await society.summarize_chunk(chunk_name)
@@ -116,11 +117,24 @@ class AgentChat(RAGQAChat):
 
             update_profile(params["sender_chunk_name"])
 
-        # (C) Find out whether some type of RAG is needed [Retrieve from lore and belongings]
-        # Is the user asking a question that may require knowledge of Lore?
-        rag: bool = loreworthy.chain.invoke({"input": message})
+    # Dynamic routing; happens at the call level
+    # Returns a chain
+    def agent_route(self, params: Dict):
+        # Question can be just a message
+        message: str = params["question"]
+        formatted_chat_history: str = self.format_chat_history(
+            include_system_prompt=False
+        )
 
-        if rag:
+        # Attempt to update the lore of the society given new information from the conversation
+        # Allowing other agents to feel the effects and behave differently as the overall lore is updated
+        self.attempt_lore_update(params, formatted_chat_history)
+
+        # Find out whether some type of lore retrieval is needed [Retrieve from lore and belongings]
+        # Is the user asking a question that may require knowledge of Lore?
+        lore_ragworthy: bool = loreworthy.chain.invoke({"input": message})
+
+        if lore_ragworthy:
             # Update retriever
             self.update_retriever()
             return super()._recreate_chain()
@@ -145,6 +159,14 @@ class AgentChat(RAGQAChat):
         } | RunnableLambda(self.agent_route)
 
         return full_chain
+
+    async def generate_chat_response_events(
+        self,
+        chat_params: Dict,
+        add_to_history: bool = True,
+        sleep_time: float = 0.1,
+    ):
+        super().generate_chat_response_events(chat_params, add_to_history, sleep_time)
 
 
 chats: Dict[str, AgentChat] = {}
