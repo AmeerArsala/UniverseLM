@@ -68,10 +68,8 @@ async def refresh_known_chunks(community_id: int) -> List[str]:
 
     with db.engine.begin() as conn:
         results = conn.execute(
-            sqlalchemy.text(
-                "SELECT name FROM chunks WHERE community_id = :id",
-                [{"id": community_id}],
-            )
+            sqlalchemy.text("SELECT name FROM chunks WHERE community_id = :id"),
+            [dict(id=community_id)],
         ).fetchall()
 
         chunk_names: List[str] = [result[0] for result in results]
@@ -104,7 +102,7 @@ async def pull_lore(community_id: int):
         """
 
         results = conn.execute(
-            sqlalchemy.text(query, community_id=community_id)
+            sqlalchemy.text(query), [dict(id=community_id)]
         ).fetchall()
 
         lore_texts: List[str] = [result[0] for result in results]
@@ -124,7 +122,7 @@ async def pull_belongings(community_id: int):
         """
 
         results = conn.execute(
-            sqlalchemy.text(query, community_id=community_id)
+            sqlalchemy.text(query), [dict(id=community_id)]
         ).fetchall()
 
         belongings_texts: List[str] = [result[0] for result in results]
@@ -142,7 +140,7 @@ async def pull_profiles(community_id: int):
         """
 
         results = conn.execute(
-            sqlalchemy.text(query, community_id=community_id)
+            sqlalchemy.text(query), [dict(id=community_id)]
         ).fetchall()
 
         profiles_texts: List[str] = [result[0] for result in results]

@@ -18,7 +18,7 @@ import json
 
 # TODO: GPT-orchestration (p-tuning) + few-shot this
 community_system_prompt_message = """
-Your role is to describe what a society is like given the individuals, groups, groups of groups, etc. that inhabit it. Given a specified number of entities (which refer to individuals, groups of individuals, groups of groups, etc.), you must generate an accurate all-encompassing big-picture description of said society. Be creative here but try to be accurate, as a small number of entities should not be in a society described for its vastness.
+Your role is to describe what a society is like including the individuals, groups, groups of groups, etc. that inhabit it. You are to IMAGINE this society. Given a specified number of entities (which refer to individuals, groups of individuals, groups of groups, etc.), you must generate an accurate all-encompassing big-picture description of said society. Be creative here but try to be accurate, as a small number of entities should not be in a society described for its vastness.
 """[
     1:-1
 ]
@@ -28,7 +28,10 @@ NUM ENTITIES: {num_entities}
 """
 
 community_desc_prompt = ChatPromptTemplate.from_messages(
-    [("system", community_system_prompt_message), ("human", COMMUNITY_DESC_HUMAN_PROMPT)]
+    [
+        ("system", community_system_prompt_message),
+        ("human", COMMUNITY_DESC_HUMAN_PROMPT),
+    ]
 )
 
 # LLM
@@ -51,7 +54,7 @@ def stringify_lazy_chunks(lazy_chunk_descs: List[str]) -> str:
 
 
 # Create the chain
-community_desc_chain = (community_desc_prompt | community_desc_llm)
+community_desc_chain = community_desc_prompt | community_desc_llm
 
 
 # CHUNK DESC GENERATION CHAIN
