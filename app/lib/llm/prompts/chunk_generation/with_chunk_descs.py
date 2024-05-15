@@ -95,10 +95,10 @@ llm = HuggingFaceHub(
 )
 
 
-def parse_chunks(ai_message: AIMessage, community_id: int) -> List[Chunk]:
+def parse_chunks(ai_message: str, community_id: int) -> List[Chunk]:
     chunks: List[Chunk] = []
 
-    output: str = ai_message.content
+    output: str = ai_message
 
     # Given the output of the llm and a `community_id`, parse into a List[Chunk]
     chunk_dicts: List[Dict] = json.loads(output)
@@ -119,8 +119,8 @@ def parse_chunks(ai_message: AIMessage, community_id: int) -> List[Chunk]:
 
 def dynamic_route(info: Dict):
     inputs: Dict[str, str] = {
-        "lazy_chunk_descs": info["lazy_chunk_descs"],
-        "community_desc": info["community_desc"],
+        "lazy_chunk_descs": lambda args: info["lazy_chunk_descs"],
+        "community_desc": lambda args: info["community_desc"],
     }
 
     def parse_output(ai_message: AIMessage) -> List[Chunk]:

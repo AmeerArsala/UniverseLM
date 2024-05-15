@@ -74,6 +74,8 @@ class AgentChat(RAGQAChat):
         self.retriever = create_retriever(embedder_type, docs, **self.chatbot_kwargs)
 
     def attempt_lore_update(self, params: Dict, formatted_chat_history: str):
+        print("Attempting lore update...")
+
         message: str = params["question"]
 
         # (A) Find out whether this needs to be stored as Lore

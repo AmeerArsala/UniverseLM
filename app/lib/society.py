@@ -170,7 +170,7 @@ def generate_chunks(
         # Generate descriptions for each chunk given these
         # (count, community_desc) -> chunk_descs[str]
         chunks = chunk_generation_without_chunk_descs.chain.invoke(
-            dict(num_chunks=count, community_desc=desc)
+            dict(num_chunks=count, community_desc=desc, community_id=community_id)
         )
 
     return chunks
