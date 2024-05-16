@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from langchain.prompts import ChatPromptTemplate
 from langchain.llms import HuggingFaceHub
 
+from langchain_core.output_parsers import StrOutputParser
+
 from langchain_core.runnables import RunnableLambda
 from langchain_core.messages import AIMessage
 
@@ -50,4 +52,4 @@ def parse_output(ai_message: AIMessage, default_response=True) -> bool:
 
 
 # Create the chain
-chain = prompt | llm | parse_output
+chain = prompt | llm | StrOutputParser() | parse_output

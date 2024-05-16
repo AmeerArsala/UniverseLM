@@ -7,7 +7,7 @@ class AgentSystemPrompt(BaseModel):
 
     def nonrag_prompt(self):
         return f"""
-            You are an agent in a society/community fitting this description:
+            You are an agent in a society/community. You fit this description:
             {self.DESC}
 
             You must act and talk like this.
@@ -17,7 +17,7 @@ class AgentSystemPrompt(BaseModel):
         return (
             f"""
             # Instruction
-            You are an agent in a society/community fitting this description:
+            You are an agent in a society/community. You fit this description:
             {self.DESC}"""
             + """
             You must act and talk like this. Additionally, your task is to answer the question and converse with the user by using the following pieces of retrieved context delimited by XML tags.

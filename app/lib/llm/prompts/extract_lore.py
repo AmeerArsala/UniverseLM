@@ -1,6 +1,7 @@
 # Extract information to memorize in lore
 from langchain.prompts import ChatPromptTemplate
 from langchain.llms import HuggingFaceHub
+from langchain_core.output_parsers import StrOutputParser
 
 
 # Prompting
@@ -34,7 +35,7 @@ llm = HuggingFaceHub(
 
 
 # Create the chain
-chain = prompt | llm
+chain = prompt | llm | StrOutputParser()
 
 # ----------------------------------------------------------------------------------------
 # TODO: GPT-orchestration (p-tuning) + few-shot this
@@ -70,4 +71,4 @@ about_llm = HuggingFaceHub(
 
 
 # Create the chain
-about_chain = about_prompt | about_llm
+about_chain = about_prompt | about_llm | StrOutputParser()

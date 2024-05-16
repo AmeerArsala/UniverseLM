@@ -75,13 +75,11 @@ def restring_affiliation(affiliation: str) -> str:
 
 # Create the chain
 chain = (
-    RunnableParallel(
-        {
-            "profile": RunnablePassthrough(),
-            "lore": RunnableLambda(stringify_lore),
-            "belongings": RunnableLambda(stringify_belongings),
-            "affiliation": RunnableLambda(restring_affiliation),
-        }
+    RunnablePassthrough.assign(
+        profile=(lambda x: x["profile"]),
+        lore=(lambda x: stringify_lore(x["lore"])),
+        belongings=(lambda x: stringify_belongings(x["belongings"])),
+        affiliation=(lambda x: restring_affiliation(x["affiliation"])),
     )
     | prompt
     | llm

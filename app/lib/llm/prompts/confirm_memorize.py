@@ -7,6 +7,8 @@ from langchain.llms import HuggingFaceHub
 from langchain_core.runnables import RunnableLambda
 from langchain_core.messages import AIMessage
 
+from langchain_core.output_parsers import StrOutputParser
+
 
 # Load environment variables
 load_dotenv()
@@ -52,4 +54,4 @@ def parse_output(ai_message: AIMessage) -> bool:
 
 
 # Create the chain
-chain = prompt | llm | parse_output
+chain = prompt | llm | StrOutputParser() | parse_output
