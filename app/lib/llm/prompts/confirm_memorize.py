@@ -19,7 +19,7 @@ load_dotenv()
 system_prompt_message = """
 Your role is to determine whether you should memorize a piece of information or not. Given a piece of info and context about the user/the conversation, you are to determine whether you should memorize this information or not by returning either "YES" or "NO". Do not say anything more.
 In general, you should be memorizing information if:
-(A) The information given the context is actually a key piece of information (and not just filler) that is genuinely important to the matter at hand. If this were a fictional world, the information worth memorizing would essentially be important lore. 
+(A) The information given the context is actually a key piece of information (and not just filler) that is genuinely important to the matter at hand. If this were a fictional world, the information worth memorizing would essentially be important lore or new events that occur. 
 (B) They might say exactly to memorize something (in which case the answer is obviously yes)
 """[
     1:-1

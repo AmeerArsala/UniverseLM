@@ -148,7 +148,7 @@ async def pull_profiles(community_id: int):
 
     with db.engine.begin() as conn:
         query = """
-            SELECT profile
+            SELECT name, profile
             FROM chunks
             WHERE community_id = :community_id
         """
@@ -157,5 +157,5 @@ async def pull_profiles(community_id: int):
             sqlalchemy.text(query), [dict(community_id=community_id)]
         ).fetchall()
 
-        profiles_texts: List[str] = [result[0] for result in results]
+        profiles_texts: List[str] = [f"{result[0]} - {result[1]}" for result in results]
         set_infostate(community_id, profiles_texts=profiles_texts)

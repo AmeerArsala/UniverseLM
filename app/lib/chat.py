@@ -1,7 +1,7 @@
 from typing import List, Dict, Tuple
 from pydantic import BaseModel, Field
 
-# import asyncio
+import asyncio
 
 from app.core.schemas.entities import Chunk
 from app.core.schemas.info import Lore
@@ -46,13 +46,16 @@ class AgentChat(RAGQAChat):
     ):
         self.community_id = community_id
         self.chunk_name = chunk_name
-        self.agent_sys_prompt = AgentSystemPrompt(DESC=agent_desc)
+        self.agent_sys_prompt = AgentSystemPrompt(NAME=chunk_name, DESC=agent_desc)
+
         system_prompt: str = self.agent_sys_prompt.rag_prompt()
+        human_prompt: str = sysprompts.HUMAN_PROMPT
 
         super().__init__(
             retriever,
             response_model,
             system_prompt,
+            human_prompt,
             chat_history,
             recontextualize_if_chat_history,
         )
@@ -73,18 +76,43 @@ class AgentChat(RAGQAChat):
 
         self.retriever = create_retriever(embedder_type, docs)
 
+    def format_chat_history(
+        self, sender_chunk_name: str = "User", include_system_prompt: bool = False
+    ) -> str:
+        start_index = 0 if include_system_prompt else 1
+
+        history: List = self.chat_history[start_index:]
+        formatted_messages: List[str] = []
+        for message in history:
+            (owner, content) = message
+            title: str = ""
+            if owner == "human":
+                title = sender_chunk_name
+            elif owner == "ai":
+                title = self.chunk_name
+
+            formatted_msg: str = f"{title} - {content}"
+            formatted_messages.append(formatted_msg)
+
+        return "\n".join(formatted_messages)
+
     def attempt_lore_update(self, params: Dict):
         print("Attempting lore update...")
 
         message: str = params["question"]
+        sender_chunk_name: str = params["sender_chunk_name"]
+
         formatted_chat_history: str = self.format_chat_history(
-            include_system_prompt=False
+            include_system_prompt=False, sender_chunk_name=sender_chunk_name
         )
 
         # (A) Find out whether this needs to be stored as Lore
         # Is the info key info that you need to memorize? Is the user asking you to remember it?
         should_memorize: bool = confirm_memorize.chain.invoke(
-            {"context": formatted_chat_history, "info": message}
+            {
+                "context": formatted_chat_history,
+                "info": f"{sender_chunk_name} - {message}",
+            }
         )
 
         if should_memorize:
@@ -112,21 +140,24 @@ class AgentChat(RAGQAChat):
 
         if should_reprofile:
             print("Reprofiling...")
-
             # First of all, the question that needs to be answered here is: WHO to reprofile?
 
             async def update_profile(chunk_name: str):
                 chunk_summary: str = await society.summarize_chunk(chunk_name)
                 society.set_profile(self.community_id, chunk_name, chunk_summary)
-                self.agent_sys_prompt.DESC = chunk_summary
+                self.agent_sys_prompt.DESC = chunk_summary  # SELF??? Nah fix this later
 
-            update_profile(params["sender_chunk_name"])
+            update_profile(sender_chunk_name)
 
     # Dynamic routing; happens at the call level
     # Returns a chain
     def agent_route(self, params: Dict):
         # Question can be just a message
         message: str = params["question"]
+
+        # Make sure to set who the sender is so the agent knows
+        self.agent_sys_prompt.recipient = params["sender_chunk_name"]
+        # print(self.agent_sys_prompt.recipient)
 
         # Attempt to update the lore of the society given new information from the conversation
         # Allowing other agents to feel the effects and behave differently as the overall lore is updated

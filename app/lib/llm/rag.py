@@ -27,7 +27,7 @@ from app.constants import (
 )
 
 from app.lib.llm.chat_interface import Chat, RAGQAChat
-from app.lib.llm.prompts import sysprompts
+from app.lib.llm.prompts import docrag
 
 
 class ModelType(Enum):
@@ -99,7 +99,7 @@ def create_rag_chatbot(
     K: int = K_NEIGHBORS,
     stream_response: bool = True,
     verbose: bool = False,
-    system_prompt: str = sysprompts.contextualize_q_system_prompt,
+    system_prompt: str = docrag.contextualize_q_system_prompt,
 ) -> RAGQAChat:
 
     llm = ChatOpenAI(

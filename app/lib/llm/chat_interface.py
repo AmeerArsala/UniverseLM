@@ -1,10 +1,6 @@
-import os
 import time
 
 from typing import List, Dict, Tuple, Any
-
-# from abc import ABC, abstractmethod
-from pydantic import BaseModel, Field
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import (
@@ -15,7 +11,7 @@ from langchain_core.runnables import (
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import AIMessageChunk
 
-from app.lib.llm.prompts import sysprompts
+from app.lib.llm.prompts import docrag
 
 
 class Chat:
@@ -59,8 +55,10 @@ class Chat:
         self.chat_history[0] = ("system", system_prompt)
         self.chain = self._recreate_chain()
 
-    def add_to_chat_history(self, message_s):
-        self.chat_history.append(message_s)
+    def add_to_chat_history(self, message_s: List[Tuple[str, str]]):
+        for message in message_s:
+            self.chat_history.append(message)
+
         self.chain = self._recreate_chain()
 
     def invoke_chat(
@@ -81,13 +79,13 @@ class RAGQAChat(Chat):
         self,
         retriever,
         response_model,
-        system_prompt: str = sysprompts.AgentSystemPrompt(
-            DESC="A helpful assistant"
-        ).rag_prompt(),
+        system_prompt: str = docrag.SYSTEM_PROMPT,
+        human_prompt: str = docrag.HUMAN_PROMPT,
         chat_history: List[Tuple[str, str]] = [],
         recontextualize_if_chat_history: bool = False,
     ):
         self.retriever = retriever
+        self.human_prompt = human_prompt
         self.recontextualize_if_chat_history = recontextualize_if_chat_history
         super().__init__(response_model, system_prompt, chat_history)
 
@@ -99,9 +97,9 @@ class RAGQAChat(Chat):
 
         contextualize_q_prompt = ChatPromptTemplate.from_messages(
             [
-                ("system", sysprompts.contextualize_q_system_prompt),
+                ("system", docrag.contextualize_q_system_prompt),
                 *msg_history,
-                ("human", sysprompts.HUMAN_PROMPT),
+                ("human", self.human_prompt),
             ]
         )
 
@@ -113,7 +111,7 @@ class RAGQAChat(Chat):
 
     def _recreate_chain(self):
         prompt = ChatPromptTemplate.from_messages(
-            [*self.chat_history, ("human", sysprompts.HUMAN_PROMPT)]
+            [*self.chat_history, ("human", self.human_prompt)]
         )
 
         rag_chain_from_docs = None
