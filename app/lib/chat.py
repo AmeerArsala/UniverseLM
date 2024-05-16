@@ -81,6 +81,9 @@ class AgentChat(RAGQAChat):
     ) -> str:
         start_index = 0 if include_system_prompt else 1
 
+        if start_index > len(self.chat_history) - 1:
+            return ""
+
         history: List = self.chat_history[start_index:]
         formatted_messages: List[str] = []
         for message in history:
@@ -91,7 +94,7 @@ class AgentChat(RAGQAChat):
             elif owner == "ai":
                 title = self.chunk_name
 
-            formatted_msg: str = f"{title} - {content}"
+            formatted_msg: str = f"{title}: {content}"
             formatted_messages.append(formatted_msg)
 
         return "\n".join(formatted_messages)
@@ -112,6 +115,7 @@ class AgentChat(RAGQAChat):
             {
                 "context": formatted_chat_history,
                 "info": f"{sender_chunk_name} - {message}",
+                "community_id": self.community_id,
             }
         )
 
@@ -165,7 +169,8 @@ class AgentChat(RAGQAChat):
 
         # Find out whether some type of lore retrieval is needed [Retrieve from lore and belongings]
         # Is the user asking a question that may require knowledge of Lore?
-        lore_ragworthy: bool = loreworthy.chain.invoke({"input": message})
+        # TODO: change this so it's not always True
+        lore_ragworthy: bool = True  # loreworthy.chain.invoke({"input": message})
 
         if lore_ragworthy:
             print("Retrieving relevant info and responding...")

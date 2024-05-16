@@ -15,6 +15,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.llms import HuggingFaceEndpoint
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_cohere import ChatCohere
 
 from app.constants import (
     OPENAI_MODEL,
@@ -34,6 +35,7 @@ class ModelType(Enum):
     HUGGINGFACE = "HuggingFace"
     OPENAI = "OpenAI"
     GEMINI = "Gemini"
+    COHERE = "Cohere"
 
 
 def get_embedding_model(model_type: ModelType):
@@ -79,6 +81,13 @@ def get_llm_responder(
             streaming=stream_response,
             verbose=verbose,
         )
+    elif llm_type == ModelType.COHERE:
+        llm = ChatCohere(
+            model="command",
+            temperature=temp,
+            streaming=stream_response,
+            verbose=verbose,
+        )
     else:
         # Assume Gemini
         llm = ChatGoogleGenerativeAI(
@@ -86,7 +95,6 @@ def get_llm_responder(
             temperature=temp,
             streaming=stream_response,
             verbose=verbose,
-            convert_system_message_to_human=True,
         )
 
     return llm

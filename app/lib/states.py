@@ -6,6 +6,8 @@ import sqlalchemy
 
 from langchain_core.documents import Document
 
+from app.lib.llm.rag import ModelType, create_retriever
+
 
 # Search across the whole thing for retrieval
 class RawInfo(BaseModel):
@@ -53,6 +55,14 @@ async def startup(community_id: int):
     await pull_profiles(community_id)
 
     print("Community startup complete.")
+
+
+def make_retriever(community_id: int, embedder_type: ModelType):
+    global community_states
+
+    docs: List[Document] = community_states[community_id].to_docs()
+
+    return create_retriever(embedder_type, docs)
 
 
 async def refresh_all_known_chunks() -> Dict[int, List[str]]:
