@@ -26,7 +26,8 @@ HOW THE SIMULATION WORKS:
 1. Create User
 2. Create Community & Have User join community
 3. From inside the community, a variety of things can happen:
-    * First, User MUST inhabit a Chunk before doing any action (such as talking to other chunks), but User can still view lore of community
+    * First, Community must be locally started up (sync local)
+    * Then, User MUST inhabit a Chunk before doing any action (such as talking to other chunks), but User can still view lore of community
     - User may view lore of everyone
     - User may create chunks and upload their own lore, belongings, and set profiles of chunks
     - Community global update tick

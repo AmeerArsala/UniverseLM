@@ -33,8 +33,8 @@ llm = HuggingFaceHub(
 )
 
 
-def parse_output(ai_message: AIMessage, default_response=True) -> bool:
-    content: str = ai_message.content
+def parse_output(ai_message: str, default_response=True) -> bool:
+    content: str = ai_message
 
     content_len: int = len(content)
     vanilla_len: int = len("VANILLA")

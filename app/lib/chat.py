@@ -62,7 +62,7 @@ class AgentChat(RAGQAChat):
             # Refresh the known chunks, because this agent wouldn't exist without it being in the DB
             states.refresh_known_chunks(self.community_id)
 
-        self.chatbot_kwargs = kwargs
+        # self.chatbot_kwargs = kwargs
 
     def _getknownchunks(self) -> List[str]:
         return states.known_chunks.get(self.community_id)
@@ -71,12 +71,15 @@ class AgentChat(RAGQAChat):
         docs: List[Document] = states.community_states[self.community_id].to_docs()
         embedder_type: ModelType = ModelType.HUGGINGFACE  # for now
 
-        self.retriever = create_retriever(embedder_type, docs, **self.chatbot_kwargs)
+        self.retriever = create_retriever(embedder_type, docs)
 
-    def attempt_lore_update(self, params: Dict, formatted_chat_history: str):
+    def attempt_lore_update(self, params: Dict):
         print("Attempting lore update...")
 
         message: str = params["question"]
+        formatted_chat_history: str = self.format_chat_history(
+            include_system_prompt=False
+        )
 
         # (A) Find out whether this needs to be stored as Lore
         # Is the info key info that you need to memorize? Is the user asking you to remember it?
@@ -124,23 +127,25 @@ class AgentChat(RAGQAChat):
     def agent_route(self, params: Dict):
         # Question can be just a message
         message: str = params["question"]
-        formatted_chat_history: str = self.format_chat_history(
-            include_system_prompt=False
-        )
 
         # Attempt to update the lore of the society given new information from the conversation
         # Allowing other agents to feel the effects and behave differently as the overall lore is updated
-        self.attempt_lore_update(params, formatted_chat_history)
+        self.attempt_lore_update(params)
 
         # Find out whether some type of lore retrieval is needed [Retrieve from lore and belongings]
         # Is the user asking a question that may require knowledge of Lore?
         lore_ragworthy: bool = loreworthy.chain.invoke({"input": message})
 
         if lore_ragworthy:
+            print("Retrieving relevant info and responding...")
+
             # Update retriever
             self.update_retriever()
+
             return super()._recreate_chain()
         else:
+            print("No need for retrieval. Responding normally...")
+
             # Just use regular language model + prompting
             nonrag_sys_prompt: str = self.agent_sys_prompt.nonrag_prompt()
             prompt = ChatPromptTemplate.from_messages(
@@ -156,7 +161,7 @@ class AgentChat(RAGQAChat):
     def _recreate_chain(self):
         full_chain = RunnablePassthrough.assign(
             sender_chunk_name=(lambda x: x["sender_chunk_name"]),
-            context=(lambda x: x["context"]),
+            # context=(lambda x: x["context"]),
             question=(lambda x: x["question"]),
         ) | RunnableLambda(self.agent_route)
 
@@ -167,8 +172,11 @@ class AgentChat(RAGQAChat):
         chat_params: Dict,
         add_to_history: bool = True,
         sleep_time: float = 0.1,
+        print_chunks: bool = False,
     ):
-        super().generate_chat_response_events(chat_params, add_to_history, sleep_time)
+        super().generate_chat_response_events(
+            chat_params, add_to_history, sleep_time, print_chunks
+        )
 
 
 chats: Dict[str, AgentChat] = {}
@@ -179,9 +187,9 @@ def create_chat(community_id: int, chunk_name: str, **kwargs) -> AgentChat:
     with db.engine.begin() as conn:
         results = conn.execute(
             sqlalchemy.text(
-                "SELECT * FROM chunks WHERE community_id = :community_id AND name = :name",
-                [{"community_id": community_id, "name": chunk_name}],
-            )
+                "SELECT * FROM chunks WHERE community_id = :community_id AND name = :name"
+            ),
+            [{"community_id": community_id, "name": chunk_name}],
         )
 
         chunk: Chunk = Chunk.wrap_result(results.first())
@@ -190,7 +198,7 @@ def create_chat(community_id: int, chunk_name: str, **kwargs) -> AgentChat:
         docs: List[Document] = states.community_states[community_id].to_docs()
         embedder_type: ModelType = ModelType.HUGGINGFACE  # for now
 
-        retriever = create_retriever(embedder_type, docs, **kwargs)
+        retriever = create_retriever(embedder_type, docs)
 
         # Get response model
         llm_type: ModelType = ModelType.HUGGINGFACE  # try gemini as the default
@@ -220,7 +228,7 @@ def manifest_chat(community_id: int, chunk_name: str, **kwargs) -> AgentChat:
 
     if chat is None:
         # Make a new one
-        chat = create_chat(chunk_name, **kwargs)
+        chat = create_chat(community_id, chunk_name, **kwargs)
         chats[chat_id] = chat
 
     return chat

@@ -41,6 +41,20 @@ def reset_state():
     community_states = {}
 
 
+async def startup(community_id: int):
+    global known_chunks, community_states
+
+    # known_chunks
+    await refresh_known_chunks(community_id)
+
+    # community_states
+    await pull_lore(community_id)
+    await pull_belongings(community_id)
+    await pull_profiles(community_id)
+
+    print("Community startup complete.")
+
+
 async def refresh_all_known_chunks() -> Dict[int, List[str]]:
     global known_chunks
 
@@ -102,7 +116,7 @@ async def pull_lore(community_id: int):
         """
 
         results = conn.execute(
-            sqlalchemy.text(query), [dict(id=community_id)]
+            sqlalchemy.text(query), [dict(community_id=community_id)]
         ).fetchall()
 
         lore_texts: List[str] = [result[0] for result in results]
@@ -122,7 +136,7 @@ async def pull_belongings(community_id: int):
         """
 
         results = conn.execute(
-            sqlalchemy.text(query), [dict(id=community_id)]
+            sqlalchemy.text(query), [dict(community_id=community_id)]
         ).fetchall()
 
         belongings_texts: List[str] = [result[0] for result in results]
@@ -140,7 +154,7 @@ async def pull_profiles(community_id: int):
         """
 
         results = conn.execute(
-            sqlalchemy.text(query), [dict(id=community_id)]
+            sqlalchemy.text(query), [dict(community_id=community_id)]
         ).fetchall()
 
         profiles_texts: List[str] = [result[0] for result in results]

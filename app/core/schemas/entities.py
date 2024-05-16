@@ -49,6 +49,10 @@ class Chunk(BaseModel):
         columns = list(Chunk.schema()["properties"].keys())
         values = list(row)
 
+        # Take care of the last value (parent_chunk)
+        if values[-1] is None:
+            values[-1] = NULL_PARENT_CHUNK_INDICATOR
+
         cls_dict = {col: val for (col, val) in zip(columns, values)}
 
         return Chunk(**cls_dict)

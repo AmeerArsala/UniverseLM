@@ -7,7 +7,11 @@ from typing import List, Dict, Tuple, Any
 from pydantic import BaseModel, Field
 
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough, RunnableParallel
+from langchain_core.runnables import (
+    RunnablePassthrough,
+    RunnableParallel,
+    RunnableLambda,
+)
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import AIMessageChunk
 
@@ -87,8 +91,25 @@ class RAGQAChat(Chat):
         self.recontextualize_if_chat_history = recontextualize_if_chat_history
         super().__init__(response_model, system_prompt, chat_history)
 
-    def format_docs(docs):
+    def format_docs(docs: List):
         return "\n\n".join(doc.page_content for doc in docs)
+
+    def _make_contextualize_question_chain(self):
+        (system_prompt, msg_history) = (self.chat_history[0], self.chat_history[1:])
+
+        contextualize_q_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", sysprompts.contextualize_q_system_prompt),
+                *msg_history,
+                ("human", sysprompts.HUMAN_PROMPT),
+            ]
+        )
+
+        contextualize_q_chain = (
+            contextualize_q_prompt | self.response_model | StrOutputParser()
+        ).with_config(tags=["contextualize_q_chain"])
+
+        return contextualize_q_chain
 
     def _recreate_chain(self):
         prompt = ChatPromptTemplate.from_messages(
@@ -97,24 +118,10 @@ class RAGQAChat(Chat):
 
         rag_chain_from_docs = None
 
-        if (
-            self.recontextualize_if_chat_history and len(self.chat_history) > 1
-        ):  # more than just the system prompt
+        # more messages than just the system prompt is needed for this to be True
+        if self.recontextualize_if_chat_history and len(self.chat_history) > 1:
             # Contextualize the question
-
-            (system_prompt, msg_history) = (self.chat_history[0], self.chat_history[1:])
-
-            contextualize_q_prompt = ChatPromptTemplate.from_messages(
-                [
-                    ("system", sysprompts.contextualize_q_system_prompt),
-                    *msg_history,
-                    ("human", sysprompts.HUMAN_PROMPT),
-                ]
-            )
-
-            contextualize_q_chain = (
-                contextualize_q_prompt | self.response_model | StrOutputParser()
-            ).with_config(tags=["contextualize_q_chain"])
+            contextualize_q_chain = self._make_contextualize_question_chain()
 
             rag_chain_from_docs = (
                 RunnablePassthrough.assign(
@@ -138,7 +145,10 @@ class RAGQAChat(Chat):
             )
 
         rag_chain_with_sources = RunnableParallel(
-            {"context": self.retriever, "question": RunnablePassthrough()}
+            {
+                "context": RunnableLambda(lambda x: x["question"]) | self.retriever,
+                "question": RunnableLambda(lambda x: x["question"]),
+            }
         ).assign(answer=rag_chain_from_docs)
 
         return rag_chain_with_sources
@@ -157,7 +167,11 @@ class RAGQAChat(Chat):
 
     # TODO: have it update the buffer every single time so it can store the memories
     async def generate_chat_response_events(
-        self, msg, add_to_history: bool = True, sleep_time: float = 0.1
+        self,
+        msg,
+        add_to_history: bool = True,
+        sleep_time: float = 0.1,
+        print_chunks: bool = False,
     ):
         # Initialize a flag to track if any data was yielded
         data_yielded = False
@@ -179,6 +193,10 @@ class RAGQAChat(Chat):
                     chunk_text = "".join([doc.page_content for doc in chunk_docs])
 
             response += chunk_text
+
+            if print_chunks:
+                print(chunk_text, end="")
+
             data_yielded = True  # Indicate that data was yielded
 
             chunk_content_html: str = chunk_text.replace("\n", "<br>")

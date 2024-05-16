@@ -44,8 +44,8 @@ llm = HuggingFaceHub(
 )
 
 
-def parse_output(ai_message: AIMessage) -> bool:
-    content: str = ai_message.content
+def parse_output(ai_message: str) -> bool:
+    content: str = ai_message
 
     if len(content) > 2:
         return content[:3].upper() == "YES"
