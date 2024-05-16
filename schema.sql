@@ -27,12 +27,12 @@ CREATE TABLE users_communities(
 );
 
 CREATE TABLE chunks(
-  id SERIAL PRIMARY KEY,
+  id BIGINT PRIMARY KEY,
 
   name TEXT NOT NULL,
   profile TEXT NOT NULL,
   community_id INTEGER REFERENCES communities(id),
-  parent_chunk INTEGER REFERENCES chunks(id),
+  parent_chunk INTEGER REFERENCES chunks(id),  -- can be NULL if no parent Chunk
 
   UNIQUE(community_id, name) -- query with this
 );
@@ -47,7 +47,7 @@ CREATE TABLE lore(
 
 -- Junction table between chunks and lore to deal with the many-to-many relationships
 CREATE TABLE chunks_lore(
-  chunk_id INTEGER REFERENCES chunks(id),
+  chunk_id BIGINT REFERENCES chunks(id),
   lore_id INTEGER REFERENCES lore(id),
 
   CONSTRAINT chunks_lore_pk PRIMARY KEY(chunk_id, lore_id)
@@ -57,5 +57,5 @@ CREATE TABLE chunks_lore(
 CREATE TABLE belongings(
   id SERIAL PRIMARY KEY,
   content TEXT,
-  owner INTEGER REFERENCES chunks(id)
+  owner BIGINT REFERENCES chunks(id)
 );

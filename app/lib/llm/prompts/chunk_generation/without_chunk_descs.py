@@ -1,7 +1,12 @@
 from typing import List, Dict, Tuple
 
 from langchain.prompts import ChatPromptTemplate
+
 from langchain.llms import HuggingFaceHub
+from langchain_community.llms import Ollama
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_cohere import ChatCohere
+
 from langchain_core.runnables import (
     RunnableParallel,
     RunnableLambda,
@@ -13,8 +18,6 @@ from langchain_core.output_parsers import StrOutputParser
 
 from app.core.schemas.entities import Chunk
 import json
-
-from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 # COMMUNITY DESC GENERATION CHAIN
@@ -300,14 +303,13 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 # LLM
-llm = ChatGoogleGenerativeAI(model="gemini-pro")
+llm = ChatCohere(model="command")
 
 
 def parse_chunks(ai_message: str, community_id: int) -> List[Chunk]:
     chunks: List[Chunk] = []
 
     output: str = ai_message  # ai_message[ai_message.rindex("AI: ") + 4 :]
-    print("OUTPUT START")
     print(output)
 
     # Given the output of the llm and a `community_id`, parse into a List[Chunk]
@@ -318,7 +320,7 @@ def parse_chunks(ai_message: str, community_id: int) -> List[Chunk]:
         Chunk(
             name=chunk_dict["Name"],
             profile=chunk_dict["Description"],
-            community_id=community_id,
+            community_id=int(community_id),
             parent_chunk=chunk_dict["Affiliation"],
         )
         for chunk_dict in chunk_dicts
@@ -342,10 +344,8 @@ def dynamic_route(info: Dict):
 
 
 # Create the chain
-chain = RunnableParallel(
-    {
-        "num_chunks": RunnablePassthrough(),
-        "community_desc": RunnablePassthrough(),
-        "community_id": RunnablePassthrough(),
-    }
+chain = RunnablePassthrough.assign(
+    num_chunks=(lambda x: x["num_chunks"]),
+    community_desc=(lambda x: x["community_desc"]),
+    community_id=(lambda x: x["community_id"]),
 ) | RunnableLambda(dynamic_route)

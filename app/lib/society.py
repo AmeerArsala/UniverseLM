@@ -21,17 +21,16 @@ import pandas as pd
 
 
 """
-HOW THE GAME WORKS:
+HOW THE SIMULATION WORKS:
 
 1. Create User
 2. Create Community & Have User join community
 3. From inside the community, a variety of things can happen:
-    - USER MUST INHABIT A CHUNK BEFORE TALKING TO OTHER CHUNKS
+    * First, User MUST inhabit a Chunk before doing any action (such as talking to other chunks), but User can still view lore of community
     - User may view lore of everyone
     - User may create chunks and upload their own lore, belongings, and set profiles of chunks
     - Community global update tick
     - Chunks may be auto-generated via an overall community desc, a chunk count, and/or a list of rudimentary chunk descriptions
-    - User inhabits a chunk
     - User may chat with other chunks and generate lore that is automatically updated and uploaded to a DB
     - Reset everything
 """
@@ -57,14 +56,38 @@ def create_community(name: str) -> int:
 
 def create_chunks(chunks: List[Chunk]):
     with db.engine.begin() as conn:
-        vals: str = "(:name, :profile, :community_id, :parent_chunk), " * len(chunks)
-        vals = vals[:-2]
+        uploadable_dicts: List[Dict] = Chunk.as_uploadable_dicts(chunks)
+        overall_upload_dict: Dict = {}
+        vals: str = ""
+
+        for i, chunk_dict in enumerate(uploadable_dicts):
+            id_ = f"id{i}"
+            name_ = f"name{i}"
+            profile_ = f"profile{i}"
+            community_id_ = f"community_id{i}"
+            parent_chunk_ = f"parent_chunk{i}"
+
+            # Modify the dict now
+            chunk_dict[id_] = chunk_dict.pop("id")
+            chunk_dict[name_] = chunk_dict.pop("name")
+            chunk_dict[profile_] = chunk_dict.pop("profile")
+            chunk_dict[community_id_] = chunk_dict.pop("community_id")
+            chunk_dict[parent_chunk_] = chunk_dict.pop("parent_chunk")
+
+            vals += (
+                f"(:{id_}, :{name_}, :{profile_}, :{community_id_}, :{parent_chunk_}),"
+            )
+
+            overall_upload_dict.update(chunk_dict)
+            print(chunk_dict)
+
+        vals = vals[:-1]  # ignore last `,`
 
         conn.execute(
             sqlalchemy.text(
-                f"INSERT INTO chunks(name, profile, community_id, parent_chunk) VALUES {vals}"
+                f"INSERT INTO chunks(id, name, profile, community_id, parent_chunk) VALUES {vals}"
             ),
-            [chunk.dict() for chunk in chunks],
+            [overall_upload_dict],
         )
 
 
@@ -104,7 +127,6 @@ def join_community(user_email: str, community_name: str):
 
 # later, make a route that calls this
 # the `count` parameter is ignored if `chunk_descs` is specified
-# TODO: now actually make these llm prompts of `chunk_generation.with_chunk_descs` and `chunk_generation.without_chunk_descs`
 def generate_chunks(
     community_id: int, chunk_descs: List[str] = [], desc: str = "", count: int = -1
 ) -> List[Chunk]:
@@ -170,7 +192,7 @@ def generate_chunks(
         # Generate descriptions for each chunk given these
         # (count, community_desc) -> chunk_descs[str]
         chunks = chunk_generation_without_chunk_descs.chain.invoke(
-            dict(num_chunks=count, community_desc=desc, community_id=community_id)
+            {"num_chunks": count, "community_desc": desc, "community_id": community_id}
         )
 
     return chunks

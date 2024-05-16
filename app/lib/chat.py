@@ -154,11 +154,11 @@ class AgentChat(RAGQAChat):
             return prompt | self.response_model | StrOutputParser()
 
     def _recreate_chain(self):
-        full_chain = {
-            "sender_chunk_name": RunnablePassthrough(),
-            "context": RunnablePassthrough(),
-            "question": RunnablePassthrough(),  # it honestly doesn't have to be a question, but there for simplicity
-        } | RunnableLambda(self.agent_route)
+        full_chain = RunnablePassthrough.assign(
+            sender_chunk_name=(lambda x: x["sender_chunk_name"]),
+            context=(lambda x: x["context"]),
+            question=(lambda x: x["question"]),
+        ) | RunnableLambda(self.agent_route)
 
         return full_chain
 

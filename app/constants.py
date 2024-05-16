@@ -31,3 +31,6 @@ OPENAI_EMBEDDINGS_MODEL = "text-embedding-ada-002"
 # For semantic search; might not be needed but who gives af!!! I like it!
 HF_ENCODER_REPO_ID = "all-MiniLM-L6-v2"
 encoder = SentenceTransformer(HF_ENCODER_REPO_ID)
+
+
+NULL_PARENT_CHUNK_INDICATOR = "NONE"

@@ -39,6 +39,7 @@ async def chat_with_agent(
         community_id, chunk_name, stream_response=params.stream_response
     )
 
+    # Get chat params based on which chunk the user is currently inhabiting
     agent_chat_params: AgentChatParams = users.make_chat_input(
         user_id=params.user_id, message=params.message
     )
