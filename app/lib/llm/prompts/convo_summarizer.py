@@ -23,7 +23,7 @@ prompt = hub.pull("iamrobotbear/chain-of-density-prompt")
 # LLM
 LLM_ID = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 llm = HuggingFaceHub(
-    repo_id=LLM_ID, model_kwargs={"temperature": 0, "max_length": 5000}
+    repo_id=LLM_ID, model_kwargs={"temperature": 0.01, "max_length": 5000}
 )
 
 
@@ -60,5 +60,11 @@ cod_final_summary_chain = cod_streamable_chain | (
 )
 
 
+def on_finish(summary: str):
+    print(f"SUMMARY:\n{summary}")
+
+    return summary
+
+
 # Simplify this by just setting a variable `chain`
-chain = cod_final_summary_chain
+chain = cod_final_summary_chain | on_finish

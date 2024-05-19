@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 import app.core.db.database as db
 import sqlalchemy
 
+import pandas as pd
+
 from langchain_core.documents import Document
 
 from app.lib.llm.rag import ModelType, create_retriever
@@ -47,12 +49,12 @@ async def startup(community_id: int):
     global known_chunks, community_states
 
     # known_chunks
-    await refresh_known_chunks(community_id)
+    refresh_known_chunks(community_id)
 
     # community_states
-    await pull_lore(community_id)
-    await pull_belongings(community_id)
-    await pull_profiles(community_id)
+    pull_lore(community_id)
+    pull_belongings(community_id)
+    pull_profiles(community_id)
 
     print("Community startup complete.")
 
@@ -65,7 +67,7 @@ def make_retriever(community_id: int, embedder_type: ModelType):
     return create_retriever(embedder_type, docs)
 
 
-async def refresh_all_known_chunks() -> Dict[int, List[str]]:
+def refresh_all_known_chunks() -> Dict[int, List[str]]:
     global known_chunks
 
     with db.engine.begin() as conn:
@@ -87,7 +89,7 @@ async def refresh_all_known_chunks() -> Dict[int, List[str]]:
     return known_chunks
 
 
-async def refresh_known_chunks(community_id: int) -> List[str]:
+def refresh_known_chunks(community_id: int) -> List[str]:
     global known_chunks
 
     with db.engine.begin() as conn:
@@ -113,7 +115,7 @@ def set_infostate(community_id: int, **vals):
         setattr(community_states[community_id], key, val)
 
 
-async def pull_lore(community_id: int):
+def pull_lore(community_id: int):
     global community_states
 
     with db.engine.begin() as conn:
@@ -129,12 +131,12 @@ async def pull_lore(community_id: int):
             sqlalchemy.text(query), [dict(community_id=community_id)]
         ).fetchall()
 
-        lore_texts: List[str] = [result[0] for result in results]
+        lore_texts: List[str] = pd.unique([result[0] for result in results]).tolist()
 
         set_infostate(community_id, lore_texts=lore_texts)
 
 
-async def pull_belongings(community_id: int):
+def pull_belongings(community_id: int):
     global community_states
 
     with db.engine.begin() as conn:
@@ -149,11 +151,13 @@ async def pull_belongings(community_id: int):
             sqlalchemy.text(query), [dict(community_id=community_id)]
         ).fetchall()
 
-        belongings_texts: List[str] = [result[0] for result in results]
+        belongings_texts: List[str] = pd.unique(
+            [result[0] for result in results]
+        ).tolist()
         set_infostate(community_id, belongings_texts=belongings_texts)
 
 
-async def pull_profiles(community_id: int):
+def pull_profiles(community_id: int):
     global community_states
 
     with db.engine.begin() as conn:
@@ -167,5 +171,7 @@ async def pull_profiles(community_id: int):
             sqlalchemy.text(query), [dict(community_id=community_id)]
         ).fetchall()
 
-        profiles_texts: List[str] = [f"{result[0]} - {result[1]}" for result in results]
+        profiles_texts: List[str] = pd.unique(
+            [f"{result[0]} - {result[1]}" for result in results]
+        ).tolist()
         set_infostate(community_id, profiles_texts=profiles_texts)

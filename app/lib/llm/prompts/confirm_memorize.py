@@ -12,6 +12,7 @@ from langchain_core.runnables import (
 from langchain_core.messages import HumanMessage, AIMessage
 
 from langchain.llms import HuggingFaceHub
+from langchain_cohere import ChatCohere
 from app.lib.llm.prompts import convo_summarizer
 
 from langchain_core.output_parsers import StrOutputParser
@@ -29,7 +30,7 @@ Q2: str = (
     "Is the new given information actually new information that you haven't heard before / wasn't obvious (such as a new event)? That is, if you were to tell a story about the information you've heard, would this be included as lore in the story?"
 )
 Q3: str = (
-    "Does the given information change one's perspective on prior information? Does it add anything meaningful?"
+    "Does the given information change one's perspective on prior information? Does there exist any information within the new information that adds anything meaningful?"
 )
 
 # TODO: p-tune this
@@ -52,7 +53,7 @@ Here are the questions you must answer:
 2. {Q2}
 3. {Q3} 
 """[
-        1:-1
+        1:
     ]
 )
 
@@ -111,19 +112,17 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 # LLM
-LLM_ID = "mistralai/Mixtral-8x7B-Instruct-v0.1"
-llm = HuggingFaceHub(
-    repo_id=LLM_ID, model_kwargs={"temperature": 0.5, "max_length": 5000}
-)
+llm = ChatCohere(model="command", temperature=0.5)
 
 
 def parse_output(ai_message: str) -> bool:
     content: str = ai_message
+    print("confirm_memorize: CONTENT START")
     print(content)
 
-    a1: str = content[content.index("A1: ") + 4 :]
-    a2: str = content[content.index("A2: ") + 4 :]
-    a3: str = content[content.index("A3: ") + 4 :]
+    a1: str = content[content.rindex("A1: ") + 4 :]
+    a2: str = content[content.rindex("A2: ") + 4 :]
+    a3: str = content[content.rindex("A3: ") + 4 :]
 
     a: List[str] = [a1, a2, a3]
 
@@ -135,7 +134,7 @@ def parse_output(ai_message: str) -> bool:
 
 
 retriever_embedder_type: ModelType = ModelType.HUGGINGFACE  # For now
-summarizer = convo_summarizer.chain
+# summarizer = convo_summarizer.chain
 
 
 def format_inputs_for_retriever(inputs: Dict[str, Any]):
@@ -159,7 +158,7 @@ def format_inputs_for_retriever(inputs: Dict[str, Any]):
 """
 Required inputs:
     {
-        "context": str,
+        "context": str,  # the summarized context
         "info": str,
         "community_id": int
     }
@@ -170,8 +169,8 @@ chain = (
             "retrieved_context": RunnableLambda(format_inputs_for_retriever)
             | RunnableLambda(RAGQAChat.format_docs),
             # inputs
-            "context": RunnableLambda(lambda d: {"content": d["context"]}) | summarizer,
-            "info": RunnableLambda(lambda x: x["info"]),
+            "context": RunnableLambda(lambda d: d["context"]),
+            "info": RunnableLambda(lambda d: d["info"]),
         }
     )
     | prompt

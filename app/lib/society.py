@@ -214,7 +214,7 @@ def update(community_id: int):
 
 
 # "Summary Statistics"
-async def summarize_chunk(community_id: int, chunk_name: str) -> str:
+def summarize_chunk(community_id: int, chunk_name: str) -> str:
     """
     Summarize findings (lore + belongings + profiles) about a chunk into a string. This can be used to profile a chunk
     """
@@ -284,7 +284,7 @@ async def summarize_chunk(community_id: int, chunk_name: str) -> str:
 
 
 # Upload new lore to DB
-async def upload_lore(lore: List[Lore], community_id: int):
+def upload_lore(lore: List[Lore], community_id: int):
     lore_count: int = len(lore)
 
     with db.engine.begin() as conn:
@@ -293,10 +293,11 @@ async def upload_lore(lore: List[Lore], community_id: int):
         vals = vals[:-2]
 
         lore_text_vars = {
-            f"lore_text{i}": lore_piece.lore_text for (i, lore_piece) in enumerate(lore)
+            f"lore_text{i}": str(lore_piece.lore_text)
+            for (i, lore_piece) in enumerate(lore)
         }
 
-        vals = ",".join([f":{placeholder}" for placeholder in lore_text_vars.keys()])
+        vals = ",".join([f"(:{placeholder})" for placeholder in lore_text_vars.keys()])
 
         results = conn.execute(
             sqlalchemy.text(f"INSERT INTO lore(lore_text) VALUES {vals} RETURNING id"),
@@ -344,14 +345,14 @@ async def upload_lore(lore: List[Lore], community_id: int):
         query += ",".join([f":{placeholder}" for placeholder in row_mappings.keys()])
 
         # Execute the bulk insertion
-        conn.execute(sqlalchemy.text(query), **row_mappings)
+        conn.execute(sqlalchemy.text(query), [row_mappings])
 
     # Pull lore
     states.pull_lore(community_id)
 
 
 # Upload new belongings to DB
-async def upload_belongings(belongings: List[Belonging], owner: str, community_id: int):
+def upload_belongings(belongings: List[Belonging], owner: str, community_id: int):
     with db.engine.begin() as conn:
         # First, get corresponding owner_id
         owner_id: int = conn.execute(
@@ -380,7 +381,7 @@ async def upload_belongings(belongings: List[Belonging], owner: str, community_i
 
 
 # Set profile
-async def set_profile(community_id: int, chunk_name: str, content: str):
+def set_profile(community_id: int, chunk_name: str, content: str):
     with db.engine.begin() as conn:
         conn.execute(
             sqlalchemy.text(

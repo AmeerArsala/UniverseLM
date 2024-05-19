@@ -1,7 +1,7 @@
 from typing import List, Dict, Tuple
 from pydantic import BaseModel, Field
 
-import asyncio
+import anyio
 
 from app.core.schemas.entities import Chunk
 from app.core.schemas.info import Lore
@@ -13,7 +13,12 @@ from app.lib.llm.chat_interface import RAGQAChat
 
 from app.lib.llm.prompts import sysprompts
 from app.lib.llm.prompts.sysprompts import AgentSystemPrompt
-from app.lib.llm.prompts import confirm_memorize, extract_lore, loreworthy
+from app.lib.llm.prompts import (
+    confirm_memorize,
+    extract_lore,
+    loreworthy,
+    convo_summarizer,
+)
 
 from app.lib.llm.rag import ModelType, create_retriever, get_llm_responder
 
@@ -109,45 +114,55 @@ class AgentChat(RAGQAChat):
             include_system_prompt=False, sender_chunk_name=sender_chunk_name
         )
 
+        print("Summarizing chat history...")
+        summarized_chat_history: str = (
+            ""
+            if formatted_chat_history == ""
+            else convo_summarizer.chain.invoke({"content": formatted_chat_history})
+        )
+
+        new_info: str = f"{sender_chunk_name} - {message}"
+
         # (A) Find out whether this needs to be stored as Lore
         # Is the info key info that you need to memorize? Is the user asking you to remember it?
+        print("Deciding whether to memorize info...")
         should_memorize: bool = confirm_memorize.chain.invoke(
             {
-                "context": formatted_chat_history,
-                "info": f"{sender_chunk_name} - {message}",
+                "context": summarized_chat_history,
+                "info": new_info,
                 "community_id": self.community_id,
             }
         )
 
         if should_memorize:
             print("Memorizing...")
-            extracted_lore_text: str = extract_lore.chain.invoke(
-                {"context": formatted_chat_history, "info": message}
-            )
 
-            subject_chunks: List[str] = extract_lore.about_chain.invoke(
+            extracted_lore: Dict = extract_lore.chain.invoke(
                 {
-                    "context": formatted_chat_history,
-                    "info": extracted_lore_text,
-                    "entities": "\n".join(self._getknownchunks()),
+                    "possible_entities": self._getknownchunks(),
+                    "context": summarized_chat_history,
+                    "info": new_info,
                 }
             )
 
             extracted_lore: Lore = Lore(
-                lore_text=extracted_lore_text, about_chunks=subject_chunks
+                lore_text=extracted_lore["extracted_info"],
+                about_chunks=extracted_lore["about_entities"],
             )
-            society.upload_lore(extracted_lore, community_id=self.community_id)
+
+            society.upload_lore([extracted_lore], community_id=self.community_id)
 
         # (B) Re-profile the chunk based on the new info if new enough
         # Does the info change the view of the user enough to justify re-profiling?
+        print("Deciding whether to reprofile...")
         should_reprofile: bool = False  # TODO: change later
 
         if should_reprofile:
             print("Reprofiling...")
             # First of all, the question that needs to be answered here is: WHO to reprofile?
 
-            async def update_profile(chunk_name: str):
-                chunk_summary: str = await society.summarize_chunk(chunk_name)
+            def update_profile(chunk_name: str):
+                chunk_summary: str = society.summarize_chunk(chunk_name)
                 society.set_profile(self.community_id, chunk_name, chunk_summary)
                 self.agent_sys_prompt.DESC = chunk_summary  # SELF??? Nah fix this later
 
@@ -170,6 +185,7 @@ class AgentChat(RAGQAChat):
         # Find out whether some type of lore retrieval is needed [Retrieve from lore and belongings]
         # Is the user asking a question that may require knowledge of Lore?
         # TODO: change this so it's not always True
+        print("Deciding whether query warrants retrieval...")
         lore_ragworthy: bool = True  # loreworthy.chain.invoke({"input": message})
 
         if lore_ragworthy:
