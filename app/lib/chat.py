@@ -145,12 +145,15 @@ class AgentChat(RAGQAChat):
                 }
             )
 
-            extracted_lore: Lore = Lore(
-                lore_text=extracted_lore["extracted_info"],
-                about_chunks=extracted_lore["about_entities"],
-            )
+            if extracted_lore["valid_output"]:
+                extracted_lore: Lore = Lore(
+                    lore_text=extracted_lore["extracted_info"],
+                    about_chunks=extracted_lore["about_entities"],
+                )
 
-            society.upload_lore([extracted_lore], community_id=self.community_id)
+                society.upload_lore([extracted_lore], community_id=self.community_id)
+            else:
+                print("On second thought, don't memorize")
 
         # (B) Re-profile the chunk based on the new info if new enough
         # Does the info change the view of the user enough to justify re-profiling?

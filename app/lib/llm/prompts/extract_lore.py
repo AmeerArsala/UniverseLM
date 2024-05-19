@@ -102,8 +102,11 @@ def parse_output(content: str) -> Dict:
     while len(named_entities[-1]) == 0:
         named_entities.pop(-1)  # remove the last one
 
+    valid_output: bool = len(output_content) > 0
+
     output_dict["extracted_info"] = output_content
-    output_dict["about_entities"] = named_entities
+    output_dict["about_entities"] = named_entities if valid_output else []
+    output_dict["valid_output"] = valid_output
 
     print(f"extract_lore: {output_dict}")
 
@@ -117,25 +120,17 @@ llm = HuggingFaceHub(
 )
 
 
+def preprocess(inputs: Dict):
+    print("extract_lore: START")
+    print(inputs)
+
+    return inputs
+
+
 # Create the chain
-extract_chain = prompt | llm | StrOutputParser() | parse_output
-
-
-# def extract_entities_involved(
-#     extracted_info: str, possible_entities: List[str]
-# ) -> List[str]:
-#     print("extract_lore: EXTRACTED INFO START")
-#     print(extracted_info)
-#
-#     assert not extracted_info.startswith("System")
-#
-#     entities: List[str] = []
-#
-#     for entity in possible_entities:
-#         if entity in extracted_info:
-#             entities.append(entity)
-#
-#     return entities
+extract_chain = (
+    RunnableLambda(preprocess) | prompt | llm | StrOutputParser() | parse_output
+)
 
 
 # Create the overall chain
@@ -150,7 +145,8 @@ Inputs:
 Outputs:
     {
         "extracted_info": str,
-        "about_entities": List[str]
+        "about_entities": List[str],
+        "valid_output": bool
     }
 """
 chain = (

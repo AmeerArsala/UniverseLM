@@ -11,7 +11,8 @@ from langchain_core.runnables import (
 )
 from langchain_core.messages import HumanMessage, AIMessage
 
-from langchain.llms import HuggingFaceHub
+# from langchain.llms import HuggingFaceHub
+from langchain_cohere import ChatCohere
 
 from langchain_core.output_parsers import StrOutputParser, SimpleJsonOutputParser
 
@@ -21,10 +22,7 @@ prompt = hub.pull("iamrobotbear/chain-of-density-prompt")
 
 
 # LLM
-LLM_ID = "mistralai/Mixtral-8x7B-Instruct-v0.1"
-llm = HuggingFaceHub(
-    repo_id=LLM_ID, model_kwargs={"temperature": 0.01, "max_length": 5000}
-)
+llm = ChatCohere(model="command", temperature=0.0)
 
 
 json_parser = SimpleJsonOutputParser()
@@ -51,13 +49,16 @@ cod_chain_inputs = {
 # 1st chain, showing intermediate results, can async stream
 cod_streamable_chain = cod_chain_inputs | prompt | llm | json_parser
 
+
+def process_output(output):
+    print(f"convo_summarizer - OUTPUT: {output}")
+
+    return output.get("denser_summary", 'ERR: No "denser_summary" key in last dict')
+
+
 # Create the 2nd chain, for extracting the best summary only.
 # Not streamable, we need the final result.
-cod_final_summary_chain = cod_streamable_chain | (
-    lambda output: output[-1].get(
-        "denser_summary", 'ERR: No "denser_summary" key in last dict'
-    )
-)
+cod_final_summary_chain = cod_streamable_chain | process_output
 
 
 def on_finish(summary: str):
