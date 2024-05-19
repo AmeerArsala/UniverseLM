@@ -50,3 +50,9 @@ pnpm run dev
 - [ ] Finish the front end
 - [ ] CLI Tool
 - [ ] User Authentication
+
+## Other TODOs
+
+- [ ] Finish API routes -> Make API keys for authenticated users who pay for no reason
+- [ ] Scale with PostgresML + Pinecone
+- [ ] Create python package for API like OpenAI API
