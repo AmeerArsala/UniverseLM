@@ -256,7 +256,7 @@ def create_chat(community_id: int, chunk_name: str, **kwargs) -> AgentChat:
         retriever = create_retriever(embedder_type, docs)
 
         # Get response model
-        llm_type: ModelType = ModelType.HUGGINGFACE  # try gemini as the default
+        llm_type: ModelType = ModelType.COHERE  # try gemini as the default
         response_model = get_llm_responder(llm_type, **kwargs)
 
         # Get agent desc

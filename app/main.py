@@ -1,4 +1,5 @@
 import os
+from sys import prefix
 from typing import Union, Optional, List, Dict
 
 from fastapi import FastAPI, Depends, HTTPException, status, Request, APIRouter
@@ -6,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import uvicorn
 
-from app.core.routes import apotheosis, chat, functions
+from app.core.routes import apotheosis, chat, functions, dataview
 
 
 description = """
@@ -36,7 +37,8 @@ app.add_middleware(
 
 app.include_router(apotheosis.router, prefix="/apotheosis")
 app.include_router(chat.router, prefix="/chat")
-app.include_router(functions.router)
+app.include_router(functions.router, prefix="/community/{community_id}")
+app.include_router(dataview.router)
 
 
 @app.get("/")
