@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import uvicorn
 
-from app.core.routes import apotheosis, chat, functions, dataview
+from app.core.routes import apotheosis, chat, functions, dataview, admin
 from app.lib import society, states, users
 
 
@@ -36,15 +36,18 @@ app.add_middleware(
 )
 
 
+# TODO: make everything depend on user API keys
+# and admin only things will require an admin token
 app.include_router(apotheosis.router, prefix="/apotheosis")
 app.include_router(chat.router, prefix="/chat")
 app.include_router(functions.router, prefix="/community")
 app.include_router(dataview.router, prefix="/view")
+app.include_router(admin.router, prefix="/admin")
 
 
 @app.get("/")
 async def read_root():
-    return {"Hello": "World"}
+    return {"message": "Welcome to UniverseLM, the future of AI"}
 
 
 @app.post("/refresh_all_chunks")

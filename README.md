@@ -48,11 +48,18 @@ pnpm run dev
 - [ ] Finish the technology
 - [ ] Finish the application (the backend + database)
 - [ ] Finish the front end
-- [ ] CLI Tool
 - [ ] User Authentication
+- [ ] Switch from SvelteKit to Astro (in order to use mainly Svelte but with React thrown in for support)
 
 ## Other TODOs
 
 - [ ] Finish API routes -> Make API keys for authenticated users who pay for no reason
 - [ ] Scale with PostgresML + Pinecone
+
+## Bloat
+
 - [ ] Create python package for API like OpenAI API
+- [ ] CLI Tool
+- [ ] Discord Bot
+- [ ] Slack Bot
+- [ ] Multimodality (images, music, assets)
