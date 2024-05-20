@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 from app.core.routes import apotheosis, chat, functions, dataview
+from app.lib import society, states, users
 
 
 description = """
@@ -37,13 +38,18 @@ app.add_middleware(
 
 app.include_router(apotheosis.router, prefix="/apotheosis")
 app.include_router(chat.router, prefix="/chat")
-app.include_router(functions.router, prefix="/community/{community_id}")
-app.include_router(dataview.router)
+app.include_router(functions.router, prefix="/community")
+app.include_router(dataview.router, prefix="/view")
 
 
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
+
+
+@app.post("/refresh_all_chunks")
+async def refresh_all_known_chunks() -> Dict[int, List[str]]:
+    return states.refresh_all_known_chunks()
 
 
 # uvicorn main:app --reload

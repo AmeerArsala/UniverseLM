@@ -1,4 +1,4 @@
-from typing import List, Dict, Tuple
+from typing import Callable, List, Dict, Tuple, Set
 from pydantic import BaseModel, Field
 
 import app.core.db.database as db
@@ -15,6 +15,8 @@ from app.lib.llm.prompts.chunk_generation import (
     with_chunk_descs as chunk_generation_with_chunk_descs,
     without_chunk_descs as chunk_generation_without_chunk_descs,
 )
+
+from app.lib.utils.logic import LogicMode
 
 import numpy as np
 import pandas as pd
@@ -268,9 +270,9 @@ def summarize_chunk(community_id: int, chunk_name: str) -> str:
         (affiliation,) = result
 
     # Clean the duplicates out
-    info.profiles_texts = pd.unique(info.profiles_texts).tolist()
-    info.lore_texts = pd.unique(info.lore_texts).tolist()
-    info.belongings_texts = pd.unique(info.belongings_texts).tolist()
+    info.profiles_texts = pd.unique(np.array(info.profiles_texts)).tolist()
+    info.lore_texts = pd.unique(np.array(info.lore_texts)).tolist()
+    info.belongings_texts = pd.unique(np.array(info.belongings_texts)).tolist()
 
     # Run the summarizer prompt
     summary: str = chunk_summarizer.chain.invoke(
@@ -398,6 +400,127 @@ def set_profile(community_id: int, chunk_name: str, content: str):
     states.pull_profiles(community_id)
 
 
+# --------
+
+# REAP (view)
+# --------
+
+
+def retrieve_lore(
+    community_id: int,
+    involved_chunk_names: List[str] = [],
+    return_involved_chunks: bool = False,
+) -> List[Lore]:
+    """View lore of the involved chunks. If not specified, then view all lore"""
+    with db.engine.begin() as conn:
+        other_fields: str = ""
+        other_conditions: str = ""
+
+        query_vars: Dict = {"community_id": community_id}
+
+        def make_query():
+            additional_conditions: str = (
+                f" AND ({other_conditions})" if len(involved_chunk_names) > 0 else ""
+            )
+
+            return f"""
+            SELECT DISTINCT lore.lore_text{other_fields} 
+            FROM lore 
+            INNER JOIN chunks_lore ON lore.id = chunks_lore.lore_id
+            INNER JOIN chunks ON chunks_lore.chunk_id = chunks.id
+            WHERE chunks.community_id = :community_id{additional_conditions}
+            """
+
+        # Optionally you'd want to see the other involved chunks
+        if return_involved_chunks:
+            other_fields += ", chunks.name"
+
+        # Add involved chunks to the query
+        for i, chunk_name in enumerate(involved_chunk_names):
+            if i > 0:
+                other_conditions += " OR "
+
+            var_name: str = f"involved_chunk_name{i}"
+
+            query_vars[var_name] = chunk_name
+            other_conditions += f"chunks.name = :{var_name}"
+
+        # Do the query
+        results: List[Tuple] = conn.execute(
+            sqlalchemy.text(make_query()), [query_vars]
+        ).fetchall()
+
+    # Collapse everything into List[LoreView]
+    lore_views: List[Lore] = []
+
+    if return_involved_chunks:
+        df = pd.DataFrame(results, columns=["lore_text", "involved_chunk_name"])
+        groupby_lore = df.groupby("lore_text")
+
+        for result in results:
+            lore: str = result[0]
+
+            lore_view: Lore = Lore(
+                lore_text=lore,
+                about_chunks=groupby_lore.get_group(lore)[
+                    "involved_chunk_name"
+                ].tolist(),
+            )
+            lore_views.append(lore_view)
+    else:
+        lore_views = [Lore(lore_text=result[0], about_chunks=[]) for result in results]
+
+    return lore_views
+
+
+def view_lore(
+    community_id: int,
+    involved_chunk_names: List[str] = [],
+    involved_chunks_logic: LogicMode = LogicMode.OR,
+    return_involved_chunks: bool = False,
+) -> List[Lore]:
+    def retrieve_lore_individually(set_op: Callable[[Set, Set], Set]) -> List[Lore]:
+        # TODO: make this better cuz this is inefficient
+        lore_set: Set[Lore] = set(
+            retrieve_lore(
+                community_id,
+                involved_chunk_names=involved_chunk_names[0:1],
+                return_involved_chunks=return_involved_chunks,
+            )
+        )
+
+        for involved_chunk_name in involved_chunk_names[1:]:
+            new_lore_set: Set[Lore] = set(
+                retrieve_lore(
+                    community_id,
+                    involved_chunk_names=[involved_chunk_name],
+                    return_involved_chunks=return_involved_chunks,
+                )
+            )
+
+            lore_set = set_op(lore_set, new_lore_set)
+
+        return list(lore_set)
+
+    # NOTE: Function logic actually starts here
+    if involved_chunks_logic == LogicMode.OR:
+        return retrieve_lore(
+            community_id,
+            involved_chunk_names=involved_chunk_names,
+            return_involved_chunks=return_involved_chunks,
+        )
+    elif involved_chunks_logic == LogicMode.AND:
+        return retrieve_lore_individually(lambda a, b: a & b)
+    elif involved_chunks_logic == LogicMode.XOR:
+        return retrieve_lore_individually(lambda a, b: a ^ b)
+
+    # Otherwise, raise an error
+    raise Exception(
+        "Bruh moment: use one of the valid LogicMode values for involved_chunks_logic"
+    )
+
+
+# CLEANUP
 # --------
 
 

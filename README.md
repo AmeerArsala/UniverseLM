@@ -15,16 +15,16 @@ micromamba create -f environment.yml
 micromamba activate universe-lm
 ```
 
-WARNING FOR DEV: due to a bug between conda envs mixed with poetry, you will also need to run this command after installing the poetry dependencies in the next step:
-
-```
-micromamba install -c conda-forge packaging=23.2
-```
-
 2. Install extra dependencies
 
 ```
 poetry install
+```
+
+WARNING FOR DEV: due to a bug between conda envs mixed with poetry, you will also need to run this command after installing the poetry dependencies:
+
+```
+micromamba install -c conda-forge packaging=23.2
 ```
 
 3. Run the app (you can remove/change the host)

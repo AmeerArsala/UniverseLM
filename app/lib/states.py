@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 import app.core.db.database as db
 import sqlalchemy
 
+import numpy as np
 import pandas as pd
 
 from langchain_core.documents import Document
@@ -131,7 +132,9 @@ def pull_lore(community_id: int):
             sqlalchemy.text(query), [dict(community_id=community_id)]
         ).fetchall()
 
-        lore_texts: List[str] = pd.unique([result[0] for result in results]).tolist()
+        lore_texts: List[str] = pd.unique(
+            np.array([result[0] for result in results])
+        ).tolist()
 
         set_infostate(community_id, lore_texts=lore_texts)
 
@@ -152,7 +155,7 @@ def pull_belongings(community_id: int):
         ).fetchall()
 
         belongings_texts: List[str] = pd.unique(
-            [result[0] for result in results]
+            np.array([result[0] for result in results])
         ).tolist()
         set_infostate(community_id, belongings_texts=belongings_texts)
 
@@ -172,6 +175,6 @@ def pull_profiles(community_id: int):
         ).fetchall()
 
         profiles_texts: List[str] = pd.unique(
-            [f"{result[0]} - {result[1]}" for result in results]
+            np.array([f"{result[0]} - {result[1]}" for result in results])
         ).tolist()
         set_infostate(community_id, profiles_texts=profiles_texts)

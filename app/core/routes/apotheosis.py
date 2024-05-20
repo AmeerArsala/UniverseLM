@@ -7,31 +7,43 @@ from app.core.db import database as db
 
 from app.core.schemas.entities import Chunk
 
-from app.lib import society
+from app.lib import society, states
 
 
 router = APIRouter()
 
 
+class CreateCommunityParams(BaseModel):
+    name: str
+
+
 @router.post("/community")
-async def create_community(name: str) -> int:
-    community_id: int = society.create_community(name)
+async def create_community(params: CreateCommunityParams) -> int:
+    community_id: int = society.create_community(params.name)
 
     return community_id
 
 
+class CreateChunksParams(BaseModel):
+    chunks: List[Chunk]
+
+
 @router.post("/chunks")
-async def create_chunks(chunks: List[Chunk]):
-    society.create_chunks(chunks)
+async def create_chunks(params: CreateChunksParams):
+    society.create_chunks(params.chunks)
 
     return "OK"
+
+
+class CreateUserParams(BaseModel):
+    email: str
 
 
 @router.post("/user")
-async def create_user(email: str):
-    society.create_user(email)
+async def create_user(params: CreateUserParams) -> int:
+    user_id: int = society.create_user(params.email)
 
-    return "OK"
+    return user_id
 
 
 class JoinCommunityParams(BaseModel):
