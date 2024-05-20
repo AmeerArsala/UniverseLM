@@ -1,0 +1,18 @@
+---
+import Layout from './Layout.astro';
+import Navbar from '@components/Navbar.svelte';
+
+interface Props {
+  title: string;
+  showHeader: boolean;
+}
+
+const { title = "UniverseLM", showHeader = false } = Astro.props;
+---
+
+<Layout title={title}>
+  {/* Header */}
+  {showHeader && <Navbar client:load/>}
+  <slot/>
+
+</Layout>
