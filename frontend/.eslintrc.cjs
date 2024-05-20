@@ -1,12 +1,12 @@
 /** @type { import("eslint").Linter.Config } */
 module.exports = {
     root: true,
-    extends: ["eslint:recommended", "plugin:svelte/recommended", "prettier"],
-    plugins: ["svelte3"],
+    extends: ["eslint:recommended", "plugin:svelte/recommended", "prettier", "plugin:astro/recommended", "plugin:tailwindcss/recommended", "plugin:react/recommended"],
+    plugins: ["svelte4"],
     parserOptions: {
       sourceType: "module",
       ecmaVersion: 2020,
-      extraFileExtensions: [".svelte"],
+      extraFileExtensions: [".svelte", ".astro", ".tsx", ".jsx"],
     },
     rules: {
       "no-cond-assign": "warn",

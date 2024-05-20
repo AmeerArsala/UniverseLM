@@ -54,7 +54,7 @@ pnpm run dev
 ## Other TODOs
 
 - [ ] Finish API routes -> Make API keys for authenticated users who pay for no reason
-- [ ] Scale with PostgresML + Pinecone
+- [ ] Scale with PostgresML (move away from Neon) + Pinecone (move away from local)
 
 ## Bloat
 
