@@ -16,7 +16,7 @@
 
 <div on:mouseenter={() => (active = item)} on:mouseleave={() => (active = null)} class="relative">
 	<Motion let:motion transition={{ duration: 0.3 }}>
-		<p use:motion class="cursor-pointer text-white hover:opacity-[0.9] dark:text-white">
+		<p use:motion class="cursor-pointer hover:opacity-[0.9]">
 			{item}
 		</p>
 	</Motion>

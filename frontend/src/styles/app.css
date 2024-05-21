@@ -55,6 +55,8 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --pop-color: #407fd2;  /* TODO: change to the iconic purple */
   }
 
   .dark {
