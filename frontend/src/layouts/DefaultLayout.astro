@@ -11,8 +11,9 @@ const { title = "UniverseLM", showHeader = false } = Astro.props;
 ---
 
 <Layout title={title}>
-  {/* Header */}
-  {showHeader && <Navbar client:load/>}
-  <slot/>
-
+  <main>
+    <!-- Header -->
+    {showHeader && <Navbar client:load/>}
+    <slot/>
+  </main>
 </Layout>

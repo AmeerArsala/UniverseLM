@@ -10,9 +10,10 @@
     "strict": false, // for now
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
-      "@layouts/*": ["src/layouts/*"]
+      "@layouts/*": ["src/layouts/*"],
+      "@styles/*": ["src/styles/*"],
+      "$lib/*": ["src/*"]
     }
   }
 }

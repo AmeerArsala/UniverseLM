@@ -1,57 +1,65 @@
 <script lang="ts">
-	import { NavbarMenu, MenuItem, ProductItem } from "./ui/NavbarMenu";
-  import HoveredLink from "./ui/NavbarMenu/HoveredLink.svelte";
+	import { MenuItem, ProductItem, HoveredLink } from "./ui/NavbarMenu";
 
 	let active: string | null = null;
+
+  /**
+   * NAVBAR ROUTES
+   * Homepage (icon) [/]
+   * API [/api]
+   * Integrations (discord bot [/integrations/discord], slack bot [/integrations/slack], CLI [/cli])
+   * About [/about]
+   * Blog [/blog]
+   * Pricing [/pricing]
+   * GitHub Stars
+   * Login [/sign-in]
+   * Sign up [/sign-up]
+  */
 </script>
 
 <div class="relative flex w-full items-center justify-center">
-	<div class={'fixed inset-x-0 top-12 z-50 mx-auto max-w-2xl'}>
-		<NavbarMenu>
-			<MenuItem {active} item="Services">
-				<div class="flex flex-col space-y-4 text-sm">
-					<HoveredLink href="#">Web Development</HoveredLink>
-					<HoveredLink href="#">Interface Design</HoveredLink>
-					<HoveredLink href="#">Search Engine Optimization</HoveredLink>
-					<HoveredLink href="#">Branding</HoveredLink>
-				</div>
-			</MenuItem>
-			<MenuItem {active} item="Products">
-				<div class="  grid grid-cols-2 gap-10 p-4 text-sm">
+	<div class={'inset-x-0 top-12 z-50 mx-auto'}>
+		<nav class="relative flex justify-center space-x-12 bg-black px-8 py-6 shadow-input">
+      <!--HOME-->
+
+      <!--API-->
+			<a class="text-white" href="/api">API</a>
+
+      <!--INTEGRATIONS-->
+			<MenuItem {active} item="Integrations">
+				<div class="grid grid-cols-1 gap-10 p-4 text-sm">
 					<ProductItem
-						title="Algochurn"
+						title="Discord Bot"
 						href="#"
-						src="https://images.pexels.com/photos/1031659/pexels-photo-1031659.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-						description="Prepare for tech interviews like never before."
+						src="/discord.png"
 					/>
 					<ProductItem
-						title="Tailwind Master Kit"
+						title="Slack Bot"
 						href="#"
-						src="https://images.pexels.com/photos/733071/pexels-photo-733071.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-						description="Production ready Tailwind css components for your next project"
+						src="/slack.png"
 					/>
 					<ProductItem
-						title="Moonbeam"
-						href="#"
-						src="https://images.pexels.com/photos/730424/pexels-photo-730424.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-						description="Never write from scratch again. Go from idea to blog in minutes."
-					/>
-					<ProductItem
-						title="Rogue"
-						href="#"
-						src="https://images.pexels.com/photos/745243/pexels-photo-745243.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-						description="Respond to government RFPs, RFIs and RFQs 10x faster using AI"
+						title="CLI"
+						href="/cli"
+						src="/cli_clipart.png"
 					/>
 				</div>
 			</MenuItem>
-			<MenuItem {active} item="Pricing">
-				<div class="flex flex-col space-y-4 text-sm">
-					<HoveredLink href="#">Hobby</HoveredLink>
-					<HoveredLink href="#">Individual</HoveredLink>
-					<HoveredLink href="#">Team</HoveredLink>
-					<HoveredLink href="#">Enterprise</HoveredLink>
-				</div>
-			</MenuItem>
-		</NavbarMenu>
+
+      <!--ABOUT-->
+      <a class="text-white" href="/about">About</a>
+
+      <!--BLOG-->
+      <a class="text-white" href="/blog">Blog</a>
+
+      <!--PRICING-->
+			<a class="text-white" href="/pricing">Pricing</a>
+
+      <!--GitHub-->
+
+      <!--Login Button-->
+
+      <!--Sign Up Button-->
+		</nav>
 	</div>
 </div>

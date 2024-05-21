@@ -4,12 +4,7 @@ import Card from '@components/Card.astro';
 ---
 
 <DefaultLayout title="UniverseLM" showHeader={true}>
-	<main>
 		<h1><span class="text-gradient">UniverseLM</span></h1>
-		<p class="instructions">
-			To get started, open the directory <code>src/pages</code> in your project.<br />
-			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-		</p>
 		<ul role="list" class="link-card-grid">
 			<Card
 				href="https://docs.astro.build/"
@@ -32,28 +27,12 @@ import Card from '@components/Card.astro';
 				body="Come say hi to our amazing Discord community. ❤️"
 			/>
 		</ul>
-	</main>
+    <p class="font-neue">Hello World! Helvetica Neue</p>
+    <p class="font-pjsans">Hello World! PlusJakartaSans</p>
+    <p class="font-manrope">Hello World! Manrope</p>
 </DefaultLayout>
 
 <style>
-	main {
-		margin: auto;
-		padding: 1rem;
-		width: 800px;
-		max-width: calc(100% - 2rem);
-		color: white;
-		font-size: 20px;
-		line-height: 1.6;
-	}
-	.astro-a {
-		position: absolute;
-		top: -32px;
-		left: 50%;
-		transform: translatex(-50%);
-		width: 220px;
-		height: auto;
-		z-index: -1;
-	}
 	h1 {
 		font-size: 4rem;
 		font-weight: 700;
