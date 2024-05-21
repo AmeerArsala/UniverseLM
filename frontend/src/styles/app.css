@@ -10,20 +10,6 @@
   font-style: normal;
 }
 
-@font-face {
-  font-family: "PlusJakartaSans";
-  src: url("/fonts/PlusJakartaSans-VariableFont_wght.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Manrope";
-  src: url("fonts/Manrope-VariableFont_wght.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
 /* Define global vars here  */
 @layer base {
   :root {
@@ -68,8 +54,6 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
-
-    --pop-color: #407fd2;  /* TODO: change to the iconic purple */
   }
 
   .dark {
@@ -108,8 +92,12 @@
     @apply border-border;
   }
 
+  html {
+    @apply antialiased;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-manrope;
   }
 
   code {

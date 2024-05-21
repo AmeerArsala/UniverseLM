@@ -57,8 +57,8 @@ const config = {
       fontFamily: {
         sans: [ ...fontFamily.sans],
         neue: ["Helvetica Neue", ...fontFamily.sans],
-        pjsans: ["PlusJakartaSans", ...fontFamily.sans],
-        manrope: ["Manrope", ...fontFamily.sans]
+        pjsans: ["Plus Jakarta Sans Variable", ...fontFamily.sans],
+        manrope: ["Manrope Variable", ...fontFamily.sans]
       }
 		}
 	},

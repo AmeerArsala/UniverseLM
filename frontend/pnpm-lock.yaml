@@ -17,6 +17,12 @@ dependencies:
   '@astrojs/tailwind':
     specifier: ^5.1.0
     version: 5.1.0(astro@4.8.6)(tailwindcss@3.4.3)
+  '@fontsource-variable/manrope':
+    specifier: ^5.0.20
+    version: 5.0.20
+  '@fontsource-variable/plus-jakarta-sans':
+    specifier: ^5.0.21
+    version: 5.0.21
   '@nanostores/react':
     specifier: ^0.7.2
     version: 0.7.2(nanostores@0.10.3)(react@18.3.1)
@@ -1026,6 +1032,14 @@ packages:
   /@eslint/js@9.3.0:
     resolution: {integrity: sha512-niBqk8iwv96+yuTwjM6bWg8ovzAPF9qkICsGtcoa5/dmqcEMfdwNAX7+/OHcJHc7wj7XqPxH98oAHytFYlw6Sw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    dev: false
+
+  /@fontsource-variable/manrope@5.0.20:
+    resolution: {integrity: sha512-LKL0aM0DxYj8i/zUTb5Nru0mS3YoezPZaeWY7aIxEKVX1xVBLpPHlFq0NoK2iUXhL6HoD0XMYwc6KVa8I/ayKg==}
+    dev: false
+
+  /@fontsource-variable/plus-jakarta-sans@5.0.21:
+    resolution: {integrity: sha512-VTQB+MnaYbjLNmfxQJ/Fc2rayLGlqTiZa6nZTpplS0lJF3XKcWPPItilGFMZW4lfwIiroo+FIfBewBOF3MrMPQ==}
     dev: false
 
   /@humanwhocodes/config-array@0.13.0:

@@ -4,7 +4,7 @@ import Card from '@components/Card.astro';
 ---
 
 <DefaultLayout title="UniverseLM" showHeader={true}>
-		<h1><span class="text-gradient">UniverseLM</span></h1>
+		<h1 class="text-gradient font-bold text-7xl text-center">UniverseLM</h1>
 		<ul role="list" class="link-card-grid">
 			<Card
 				href="https://docs.astro.build/"
@@ -33,37 +33,15 @@ import Card from '@components/Card.astro';
 </DefaultLayout>
 
 <style>
-	h1 {
-		font-size: 4rem;
-		font-weight: 700;
-		line-height: 1;
-		text-align: center;
-		margin-bottom: 1em;
+h1 {
+		margin-bottom: 3rem;
 	}
-	.text-gradient {
+  .text-gradient {
 		background-image: var(--accent-gradient);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-size: 400%;
 		background-position: 0%;
-	}
-	.instructions {
-		margin-bottom: 2rem;
-		border: 1px solid rgba(var(--accent-light), 25%);
-		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
-		padding: 1.5rem;
-		border-radius: 8px;
-	}
-	.instructions code {
-		font-size: 0.8em;
-		font-weight: bold;
-		background: rgba(var(--accent-light), 12%);
-		color: rgb(var(--accent-light));
-		border-radius: 4px;
-		padding: 0.3em 0.4em;
-	}
-	.instructions strong {
-		color: rgb(var(--accent-light));
 	}
 	.link-card-grid {
 		display: grid;

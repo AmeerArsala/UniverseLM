@@ -1,4 +1,7 @@
 ---
+import '@fontsource-variable/manrope';
+import '@fontsource-variable/plus-jakarta-sans';
+
 import "$lib/styles/app.css";
 
 interface Props {
@@ -22,9 +25,3 @@ const { title } = Astro.props;
 		<slot />
 	</body>
 </html>
-
-<style>
-  * {
-    @apply font-manrope;
-  }
-</style>
