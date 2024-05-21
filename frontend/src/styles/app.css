@@ -105,7 +105,7 @@
 
   /* Define global styles here */
   * {
-    @apply border-border;
+    @apply border-border font-bold;
   }
 
   body {
