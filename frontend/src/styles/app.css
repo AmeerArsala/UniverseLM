@@ -105,12 +105,11 @@
 
   /* Define global styles here */
   * {
-    @apply border-border font-bold;
+    @apply border-border;
   }
 
   body {
-    /* By default, fonts within the app will be in Manrope */
-    @apply bg-background text-foreground font-manrope;
+    @apply bg-background text-foreground;
   }
 
   code {
