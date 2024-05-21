@@ -111,9 +111,8 @@
   }
 
   body {
-    @apply bg-background text-foreground;
     /* By default, fonts within the app will be in Manrope */
-    font-family: 'Manrope';
+    @apply bg-background text-foreground font-manrope;
   }
 
   code {
