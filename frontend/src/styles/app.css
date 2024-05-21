@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Define fonts here */
 @font-face {
   font-family: 'Helvetica Neue';
   src: url("/fonts/HelveticaNeue/HelveticaNeueRoman.otf") format("opentype");
@@ -23,6 +24,7 @@
   font-style: normal;
 }
 
+/* Define global vars here  */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -46,8 +48,19 @@
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --accent: 210 40% 96.1%;
+
     --accent-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 136, 58, 234;
+    /*--accent: 210 40% 96.1%;*/
+		--accent-light: 224, 204, 250;
+		--accent-dark: 49, 10, 101;
+		--accent-gradient: linear-gradient(
+			45deg,
+			rgb(var(--accent)),
+			rgb(var(--accent-light)) 30%,
+			white 60%
+		);
 
     --destructive: 0 72.2% 50.6%;
     --destructive-foreground: 210 40% 98%;
@@ -91,13 +104,27 @@
   }
 }
 
+/* Define global styles here */
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    /* By default, fonts within the app will be in Manrope */
+    font-family: 'Manrope';
   }
-}
 
-/* Define global styles here */
+  code {
+		font-family:
+			Menlo,
+			Monaco,
+			Lucida Console,
+			Liberation Mono,
+			DejaVu Sans Mono,
+			Bitstream Vera Sans Mono,
+			Courier New,
+			monospace;
+	}
+}
