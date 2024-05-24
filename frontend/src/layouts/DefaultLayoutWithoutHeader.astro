@@ -1,0 +1,15 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+}
+
+const { title = "UniverseLM" } = Astro.props;
+---
+
+<Layout title={title}>
+  <main>
+    <slot/>
+  </main>
+</Layout>

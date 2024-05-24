@@ -1,10 +1,23 @@
 ---
-import DefaultLayout from '@layouts/DefaultLayout.astro';
+import DefaultLayoutWithHeader from '@layouts/DefaultLayoutWithHeader.astro';
+import { FlipWords } from "@components/ui/flip-words";
+
 import Card from '@components/Card.astro';
+
+
+const attentionWords = ["Multi-Agent Systems", "Communities", "a Text Adventure", "a Knowledge Base", "a Storyline"];
 ---
 
-<DefaultLayout title="UniverseLM" showHeader={true}>
-		<h1 class="text-gradient font-bold text-7xl text-center">UniverseLM</h1>
+<DefaultLayoutWithHeader title="UniverseLM">
+		<p class="font-bold text-7xl text-center mb-12 mt-3 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent inline ml-[27vw]">Simulate </p>
+    <FlipWords words={attentionWords} className=' font-bold text-7xl text-center mb-12 mt-3 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text' client:only="react"/><br/>
+
+    <p class="font-bold text-center text-2xl">Create communities of AI Agents right from your fingertips.</p>
+
+    <p>REST OF CONTENT</p>
+    <br/>
+    <br/>
+
 		<ul role="list" class="link-card-grid">
 			<Card
 				href="https://docs.astro.build/"
@@ -30,19 +43,17 @@ import Card from '@components/Card.astro';
     <p class="font-neue">Hello World! Helvetica Neue</p>
     <p class="font-pjsans">Hello World! PlusJakartaSans</p>
     <p class="font-manrope">Hello World! Manrope</p>
-</DefaultLayout>
+</DefaultLayoutWithHeader>
 
 <style>
-h1 {
-		margin-bottom: 3rem;
-	}
   .text-gradient {
 		background-image: var(--accent-gradient);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
-		background-size: 400%;
+		background-size: 285%;
 		background-position: 0%;
 	}
+
 	.link-card-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));

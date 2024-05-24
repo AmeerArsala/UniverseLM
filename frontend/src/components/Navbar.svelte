@@ -19,15 +19,16 @@
 </script>
 
 <div class="relative flex w-full items-center justify-center">
-	<div class={'inset-x-0 top-12 z-50 mx-auto'}>
-		<nav class="relative flex justify-center items-center space-x-12 px-8 py-6 font-bold shadow-input">
-      <!--HOME-->
-      <div class="absolute left-0">
-        <p>UniverseLM</p>
-      </div>
+	<div class={'inset-x-0 top-12 z-50 mx-auto flex flex-row items-center'}>
+    <!--HOME-->
+    <a href="/" class="absolute left-0 flex flex-row items-center">
+      <img class="w-32 h-32 mr-0" src="/logo.png" alt="logo"/>
+      <p class="font-neue font-bold text-2xl ml-28 absolute">UniverseLM</p>
+    </a>
 
+		<nav class="relative flex justify-center items-center space-x-12 px-8 py-6 font-bold shadow-input">
       <!--API-->
-			<a class="" href="/api">API</a>
+			<a href="/api">API</a>
 
       <!--INTEGRATIONS-->
 			<MenuItem {active} item="Integrations">
@@ -51,15 +52,13 @@
 			</MenuItem>
 
       <!--ABOUT-->
-      <a class="" href="/about">About</a>
+      <a href="/about">About</a>
 
       <!--BLOG-->
-      <a class="" href="/blog">Blog</a>
+      <a href="/blog">Blog</a>
 
       <!--PRICING-->
-			<a class="" href="/pricing">Pricing</a>
-
-
+			<a href="/pricing">Pricing</a>
 
       <div class="space-x-1 flex flex-row">
         <!--GitHub-->
@@ -70,8 +69,8 @@
         <!--Login Button-->
         <a href="/sign-in">
           <button class="p-[3px] relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-            <div class="px-4 py-1.5  bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent">
+            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+            <div class="px-4 py-1.5  bg-black rounded-full relative group transition duration-200 text-white hover:bg-transparent">
               Login
             </div>
           </button>
@@ -79,9 +78,9 @@
 
         <!--Sign Up Button-->
         <a href="/sign-up">
-          <button class="p-[3px] relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-            <div class="px-4 py-1.5 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
+          <button class="group p-[3px] relative rounded-lg overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:animate-shimmer" />
+            <div class="px-4 py-1.5 relative group transition duration-200 text-white bg-transparent">
               Sign Up
             </div>
           </button>
