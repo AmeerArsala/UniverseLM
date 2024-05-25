@@ -163,3 +163,5 @@ cython_debug/
 
 
 !.env.example
+
+node_modules/

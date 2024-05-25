@@ -1,9 +1,0 @@
-{
-	"dependencies": {
-		"@react-three/drei": "^9.105.6",
-		"@react-three/fiber": "^8.16.6",
-		"@tailwindcss/aspect-ratio": "^0.4.2",
-		"three": "^0.164.1",
-		"three-globe": "^2.31.0"
-	}
-}
