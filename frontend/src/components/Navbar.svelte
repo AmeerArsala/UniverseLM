@@ -18,12 +18,12 @@
   */
 </script>
 
-<div class="relative flex w-full items-center justify-center mt-1">
+<div class="relative flex w-full items-center justify-center mt-1 mb-8">
 	<div class={'inset-x-0 top-12 z-50 mx-auto flex flex-row items-center'}>
     <!--HOME-->
     <a href="/" class="absolute left-0 flex flex-row items-center">
       <img class="w-32 h-32 mr-0" src="/logo.png" alt="logo"/>
-      <p class="font-neue font-bold text-2xl ml-28 absolute">UniverseLM</p>
+      <p class="font-inter font-bold text-2xl ml-28 absolute">UniverseLM</p>
     </a>
 
 		<nav class="relative flex justify-center items-center space-x-12 px-8 py-6 font-bold shadow-input">

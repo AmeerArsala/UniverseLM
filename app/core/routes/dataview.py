@@ -13,6 +13,8 @@ from app.lib import society
 
 from app.lib.utils.logic import LogicMode
 
+import numpy as np
+
 
 router = APIRouter()
 
@@ -26,6 +28,60 @@ async def get_community_id(name: str) -> int:
         ).first()
 
     return community_id
+
+
+class CommunityStatsView(BaseModel):
+    community: Community
+    density: float
+
+
+@router.get("/communities/viewstats")
+async def get_communities_stats() -> List[CommunityStatsView]:
+    communities_stats: List[CommunityStatsView] = []
+
+    with db.engine.begin() as conn:
+        query: str = """
+        SELECT communities.id, communities.name, COUNT(DISTINCT chunks.id) AS num_chunks, COUNT(DISTINCT chunks_lore.lore_id) AS num_lore, COUNT(belongings.id) AS num_belongings
+        FROM communities
+        INNER JOIN chunks ON communities.id = chunks.community_id
+        INNER JOIN chunks_lore ON chunks.id = chunks_lore.chunk_id
+        INNER JOIN belongings ON chunks.id = belongings.owner
+        GROUP BY communities.id
+        """
+
+        results: List[Tuple] = conn.execute(sqlalchemy.text(query)).fetchall()
+
+        communities: List[Community] = []
+        stats = [[], [], []]
+        NUM_CHUNKS = 0
+        NUM_LORE = 1
+        NUM_BELONGINGS = 2
+        for id_, name, num_chunks, num_lore, num_belongings in results:
+            # Append the community
+            communities.append(Community(id=id_, name=name))
+
+            # Add to data
+            stats[NUM_CHUNKS].append(num_chunks)
+            stats[NUM_LORE].append(num_lore)
+            stats[NUM_BELONGINGS].append(num_belongings)
+
+        stats_arr: np.ndarray = np.array(stats)
+
+        # The Algorithm
+        densities = (stats_arr[NUM_LORE] + stats_arr[NUM_BELONGINGS]) + np.prod(
+            stats_arr, axis=0
+        )
+
+        _densities_ = (densities - np.mean(densities)) / np.std(densities)
+
+        standardized_densities: List[float] = _densities_.tolist()
+
+        communities_stats: List[CommunityStatsView] = [
+            CommunityStatsView(community=community, density=density)
+            for (community, density) in zip(communities, standardized_densities)
+        ]
+
+    return communities_stats
 
 
 @router.get("/communities")

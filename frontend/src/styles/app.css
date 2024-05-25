@@ -34,7 +34,6 @@
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --accent: 136, 58, 234;
@@ -54,6 +53,9 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --from-main-color: #6366f1;
+    --to-main-color: #a855f7;
   }
 
   .dark {
