@@ -1,6 +1,7 @@
 ---
 import DefaultLayoutWithHeader from '@layouts/DefaultLayoutWithHeader.astro';
 import { FlipWords } from "@components/ui/flip-words";
+import { SocietyGenerator } from './SocietyGenerator';
 
 import Card from '@components/Card.astro';
 
@@ -14,35 +15,16 @@ const attentionWords = ["Multi-Agent Systems", "Communities", "a Text Adventure"
 
     <p class="font-bold text-center text-2xl">Create communities of AI Agents right from your fingertips.</p>
 
-    <p>REST OF CONTENT</p>
-    <br/>
-    <br/>
+    <!-- THE THING -->
+    <SocietyGenerator client:load/>
 
-		<ul role="list" class="link-card-grid">
-			<Card
-				href="https://docs.astro.build/"
-				title="Documentation"
-				body="Learn how Astro works and explore the official API docs."
-			/>
-			<Card
-				href="https://astro.build/integrations/"
-				title="Integrations"
-				body="Supercharge your project with new frameworks and libraries."
-			/>
-			<Card
-				href="https://astro.build/themes/"
-				title="Themes"
-				body="Explore a galaxy of community-built starter themes."
-			/>
-			<Card
-				href="https://astro.build/chat/"
-				title="Community"
-				body="Come say hi to our amazing Discord community. ❤️"
-			/>
-		</ul>
-    <p class="font-neue">Hello World! Helvetica Neue</p>
-    <p class="font-pjsans">Hello World! PlusJakartaSans</p>
-    <p class="font-manrope">Hello World! Manrope</p>
+    <!-- THE THING PART 2 -->
+
+    <!-- YAP -->
+
+    <!-- JOIN WAITLIST -->
+
+    <!-- TODO: FOOTER -->
 </DefaultLayoutWithHeader>
 
 <style>

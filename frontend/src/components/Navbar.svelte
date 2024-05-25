@@ -18,7 +18,7 @@
   */
 </script>
 
-<div class="relative flex w-full items-center justify-center">
+<div class="relative flex w-full items-center justify-center mt-1">
 	<div class={'inset-x-0 top-12 z-50 mx-auto flex flex-row items-center'}>
     <!--HOME-->
     <a href="/" class="absolute left-0 flex flex-row items-center">

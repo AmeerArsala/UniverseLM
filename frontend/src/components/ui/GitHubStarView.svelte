@@ -39,7 +39,7 @@
 
 <a class="repo-element" href={repo_link} target="_blank">
   <div class="px-3 relative">
-    <div class="absolute inset-y-0.5 inset-x-1.5 bg-black rounded-md" />
+    <div class="absolute inset-y-0.5 inset-x-1.5 bg-gray-800 rounded-md" />
     <div class="relative flex items-center space-x-0 text-gray-800">
       <!--GITHUB ICON-->
       <svg class="social-media-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
