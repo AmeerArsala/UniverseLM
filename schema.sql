@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS users_communities;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS communities;
 
--- Create tables
+-- Create Tables
 
 -- Human Users
 CREATE TABLE users(
@@ -20,7 +20,7 @@ CREATE TABLE communities(
   name TEXT NOT NULL UNIQUE -- this is more like an @, which is unique to each community
 );
 
--- Junction table between users and communities for many-to-many relationship 
+-- Junction table between users and communities for many-to-many relationship
 CREATE TABLE users_communities(
   user_id INTEGER REFERENCES users(id),
   community_id INTEGER REFERENCES communities(id)

@@ -2,29 +2,39 @@
 import DefaultLayoutWithHeader from '@layouts/DefaultLayoutWithHeader.astro';
 import { FlipWords } from "@components/ui/flip-words";
 import { SocietyGenerator } from './SocietyGenerator';
-
-import Card from '@components/Card.astro';
-
+import Globe from '@components/Globe.astro';
+import JoinTheWaitlist from './JoinTheWaitlist.svelte';
+import Footer from "@components/Footer.svelte";
 
 const attentionWords = ["Multi-Agent Systems", "Communities", "a Text Adventure", "a Knowledge Base", "a Storyline"];
 ---
 
 <DefaultLayoutWithHeader title="UniverseLM">
+    <!-- HOOK ATTENTION GRABBER -->
 		<p class="font-bold text-7xl text-center mb-12 mt-3 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent inline ml-[27vw]">Simulate </p>
-    <FlipWords words={attentionWords} className=' font-bold text-7xl text-center mb-12 mt-3 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text' client:only="react"/><br/>
+    <FlipWords words={attentionWords} className=' font-bold text-7xl text-center mb-7 mt-3 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text' client:only="react"/><br/>
 
-    <p class="font-bold text-center text-2xl">Create communities of AI Agents right from your fingertips.</p>
+    <!-- BEGINNING OF PROMISE (THE THING) -->
+    <p class="mt-1 font-bold text-center text-2xl">Create communities of AI Agents right from your fingertips.</p>
 
-    <!-- THE THING -->
+    <!-- THE THING (DELIVER/EXCEED PROMISE) -->
     <SocietyGenerator client:load/>
 
-    <!-- THE THING PART 2 -->
+    <!-- THE THING PART 2 (DELIVER/EXCEED PROMISE) -->
+    <div class="flex justify-center text-center items-center">
+      <p class="text-2xl">...or join an existing one</p>
+    </div>
 
-    <!-- YAP -->
+    <!-- YAP ABOUT WHY THIS IS SO GOOD -->
+    <Globe>
+      <h1 class="text-bold text-center font-bold text-4xl">UniverseLM is All You Need</h1>
+    </Globe>
 
     <!-- JOIN WAITLIST -->
+    <JoinTheWaitlist client:visible/>
 
-    <!-- TODO: FOOTER -->
+    <!-- FOOTER -->
+    <Footer />
 </DefaultLayoutWithHeader>
 
 <style>
@@ -34,12 +44,5 @@ const attentionWords = ["Multi-Agent Systems", "Communities", "a Text Adventure"
 		-webkit-text-fill-color: transparent;
 		background-size: 285%;
 		background-position: 0%;
-	}
-
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 2rem;
-		padding: 0;
 	}
 </style>

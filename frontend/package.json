@@ -19,6 +19,9 @@
     "@fontsource-variable/manrope": "^5.0.20",
     "@fontsource-variable/plus-jakarta-sans": "^5.0.21",
     "@nanostores/react": "^0.7.2",
+    "@react-three/drei": "^9.105.6",
+    "@react-three/fiber": "^8.16.6",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/eslint": "^8.56.10",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
@@ -44,6 +47,8 @@
     "tailwind-merge": "^2.3.0",
     "tailwind-variants": "^0.2.1",
     "tailwindcss": "^3.4.3",
+    "three": "^0.164.1",
+    "three-globe": "^2.31.0",
     "typescript": "^5.4.5"
   }
 }

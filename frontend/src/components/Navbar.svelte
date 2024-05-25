@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { MenuItem, ProductItem, HoveredLink } from "./ui/NavbarMenu";
-  import GitHubStarView from "./ui/GitHubStarView.svelte";
+  import GitHubStarView from "@components/GitHubStarView.svelte";
 
 	let active: string | null = null;
 

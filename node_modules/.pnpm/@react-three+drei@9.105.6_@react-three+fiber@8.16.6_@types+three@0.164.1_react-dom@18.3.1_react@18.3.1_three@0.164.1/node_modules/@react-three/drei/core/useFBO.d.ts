@@ -1,0 +1,22 @@
+import * as THREE from 'three';
+import { TextureEncoding } from '../helpers/deprecated';
+type ColorSpace = 'srgb' | 'srgb-linear' | '' | string;
+type FBOSettings = {
+    samples?: number;
+    depth?: boolean;
+    wrapS?: THREE.Wrapping | undefined;
+    wrapT?: THREE.Wrapping | undefined;
+    magFilter?: THREE.MagnificationTextureFilter | undefined;
+    minFilter?: THREE.MinificationTextureFilter | undefined;
+    format?: number | undefined;
+    type?: THREE.TextureDataType | undefined;
+    anisotropy?: number | undefined;
+    depthBuffer?: boolean | undefined;
+    stencilBuffer?: boolean | undefined;
+    generateMipmaps?: boolean | undefined;
+    depthTexture?: THREE.DepthTexture | undefined;
+    encoding?: TextureEncoding | undefined;
+    colorSpace?: ColorSpace | undefined;
+};
+export declare function useFBO(width?: number | FBOSettings, height?: number, settings?: FBOSettings): THREE.WebGLRenderTarget;
+export {};

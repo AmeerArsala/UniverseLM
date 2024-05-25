@@ -1,10 +1,16 @@
 import { fontFamily } from "tailwindcss/defaultTheme";
+import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette';
+import aspectRatio from '@tailwindcss/aspect-ratio';
 
 /** @type {import('tailwindcss').Config} */
 const config = {
 	darkMode: ["class"],
 	content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
 	safelist: ["dark"],
+  plugins: [
+    aspectRatio,
+    addVariablesForColors
+  ],
 	theme: {
 		container: {
 			center: true,
@@ -76,5 +82,16 @@ const config = {
 		}
 	},
 };
+
+function addVariablesForColors({ addBase, theme }) {
+	let allColors = flattenColorPalette(theme('colors'));
+	let newVars = Object.fromEntries(
+		Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+	);
+
+	addBase({
+		':root': newVars
+	});
+}
 
 export default config;
