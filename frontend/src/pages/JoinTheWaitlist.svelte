@@ -13,7 +13,7 @@
 		</h2>
 		<p></p>
 		<p class="relative z-10 mx-auto my-2 max-w-lg text-center text-sm text-neutral-500">
-			Welcome to UniverseLM, the best place on to run AI simulations.
+			Welcome to UniverseLM, the best place on the internet to run AI simulations.
 		</p>
 		<input
 			type="text"

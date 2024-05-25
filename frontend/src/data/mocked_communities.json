@@ -1,0 +1,59 @@
+{
+  "communities": [
+    {
+      "id": 1,
+      "name": "the-wild-west",
+      "stddevs_from_mean_lore_density": 1.5
+    },
+    {
+      "id": 2,
+      "name": "empire-of-erebonia",
+      "stddevs_from_mean_lore_density": 1.5
+    },
+    {
+      "id": 3,
+      "name": "republic-of-calvard",
+      "stddevs_from_mean_lore_density": 1.5
+    },
+    {
+      "id": 4,
+      "name": "the-clique",
+      "stddevs_from_mean_lore_density": -1.5
+    },
+    {
+      "id": 5,
+      "name": "yet-another-sitcom",
+      "stddevs_from_mean_lore_density": 0.0
+    },
+    {
+      "id": 6,
+      "name": "cyberpunk-dystopia",
+      "stddevs_from_mean_lore_density": 1.5
+    },
+    {
+      "id": 7,
+      "name": "klaus-world",
+      "stddevs_from_mean_lore_density": 1.0
+    },
+    {
+      "id": 8,
+      "name": "kingdom-of-liberl",
+      "stddevs_from_mean_lore_density": 0.0
+    },
+    {
+      "id": 9,
+      "name": "class-homework",
+      "stddevs_from_mean_lore_density": -1.5
+    },
+    {
+      "id": 10,
+      "name": "post-apocalyptic-world",
+      "stddevs_from_mean_lore_density": -1
+    },
+    {
+      "id": 11,
+      "name": "astronauts-to-the-moon",
+      "stddevs_from_mean_lore_density": 0.0
+    }
+  ]
+}

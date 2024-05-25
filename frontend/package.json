@@ -16,18 +16,21 @@
     "@astrojs/svelte": "^5.4.0",
     "@astrojs/tailwind": "^5.1.0",
     "@astrojs/vercel": "^7.6.0",
+    "@fontsource-variable/inter": "^5.0.18",
     "@fontsource-variable/manrope": "^5.0.20",
     "@fontsource-variable/plus-jakarta-sans": "^5.0.21",
     "@nanostores/react": "^0.7.2",
     "@react-three/drei": "^9.105.6",
     "@react-three/fiber": "^8.16.6",
     "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/typography": "^0.5.13",
     "@types/eslint": "^8.56.10",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
     "astro": "^4.8.6",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.0",
+    "bits-ui": "^0.21.9",
     "clsx": "^2.1.1",
     "eslint": "^9.3.0",
     "eslint-config-prettier": "^9.1.0",
@@ -35,6 +38,7 @@
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-svelte": "^2.39.0",
     "framer-motion": "^11.2.4",
+    "lucide-svelte": "^0.379.0",
     "nanostores": "^0.10.3",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
@@ -50,5 +54,10 @@
     "three": "^0.164.1",
     "three-globe": "^2.31.0",
     "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "flowbite": "^2.3.0",
+    "flowbite-svelte": "^0.46.1",
+    "svelte-headless-table": "^0.18.2"
   }
 }

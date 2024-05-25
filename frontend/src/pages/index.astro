@@ -2,6 +2,8 @@
 import DefaultLayoutWithHeader from '@layouts/DefaultLayoutWithHeader.astro';
 import { FlipWords } from "@components/ui/flip-words";
 import { SocietyGenerator } from './SocietyGenerator';
+import CommunitiesViewer from '@components/CommunitiesViewer';
+
 import Globe from '@components/Globe.astro';
 import JoinTheWaitlist from './JoinTheWaitlist.svelte';
 import Footer from "@components/Footer.svelte";
@@ -10,6 +12,9 @@ const attentionWords = ["Multi-Agent Systems", "Communities", "a Text Adventure"
 ---
 
 <DefaultLayoutWithHeader title="UniverseLM">
+    <br/>
+    <br/>
+
     <!-- HOOK ATTENTION GRABBER -->
 		<p class="font-bold text-7xl text-center mb-12 mt-3 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent inline ml-[27vw]">Simulate </p>
     <FlipWords words={attentionWords} className=' font-bold text-7xl text-center mb-7 mt-3 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text' client:only="react"/><br/>
@@ -21,8 +26,11 @@ const attentionWords = ["Multi-Agent Systems", "Communities", "a Text Adventure"
     <SocietyGenerator client:load/>
 
     <!-- THE THING PART 2 (DELIVER/EXCEED PROMISE) -->
-    <div class="flex justify-center text-center items-center">
-      <p class="text-2xl">...or join an existing one</p>
+    <div class="flex flex-col justify-center">
+      <p class="text-center text-2xl">...or join an existing one</p>
+      <div class="font-inter min-w-[35vw] ml-auto mr-auto">
+        <CommunitiesViewer client:only="svelte"/>
+      </div>
     </div>
 
     <!-- YAP ABOUT WHY THIS IS SO GOOD -->

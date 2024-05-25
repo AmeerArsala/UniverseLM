@@ -20,8 +20,8 @@ export function SocietyGenerator() {
   };
   return (
     <div className="h-[15rem] flex flex-col justify-center  items-center px-4">
-      <h2 className="mb-5 sm:mb-10 text-xl text-center sm:text-5xl dark:text-white text-black">
-        Create a Society
+      <h2 className="mb-5 sm:mb-10 text-xl text-center sm:text-5xl dark:text-white text-black font-inter">
+        Create a Community
       </h2>
       <PlaceholdersAndVanishInput
         placeholders={placeholders}

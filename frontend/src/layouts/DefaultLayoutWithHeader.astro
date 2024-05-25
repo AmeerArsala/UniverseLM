@@ -3,7 +3,7 @@ import Layout from './Layout.astro';
 import Navbar from '@components/Navbar.svelte';
 
 interface Props {
-  title: string;
+  title?: string;
 }
 
 const { title = "UniverseLM" } = Astro.props;

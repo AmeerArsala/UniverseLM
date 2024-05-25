@@ -9,7 +9,8 @@ const config = {
 	safelist: ["dark"],
   plugins: [
     aspectRatio,
-    addVariablesForColors
+    addVariablesForColors,
+    require('@tailwindcss/typography')
   ],
 	theme: {
 		container: {
@@ -64,7 +65,8 @@ const config = {
         sans: [ ...fontFamily.sans],
         neue: ["Helvetica Neue", ...fontFamily.sans],
         pjsans: ["Plus Jakarta Sans Variable", ...fontFamily.sans],
-        manrope: ["Manrope Variable", ...fontFamily.sans]
+        manrope: ["Manrope Variable", ...fontFamily.sans],
+        inter: ["Inter Variable", ...fontFamily.sans]
       },
       animation: {
         shimmer: "shimmer 2s linear infinite"
