@@ -28,7 +28,7 @@
 
 		<nav class="relative flex justify-center items-center space-x-12 px-8 py-6 font-bold shadow-input">
       <!--API-->
-			<a href="/api">API</a>
+			<a href="/api" class="navbar-item">API</a>
 
       <!--INTEGRATIONS-->
 			<MenuItem {active} item="Integrations">
@@ -52,13 +52,13 @@
 			</MenuItem>
 
       <!--ABOUT-->
-      <a href="/about">About</a>
+      <a href="/about" class="navbar-item">About</a>
 
       <!--BLOG-->
-      <a href="/blog">Blog</a>
+      <a href="/blog" class="navbar-item">Blog</a>
 
       <!--PRICING-->
-			<a href="/pricing">Pricing</a>
+			<a href="/pricing" class="navbar-item">Pricing</a>
 
       <div class="space-x-1 flex flex-row">
         <!--GitHub-->
@@ -89,3 +89,9 @@
 		</nav>
 	</div>
 </div>
+
+<style>
+	.navbar-item {
+    @apply hover:bg-gradient-to-r from-indigo-500 to-purple-500 hover:text-transparent bg-clip-text;
+	}
+</style>

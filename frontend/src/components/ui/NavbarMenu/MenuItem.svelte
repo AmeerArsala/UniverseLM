@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Motion } from 'svelte-motion';
+  import { cn } from '$lib/utils';
 
 	const transition = {
 		type: 'spring',
@@ -16,7 +17,7 @@
 
 <div on:mouseenter={() => (active = item)} on:mouseleave={() => (active = null)} class="relative">
 	<Motion let:motion transition={{ duration: 0.3 }}>
-		<p use:motion class="cursor-pointer hover:opacity-[0.9]">
+		<p use:motion class={cn("cursor-pointer hover:bg-gradient-to-r from-indigo-500 to-purple-500 hover:text-transparent bg-clip-text")}>
 			{item}
 		</p>
 	</Motion>
