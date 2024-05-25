@@ -2,9 +2,21 @@
 import DefaultLayoutWithHeader from "@layouts/DefaultLayoutWithHeader.astro";
 import DefaultLayoutWithoutHeader from "@layouts/DefaultLayoutWithoutHeader.astro";
 import { TracingBeam } from "@components/ui/tracing-beam";
+
+interface Props {
+	frontmatter: {
+    title: string;
+    author: string;
+    date: string;
+    description: string;
+  }
+}
+
+const { frontmatter } = Astro.props;
+const { title, date, author, description } = frontmatter;
 ---
 
-<DefaultLayoutWithHeader>
+<DefaultLayoutWithHeader title={title}>
   <TracingBeam className="px-6" client:only="react">
     <article class="prose prose-neutral lg:prose-lg dark:prose-invert">
       <slot/>
