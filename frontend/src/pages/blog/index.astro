@@ -1,0 +1,25 @@
+---
+import DefaultLayoutWithHeader from "@layouts/DefaultLayoutWithHeader.astro";
+import PostsView from "./PostsView.svelte";
+import ParallaxMotion from "./ParallaxMotion.svelte";
+
+const newsPosts = await Astro.glob("./news/post/*.md");
+const researchPosts = await Astro.glob("./research/post/*.md");
+const regularPosts = await Astro.glob("./posts/*.md");
+
+// Turn on SSR (dynamic rendering)
+export const prerender = false;
+---
+
+<DefaultLayoutWithHeader title="Blog - UniverseLM">
+  <ParallaxMotion newsPosts={newsPosts} researchPosts={researchPosts} regularPosts={regularPosts} client:load>
+    <div class="relative left-0 top-0 mx-auto w-full max-w-7xl px-4 py-8 md:py-4">
+      <h2 class="text-2xl font-bold dark:text-white md:text-7xl">
+        See What's New with <br /> UniverseLM
+      </h2>
+      <p class="mt-8 max-w-2xl text-base dark:text-neutral-200 md:text-xl">
+        UniverseLM is the single source of truth in this world.
+      </p>
+    </div>
+  </ParallaxMotion>
+</DefaultLayoutWithHeader>

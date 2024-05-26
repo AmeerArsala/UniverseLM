@@ -1,7 +1,7 @@
 ---
 import DefaultLayoutWithHeader from "@layouts/DefaultLayoutWithHeader.astro";
-import DefaultLayoutWithoutHeader from "@layouts/DefaultLayoutWithoutHeader.astro";
 import { TracingBeam } from "@components/ui/tracing-beam";
+import { type BlogPostProps } from "$lib/types/blogposts";
 
 interface Props {
 	frontmatter: {
@@ -9,11 +9,12 @@ interface Props {
     author: string;
     date: string;
     description: string;
+    thumbnailPath: string;
   }
 }
 
 const { frontmatter } = Astro.props;
-const { title, date, author, description } = frontmatter;
+const { title, date, author, description, thumbnailPath = "/logo.png" } = frontmatter;
 ---
 
 <DefaultLayoutWithHeader title={title}>

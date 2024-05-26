@@ -9,7 +9,7 @@ export function calculateColor(density: number): Color {
   let maxVal = 1.51;
 
   let val = density;
-  let normalized_val = Math.min(Math.max(-maxVal, density), maxVal);
+  //let normalized_val = Math.min(Math.max(-maxVal, density), maxVal);
 
   let minHue = 0;
   let maxHue = 116;
