@@ -60,7 +60,7 @@
       <!--PRICING-->
 			<a href="/pricing" class="navbar-item">Pricing</a>
 
-      <div class="space-x-1 flex flex-row">
+      <div class="space-x-2 flex flex-row">
         <!--GitHub-->
         <div>
           <GitHubStarView repo_link="https://github.com/AmeerArsala/UniverseLM"/>

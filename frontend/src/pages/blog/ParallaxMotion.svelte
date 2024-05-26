@@ -12,8 +12,9 @@
 
 	const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
 
+	const translateX_First = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1500]), springConfig);
 	const translateX = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1000]), springConfig);
-	const translateXReverse = useSpring(
+  const translateXReverse = useSpring(
 		useTransform(scrollYProgress, [0, 1], [0, -1000]),
 		springConfig
 	);
@@ -39,27 +40,27 @@
 		}}
   >
     <div use:motion>
-      <h3 class="section-title">News</h3>
+      <a class="section-title hover:underline cursor-pointer" href="/blog/news">News</a>
       <Motion let:motion>
-				<div use:motion class="mb-20 flex flex-row-reverse space-x-20 space-x-reverse">
+				<div use:motion class="mb-20 move-forward">
 					<div class="section">
-            <PostsView posts={newsPosts} translate={translateX}/>
+            <PostsView posts={newsPosts} translate={translateX_First}/>
           </div>
 				</div>
 			</Motion>
 
-      <h3 class="section-title">Research</h3>
+      <a class="section-title hover:underline" href="/blog/research">Research</a>
 			<Motion let:motion>
-				<div use:motion class="mb-20 flex flex-row space-x-20">
+				<div use:motion class="mb-20 move-reverse">
 					<div class="section">
             <PostsView posts={researchPosts} translate={translateXReverse}/>
           </div>
 				</div>
 			</Motion>
 
-      <h3 class="section-title">Posts</h3>
+      <a class="section-title hover:underline" href="/blog/posts">Posts</a>
       <Motion let:motion>
-				<div use:motion class="flex flex-row-reverse space-x-20 space-x-reverse">
+				<div use:motion class="move-forward">
 					<div class="section">
             <PostsView posts={regularPosts} translate={translateX}/>
           </div>
@@ -71,10 +72,18 @@
 
 <style>
   .section-title {
-    @apply font-bold text-5xl ml-32 font-neue absolute mt-3 text-start;
+    @apply font-bold text-5xl ml-32 font-neue absolute mt-3 text-start z-50;
   }
 
   .section {
     @apply p-0;
+  }
+
+  .move-forward {
+    @apply flex flex-row-reverse space-x-20 space-x-reverse;
+  }
+
+  .move-reverse {
+    @apply flex flex-row space-x-20;
   }
 </style>
