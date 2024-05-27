@@ -43,7 +43,7 @@ def callback(request: Request):
     request.session["user_id"] = user_id
 
     # Update the user_clients cache with the client
-    clients.user_clients[user_id] = kinde_client
+    clients.write_user_client(user_id, kinde_client)
 
     return RedirectResponse(router.url_path_for("read_root"))
 
@@ -56,13 +56,13 @@ def logout(request: Request):
 
     # Now, let's log this mf out
     if user_id in clients.user_clients:
-        kinde_user_client = clients.user_clients[user_id]
+        kinde_user_client = clients.read_user_client(user_id)
 
         # LOG EM OUT
         logout_url = kinde_user_client.logout(redirect_to=config.LOGOUT_REDIRECT_URL)
 
         # REMOVE ALL TRACES OF EM!!!
-        del clients.user_clients[user_id]
+        clients.delete_user_client(user_id)
         request.session.pop("user_id", None)
 
         # LOG EM OUT

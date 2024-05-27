@@ -30,6 +30,7 @@ langchain-cohere = "^0.1.5"
 langchainhub = "^0.1.15"
 kinde-python-sdk = "^1.2.4"
 itsdangerous = "^2.2.0"
+redis = "^5.0.4"
 
 [build-system]
 requires = ["poetry-core"]

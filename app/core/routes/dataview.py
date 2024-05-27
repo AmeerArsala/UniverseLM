@@ -37,6 +37,7 @@ class CommunityStatsView(BaseModel):
     density: float
 
 
+# TODO: add public and private communities and do the public ones only here
 @router.get("/communities/viewstats")
 async def get_communities_stats() -> List[CommunityStatsView]:
     communities_stats: List[CommunityStatsView] = []
