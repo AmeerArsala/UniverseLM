@@ -1,9 +1,11 @@
 from typing import Union, Optional, List, Dict, Tuple, Any
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
 import sqlalchemy
 from app.core.db import database as db
+
+from app.core import api_auth
 
 from app.core.schemas.communities import Community
 from app.core.schemas.entities import Chunk
@@ -16,7 +18,7 @@ from app.lib.utils.logic import LogicMode
 import numpy as np
 
 
-router = APIRouter()
+router = APIRouter(tags=["dataview"], dependencies=[Depends(api_auth.get_api_key)])
 
 
 @router.get("/community/id/{name}")

@@ -2,11 +2,25 @@ import os
 from sys import prefix
 from typing import Union, Optional, List, Dict
 
-from fastapi import FastAPI, Depends, HTTPException, status, Request, APIRouter
+from fastapi import (
+    FastAPI,
+    Depends,
+    HTTPException,
+    status,
+    Request,
+    APIRouter,
+    exceptions,
+)
 from fastapi.middleware.cors import CORSMiddleware
 
 from starlette.middleware.sessions import SessionMiddleware
 from kinde_sdk.kinde_api_client import KindeApiClient
+
+from fastapi.responses import JSONResponse
+from pydantic import ValidationError
+
+import json
+import logging
 
 # import uvicorn
 
@@ -66,6 +80,13 @@ async def gatekeeping_test(
     return "You have entered the gate"
 
 
-@app.post("/refresh_all_chunks")
-async def refresh_all_known_chunks() -> Dict[int, List[str]]:
-    return states.refresh_all_known_chunks()
+@app.exception_handler(exceptions.RequestValidationError)
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request, exc):
+    logging.error(f"The client sent invalid data!: {exc}")
+    exc_json = json.loads(exc.json())
+    response = {"message": [], "data": None}
+    for error in exc_json:
+        response["message"].append(f"{error['loc']}: {error['msg']}")
+
+    return JSONResponse(response, status_code=422)

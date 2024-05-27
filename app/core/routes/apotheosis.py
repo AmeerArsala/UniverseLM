@@ -1,16 +1,15 @@
 from typing import Union, Optional, List, Dict
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
-import sqlalchemy
-from app.core.db import database as db
+from app.core import api_auth
 
 from app.core.schemas.entities import Chunk
 
 from app.lib import society, states
 
 
-router = APIRouter()
+router = APIRouter(tags=["apotheosis"], dependencies=[Depends(api_auth.get_api_key)])
 
 
 class CreateCommunityParams(BaseModel):

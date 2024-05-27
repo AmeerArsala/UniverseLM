@@ -1,13 +1,19 @@
 from typing import Union, Optional, List, Dict
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
+
+from app.core import api_auth
 
 from app.core.schemas.entities import Chunk
 from app.core.schemas.info import Lore, Belonging
 from app.lib import society, states, users
 
 
-router = APIRouter(prefix="/{community_id}")
+router = APIRouter(
+    prefix="/{community_id}",
+    tags=["functions"],
+    dependencies=[Depends(api_auth.get_api_key)],
+)
 
 
 @router.post("/startup")

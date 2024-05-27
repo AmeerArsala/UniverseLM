@@ -4,11 +4,13 @@ from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.responses import RedirectResponse, StreamingResponse
 
+from app.core import api_auth
+
 from app.lib.chat import AgentChat, AgentChatParams, manifest_chat
 from app.lib import users
 
 
-router = APIRouter()
+router = APIRouter(tags=["chat"], dependencies=[Depends(api_auth.get_api_key)])
 
 
 def retrieve_chat_response(chat: AgentChat, inputs: Dict, stream_response: bool):
