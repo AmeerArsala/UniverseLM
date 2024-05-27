@@ -2,6 +2,10 @@
 	import { MenuItem, ProductItem, HoveredLink } from "./ui/NavbarMenu";
   import GitHubStarView from "@components/GitHubStarView.svelte";
 
+  import * as Dialog from "$lib/components/ui/dialog/index.js";
+  import SignInDialog from "@components/AuthForms/SignInDialog.svelte";
+  import SignUpDialog from "@components/AuthForms/SignUpDialog.svelte";
+
 	let active: string | null = null;
 
   /**
@@ -67,24 +71,34 @@
         </div>
 
         <!--Login Button-->
-        <a href="/sign-in">
-          <button class="p-[3px] relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
-            <div class="px-4 py-1.5  bg-black rounded-full relative group transition duration-200 text-white hover:bg-transparent">
-              Login
-            </div>
-          </button>
-        </a>
+        <Dialog.Root>
+          <Dialog.Trigger>
+            <button class="p-[3px] relative">
+              <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+              <div class="px-4 py-1.5  bg-black rounded-full relative group transition duration-200 text-white hover:bg-transparent">
+                Login
+              </div>
+            </button>
+          </Dialog.Trigger>
+
+          <!-- Dialog content -->
+          <SignInDialog />
+        </Dialog.Root>
 
         <!--Sign Up Button-->
-        <a href="/sign-up">
-          <button class="group p-[3px] relative rounded-lg overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:animate-shimmer" />
-            <div class="px-4 py-1.5 relative group transition duration-200 text-white bg-transparent">
-              Sign Up
-            </div>
-          </button>
-        </a>
+        <Dialog.Root>
+          <Dialog.Trigger>
+            <button class="group p-[3px] relative rounded-lg overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:animate-shimmer" />
+              <div class="px-4 py-1.5 relative group transition duration-200 text-white bg-transparent">
+                Sign Up
+              </div>
+            </button>
+          </Dialog.Trigger>
+
+          <!-- Dialog content -->
+          <SignUpDialog />
+        </Dialog.Root>
       </div>
 		</nav>
 	</div>
