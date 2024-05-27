@@ -12,7 +12,7 @@ from kinde_sdk.kinde_api_client import KindeApiClient
 
 from app import config
 from app.core import clients
-from app.core.routes import apotheosis, chat, functions, dataview, admin
+from app.core.routes import apotheosis, chat, functions, dataview, admin, auth
 from app.lib import society, states, users
 
 
@@ -51,6 +51,7 @@ app.include_router(chat.router, prefix="/chat")
 app.include_router(functions.router, prefix="/community")
 app.include_router(dataview.router, prefix="/view")
 app.include_router(admin.router, prefix="/admin")
+app.include_router(auth.router, prefix="/auth")
 
 
 @app.get("/")
