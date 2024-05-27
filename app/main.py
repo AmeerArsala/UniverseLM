@@ -4,8 +4,10 @@ from typing import Union, Optional, List, Dict
 
 from fastapi import FastAPI, Depends, HTTPException, status, Request, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 import uvicorn
+import config
 
 from app.core.routes import apotheosis, chat, functions, dataview, admin
 from app.lib import society, states, users
@@ -35,6 +37,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Session/Auth management
+app.add_middleware(SessionMiddleware, secret_key=config.SECRET_KEY)
+
 
 # TODO: make everything depend on user API keys
 # and admin only things will require an admin token
@@ -57,7 +62,7 @@ async def refresh_all_known_chunks() -> Dict[int, List[str]]:
 
 # uvicorn main:app --reload
 def start():
-    uvicorn.run("main:app", reload=True)
+    uvicorn.run("main:app", reload=True, port=8080)
 
 
 if __name__ == "__main__":

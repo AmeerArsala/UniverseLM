@@ -46,7 +46,7 @@ pnpm run dev
 ## Roadmap
 
 - [ ] Finish the technology
-- [ ] Finish the application (the backend + database)
+- [x] Finish the application (the backend + database)
 - [ ] Finish the front end
 - [ ] User Authentication
 - [x] Switch from SvelteKit to Astro (in order to use mainly Svelte but with React thrown in for support)
@@ -54,7 +54,8 @@ pnpm run dev
 ## Other TODOs
 
 - [ ] Finish API routes -> Make API keys for authenticated users who pay for no reason
-- [ ] Scale with PostgresML (move away from Neon) + Pinecone (move away from local)
+- [ ] Scale with PostgresML (move away from Neon) and/or Turso + Pinecone (move away from local)
+- [ ] Move auth session management to a managed redis service like upstash rather than local
 
 ## Bloat
 
