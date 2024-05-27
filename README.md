@@ -33,6 +33,12 @@ micromamba install -c conda-forge packaging=23.2
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
+OR
+
+```
+python3 run_server.py
+```
+
 4. (Optional) Run the front end (make sure you have pnpm installed)
 
 ```

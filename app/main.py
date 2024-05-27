@@ -4,11 +4,14 @@ from typing import Union, Optional, List, Dict
 
 from fastapi import FastAPI, Depends, HTTPException, status, Request, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
+
 from starlette.middleware.sessions import SessionMiddleware
+from kinde_sdk.kinde_api_client import KindeApiClient
 
-import uvicorn
-import config
+# import uvicorn
 
+from app import config
+from app.core import clients
 from app.core.routes import apotheosis, chat, functions, dataview, admin
 from app.lib import society, states, users
 
@@ -55,15 +58,13 @@ async def read_root():
     return {"message": "Welcome to UniverseLM, the future of AI"}
 
 
+@app.get("/gatekeep")
+async def gatekeeping_test(
+    kinde_client: KindeApiClient = Depends(clients.get_kinde_client),
+):
+    return "You have entered the gate"
+
+
 @app.post("/refresh_all_chunks")
 async def refresh_all_known_chunks() -> Dict[int, List[str]]:
     return states.refresh_all_known_chunks()
-
-
-# uvicorn main:app --reload
-def start():
-    uvicorn.run("main:app", reload=True, port=8080)
-
-
-if __name__ == "__main__":
-    start()

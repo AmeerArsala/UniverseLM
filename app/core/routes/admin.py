@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Request
-from app.core import auth
+from app.core import api_auth
 
 
-router = APIRouter(dependencies=[Depends(auth.get_api_key)])
+router = APIRouter(dependencies=[Depends(api_auth.get_api_key)])
