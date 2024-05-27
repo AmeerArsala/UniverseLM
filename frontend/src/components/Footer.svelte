@@ -12,7 +12,7 @@
       </div>
       <div>
         <a href="/careers">Careers</a>
-        <a href="#">Support Us</a>
+        <a href="https://ko-fi.com/ameerarsala", target="_blank">Support Us</a>
         <a href="https://github.com/AmeerArsala/UniverseLM" target="_blank">GitHub</a>
         <a href="https://www.linkedin.com/in/ameer-arsala/" target="_blank"
           >LinkedIn</a
