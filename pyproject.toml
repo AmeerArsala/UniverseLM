@@ -28,6 +28,7 @@ ollama = "^0.2.0"
 google-generativeai = "0.5.2"
 langchain-cohere = "^0.1.5"
 langchainhub = "^0.1.15"
+kinde-python-sdk = "^1.2.4"
 
 [build-system]
 requires = ["poetry-core"]

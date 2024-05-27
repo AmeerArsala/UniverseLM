@@ -1,0 +1,7 @@
+tasks:
+  - name: Initialization
+    before: pip install poetry
+    init: |
+      poetry install
+      cd frontend && pnpm install
+      cd ..
