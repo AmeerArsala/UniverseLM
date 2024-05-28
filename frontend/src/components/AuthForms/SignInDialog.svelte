@@ -4,6 +4,16 @@
 	import { Input, Label } from '@components/ui/SignupForm';
   import * as Dialog from "$lib/components/ui/dialog/index.js";
 
+  import { BACKEND_URL } from "$lib/utils/envconfig";
+
+  const email_password_href_prefix: string = `${BACKEND_URL}/auth/login?method=email_password`;
+  const github_href: string = `${BACKEND_URL}/auth/login?method=github`;
+  const google_href: string = `${BACKEND_URL}/auth/login?method=google`;
+  const slack_href: string = `${BACKEND_URL}/auth/login?method=slack`;
+
+  // Bind this value to what the user typed
+  let email: string = "";
+
 	const handleSubmit = (e: SubmitEvent) => {
 		e.preventDefault();
 		console.log('Form submitted');
@@ -26,7 +36,7 @@
 	<form class="my-8" on:submit={handleSubmit}>
 		<div class={'mb-4 flex w-full flex-col space-y-2'}>
 			<Label htmlFor="email">Email Address</Label>
-			<Input id="email" placeholder="youremail@example.com" type="email" />
+			<Input id="email" placeholder="youremail@example.com" type="email" bind:value={email} />
 		</div>
 		<div class={cn('mb-4 flex w-full flex-col space-y-2')}>
 			<Label htmlFor="password">Password</Label>
@@ -34,18 +44,19 @@
 		</div>
 
     <div>
-      <button
-        class="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-        type="submit"
-      >
-        Sign in &rarr;
-        <span
-          class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
-        />
-        <span
-          class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
-        />
-      </button>
+      <a href={email_password_href_prefix + `&email=${encodeURIComponent(email)}`} type="submit">
+        <button
+          class="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+        >
+          Sign in &rarr;
+          <span
+            class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
+          />
+          <span
+            class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
+          />
+        </button>
+      </a>
 
       <div
         class="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700"
@@ -53,49 +64,55 @@
 
       <div class="flex flex-col space-y-4">
         <!-- GITHUB -->
-        <button
-          class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-          type="submit"
-        >
-          <IconBrandGithub class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-          <span class="text-sm text-neutral-700 dark:text-neutral-300"> GitHub </span>
-          <span
-            class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
-          />
-          <span
-            class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
-          />
-        </button>
+        <a href={github_href}>
+          <button
+            class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+            type="submit"
+          >
+            <IconBrandGithub class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+            <span class="text-sm text-neutral-700 dark:text-neutral-300"> GitHub </span>
+            <span
+              class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
+            />
+            <span
+              class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
+            />
+          </button>
+        </a>
 
         <!-- GOOGLE -->
-        <button
-          class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-          type="submit"
-        >
-          <IconBrandGoogle class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-          <span class="text-sm text-neutral-700 dark:text-neutral-300"> Google </span>
-          <span
-            class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
-          />
-          <span
-            class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
-          />
-        </button>
+          <a href={google_href}>
+            <button
+              class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+              type="submit"
+            >
+              <IconBrandGoogle class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+              <span class="text-sm text-neutral-700 dark:text-neutral-300"> Google </span>
+              <span
+                class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
+              />
+              <span
+                class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
+              />
+            </button>
+          </a>
 
         <!-- SLACK -->
-        <button
-          class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-          type="submit"
-        >
-          <IconBrandSlack class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-          <span class="text-sm text-neutral-700 dark:text-neutral-300"> Slack </span>
-          <span
-            class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
-          />
-          <span
-            class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
-          />
-        </button>
+        <a href={slack_href}>
+          <button
+            class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+            type="submit"
+          >
+            <IconBrandSlack class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+            <span class="text-sm text-neutral-700 dark:text-neutral-300"> Slack </span>
+            <span
+              class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
+            />
+            <span
+              class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
+            />
+          </button>
+        </a>
 
         <!-- joke buttons down here -->
 

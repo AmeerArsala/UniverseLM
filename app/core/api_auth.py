@@ -101,7 +101,7 @@ async def get_user_api_key(
 api_key_header = APIKeyHeader(name="universal_access_token", auto_error=False)
 
 
-async def get_api_key(request: Request, api_key_header: Security(api_key_header)):
+async def get_api_key(request: Request, api_key_header: str = Security(api_key_header)):
     global admin_api_keys
 
     user_api_keys: List[str] = get_all_user_api_keys()

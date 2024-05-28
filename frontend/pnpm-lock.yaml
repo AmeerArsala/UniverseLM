@@ -41,6 +41,9 @@ dependencies:
   '@fontsource-variable/plus-jakarta-sans':
     specifier: ^5.0.21
     version: 5.0.21
+  '@kinde-oss/kinde-auth-pkce-js':
+    specifier: ^3.1.0
+    version: 3.1.0
   '@nanostores/react':
     specifier: ^0.7.2
     version: 0.7.2(nanostores@0.10.3)(react@18.3.1)
@@ -1513,6 +1516,12 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  /@kinde-oss/kinde-auth-pkce-js@3.1.0:
+    resolution: {integrity: sha512-6Q80hF2obYKsXjpD7VgqwAi9CJcurdwtw3WJtJT+Fk4f0LiCsyhOB2Dy96STGSvWPtEeQYO3sryteJG3lexM2w==}
+    dependencies:
+      jwt-decode: 4.0.0
+    dev: false
 
   /@libsql/client@0.6.0:
     resolution: {integrity: sha512-qhQzTG/y2IEVbL3+9PULDvlQFWJ/RnjFXECr/Nc3nRngGiiMysDaOV5VUzYk7DulUX98EA4wi+z3FspKrUplUA==}
@@ -6617,6 +6626,11 @@ packages:
       array.prototype.flat: 1.3.2
       object.assign: 4.1.5
       object.values: 1.2.0
+    dev: false
+
+  /jwt-decode@4.0.0:
+    resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
+    engines: {node: '>=18'}
     dev: false
 
   /kapsule@1.14.5:

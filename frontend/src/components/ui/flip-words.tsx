@@ -14,6 +14,8 @@ export const FlipWords = ({
   className?: string;
 }) => {
   const [currentWord, setCurrentWord] = useState(words[0]);
+  const [currentInterval, setCurrentInterval] = useState(null);
+  //const prevWordRef = useRef(currentWord); // Ref to track the previous word
 
   useEffect(() => {
     startAnimation();
@@ -24,15 +26,23 @@ export const FlipWords = ({
   }, []);
 
   const startAnimation = () => {
+    if (currentInterval !== null) {
+      clearInterval(currentInterval);
+    }
+
     let i = 0;
     interval = setInterval(() => {
+      // Swap words
       i++;
       if (i === words.length) {
         i = 0;
       }
       const word = words[i];
+
       setCurrentWord(word);
     }, duration);
+
+    setCurrentInterval(interval);
   };
 
   return (
@@ -65,7 +75,6 @@ export const FlipWords = ({
           "z-10 inline-block relative justify-self-end",
           className
         )}
-        key={currentWord}
       >
         {currentWord.split("").map((letter, index) => {
           if (letter === " ") {

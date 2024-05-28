@@ -16,5 +16,11 @@ export default defineConfig({
     applyBaseStyles: false
   }), svelte(), react(), mdx()],
   output: "hybrid",
-  adapter: vercel()
+  adapter: vercel(),
+  redirects: {
+    "/logout": "/", // Logging out redirects back to homepage
+    // also make the login/register redirection to be dynamic such that:
+    // any typical login would take straight to the dashboard
+    // whereas registration takes to the homepage
+  }
 });

@@ -16,17 +16,18 @@ PROD_MODE: bool = os.getenv("MODE") == "PROD"
 SITE_HOST: str = "localhost"
 SITE_PORT: int = 4321
 
-# Quickstart copy/paste overwrite section
 SITE_URL = "https://universelm.org" if PROD_MODE else f"http://{SITE_HOST}:{SITE_PORT}"
 
 
-LOGOUT_REDIRECT_URL = f"{SITE_URL}/auth/logout"
-KINDE_CALLBACK_URL = f"{SITE_URL}/auth/kinde_callback"
+# Redirects
+LOGOUT_REDIRECT_URL = f"{SITE_URL}/logout"
+KINDE_CALLBACK_URL = f"{SITE_URL}/callback"
+
+# Kinde Credentials
 CLIENT_ID = os.getenv("KINDE_CLIENT_ID")
 CLIENT_SECRET = os.getenv("KINDE_CLIENT_SECRET")
 
-# Quickstart copy/paste overwrite section
-
+# More credentials for Kinde
 KINDE_ISSUER_URL = os.getenv("KINDE_ISSUER_URL")
 GRANT_TYPE = GrantType.AUTHORIZATION_CODE_WITH_PKCE  # GrantType.AUTHORIZATION_CODE
 CODE_VERIFIER = os.getenv("KINDE_CODE_VERIFIER")  # A suitably long string > 43 chars
@@ -55,3 +56,11 @@ def init_kinde_api_client_params(configuration: Configuration) -> Dict:
         kinde_api_client_params["code_verifier"] = CODE_VERIFIER
 
     return kinde_api_client_params
+
+
+CONNECTION_IDS: Dict[str, str] = {
+    "email_password": os.getenv("PUBLIC_KINDE_CONNECTION_ID_EMAIL_PASSWORD"),
+    "github": os.getenv("PUBLIC_KINDE_CONNECTION_ID_GITHUB"),
+    "google": os.getenv("PUBLIC_KINDE_CONNECTION_ID_GOOGLE"),
+    "slack": os.getenv("PUBLIC_KINDE_CONNECTION_ID_SLACK"),
+}
