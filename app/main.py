@@ -26,7 +26,7 @@ import logging
 
 from app import config
 from app.core import clients
-from app.core.routes import apotheosis, chat, functions, dataview, admin, auth
+from app.core.routes import apotheosis, chat, functions, dataview, admin, auth, user
 from app.lib import society, states, users
 
 
@@ -58,14 +58,13 @@ app.add_middleware(
 app.add_middleware(SessionMiddleware, secret_key=config.SECRET_KEY)
 
 
-# TODO: make everything depend on user API keys
-# and admin only things will require an admin token
 app.include_router(apotheosis.router, prefix="/apotheosis")
 app.include_router(chat.router, prefix="/chat")
 app.include_router(functions.router, prefix="/community")
 app.include_router(dataview.router, prefix="/view")
 app.include_router(admin.router, prefix="/admin")
 app.include_router(auth.router, prefix="/auth")
+app.include_router(user.router, prefix="/user")
 
 
 @app.get("/")

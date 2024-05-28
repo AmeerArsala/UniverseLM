@@ -12,9 +12,9 @@ load_dotenv()
 # Must become true on prod
 PROD_MODE: bool = os.getenv("MODE") == "PROD"
 
-# Local development params
+# Local development params for front end
 SITE_HOST: str = "localhost"
-SITE_PORT: int = 8080
+SITE_PORT: int = 4321
 
 # Quickstart copy/paste overwrite section
 SITE_URL = "https://universelm.org" if PROD_MODE else f"http://{SITE_HOST}:{SITE_PORT}"

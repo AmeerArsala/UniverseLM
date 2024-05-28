@@ -19,9 +19,9 @@
         >
       </div>
       <div>
-        <a href="#">Terms of Service</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Acceptable Use Policy</a>
+        <a href="/terms-of-service">Terms of Service</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/acceptable-use-policy">Acceptable Use Policy</a>
       </div>
     </nav>
 

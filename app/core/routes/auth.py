@@ -9,7 +9,7 @@ from app.core import clients
 from kinde_sdk.kinde_api_client import KindeApiClient
 
 
-router = APIRouter()
+router = APIRouter(tags=["auth"])
 
 
 # Login endpoint
@@ -30,7 +30,9 @@ def register(request: Request):
     return RedirectResponse(register_url)
 
 
-# Post-login/register: where to go? (I think)
+# I believe this is post-login/register, but not logout
+# In which case, it should attempt to write a user client session
+# As a result, the front end should probably invoke serverless functions to handle what is covered/implied by the /login and /register routes above and then call this route
 @router.get("/kinde_callback")
 def callback(request: Request):
     kinde_client = KindeApiClient(**clients.kinde_api_client_params)

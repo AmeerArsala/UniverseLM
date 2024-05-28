@@ -7,7 +7,7 @@
 >
 	<div class="mx-auto max-w-2xl p-4">
 		<h2
-			class="relative z-10 bg-gradient-to-b from-neutral-200 to-neutral-600 bg-clip-text text-center font-sans text-lg font-bold text-transparent md:text-7xl"
+			class="relative z-10 bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text text-center font-sans text-lg font-bold text-transparent md:text-7xl"
 		>
 			Join the waitlist
 		</h2>

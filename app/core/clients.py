@@ -15,7 +15,7 @@ import json
 configuration: Configuration = Configuration(host=config.KINDE_ISSUER_URL)
 kinde_api_client_params: Dict = config.init_kinde_api_client_params(configuration)
 
-# USER KINDE CLIENTS
+# USER KINDE CLIENTS FOR USER SESSIONS
 user_clients = redis.Redis(
     host=os.getenv("UPSTASH_REDIS_HOST_USERSESSIONS"),
     port=6379,
@@ -24,7 +24,7 @@ user_clients = redis.Redis(
 )
 
 
-def read_user_client(user_id):
+def read_user_client(user_id) -> KindeApiClient:
     global user_clients
 
     retrieved_serialized_user_api_client = user_clients.get(user_id)
@@ -52,6 +52,7 @@ def delete_user_client(user_id):
 
 
 # Dependency to get the current user's KindeApiClient instance
+# Like an ID to a party or something except this party requires being an authenticated user
 # We will use dependency injection to GATEKEEP our routes! LOL!!!
 def get_kinde_client(request: Request) -> KindeApiClient:
     global user_clients
@@ -62,9 +63,9 @@ def get_kinde_client(request: Request) -> KindeApiClient:
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated"
         )
 
-    # Manifest it
+    # Manifest a session
     if user_id not in user_clients:
-        # If the client does not exist, create a new instance
+        # If the client does not exist, create a new instance / session
         user_api_client = KindeApiClient()
         write_user_client(user_id, user_api_client)
 
@@ -72,6 +73,7 @@ def get_kinde_client(request: Request) -> KindeApiClient:
 
     # Ensure the client is authenticated
     if not kinde_client.is_authenticated():
+        # delete_user_client(user_id)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="You should authenticate yourself NOW!",
