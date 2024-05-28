@@ -17,9 +17,7 @@ SITE_HOST: str = "localhost"
 SITE_PORT: int = 8080
 
 # Quickstart copy/paste overwrite section
-SITE_URL = (
-    "https://universelm.vercel.app" if PROD_MODE else f"http://{SITE_HOST}:{SITE_PORT}"
-)
+SITE_URL = "https://universelm.org" if PROD_MODE else f"http://{SITE_HOST}:{SITE_PORT}"
 
 
 LOGOUT_REDIRECT_URL = f"{SITE_URL}/auth/logout"

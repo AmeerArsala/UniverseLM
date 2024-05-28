@@ -12,6 +12,8 @@ __pycache__/
 ./.gitignore
 ./schema.sql
 ./environment.yml
+./test_index.http
 
-# Ignore the front end
+
+# Ignore the front end, this deployment is for the backend
 frontend/
