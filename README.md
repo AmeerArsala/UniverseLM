@@ -54,7 +54,7 @@ pnpm run dev
 - [ ] Finish the technology
 - [x] Finish the application (the backend + database)
 - [ ] Finish the front end
-- [ ] User Authentication
+- [x] User Authentication
 - [x] Switch from SvelteKit to Astro (in order to use mainly Svelte but with React thrown in for support)
 
 ## Other TODOs
