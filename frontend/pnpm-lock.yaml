@@ -44,6 +44,9 @@ dependencies:
   '@kinde-oss/kinde-auth-pkce-js':
     specifier: ^3.1.0
     version: 3.1.0
+  '@kinde/management-api-js':
+    specifier: ^0.6.0
+    version: 0.6.0
   '@nanostores/react':
     specifier: ^0.7.2
     version: 0.7.2(nanostores@0.10.3)(react@18.3.1)
@@ -1521,6 +1524,13 @@ packages:
     resolution: {integrity: sha512-6Q80hF2obYKsXjpD7VgqwAi9CJcurdwtw3WJtJT+Fk4f0LiCsyhOB2Dy96STGSvWPtEeQYO3sryteJG3lexM2w==}
     dependencies:
       jwt-decode: 4.0.0
+    dev: false
+
+  /@kinde/management-api-js@0.6.0:
+    resolution: {integrity: sha512-VmM6/0df1EIiLbzhqmc0dE4WDzOnWt4Kh/rgu3swy6qbeXG5DefhovMie0EP5BaW2lnO5cN1LnxpY/9QioKR/g==}
+    dependencies:
+      aws-jwt-verify: 4.0.1
+      dotenv: 16.4.5
     dev: false
 
   /@libsql/client@0.6.0:
@@ -3973,6 +3983,11 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       possible-typed-array-names: 1.0.0
+    dev: false
+
+  /aws-jwt-verify@4.0.1:
+    resolution: {integrity: sha512-kzvi71eD3w/mCpYRUY7cz6DX4bfYihGdI2yV3FYQ2JuZZenqAqDPz0gWj0ew6vlAtdEVBNb7p+Dm2TAIxpVYMA==}
+    engines: {node: '>=14.0.0'}
     dev: false
 
   /axios@1.7.0:

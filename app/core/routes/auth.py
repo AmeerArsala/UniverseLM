@@ -20,15 +20,23 @@ def login(request: Request):
     # Decipher query params first
     method: str = request.query_params["method"]
 
-    extra_params: Dict = {"connection_id": config.CONNECTION_IDS[method]}
+    print(method)
+
+    auth_params: Dict = {"connection_id": config.CONNECTION_IDS[method]}
 
     if method == "email_password":
         email: str = request.query_params["email"]
-        extra_params["login_hint"] = email
+        auth_params["login_hint"] = email
+
+    # print(auth_params)
 
     # Construct the redirect with the extra params
     kinde_client = KindeApiClient(**clients.kinde_api_client_params)
-    login_url = kinde_client.get_login_url(additional_params=extra_params)
+    login_url = kinde_client.get_login_url(
+        additional_params={"auth_url_params": auth_params}
+    )
+
+    # print(login_url)
 
     return RedirectResponse(login_url)
 
@@ -40,14 +48,21 @@ def register(request: Request):
     # Decipher query params first
     method: str = request.query_params["method"]
 
-    extra_params: Dict = {"connection_id": config.CONNECTION_IDS[method]}
+    # print(method)
+
+    auth_params: Dict = {"connection_id": config.CONNECTION_IDS[method]}
 
     if method == "email_password":
         email: str = request.query_params["email"]
-        extra_params["login_hint"] = email
+        auth_params["login_hint"] = email
 
+    # print(auth_params)
+
+    # Construct the redirect with the extra params
     kinde_client = KindeApiClient(**clients.kinde_api_client_params)
-    register_url = kinde_client.get_register_url(additional_params=extra_params)
+    register_url = kinde_client.get_register_url(
+        additional_params={"auth_url_params": auth_params}
+    )
 
     return RedirectResponse(register_url)
 

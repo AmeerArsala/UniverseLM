@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { cn } from '$lib/utils';
 	import { IconBrandGithub, IconBrandGoogle, IconBrandDiscord, IconBrandSlack, IconBrandOnlyfans, IconBrandFortnite } from '@tabler/icons-svelte';
-	import { Input, Label } from '@components/ui/SignupForm';
+	import { Input, Label, EmailInput } from '@components/ui/SignupForm';
   import * as Dialog from "$lib/components/ui/dialog/index.js";
 
   import { BACKEND_URL } from "$lib/utils/envconfig";
@@ -12,7 +12,9 @@
   const slack_href: string = `${BACKEND_URL}/auth/login?method=slack`;
 
   // Bind this value to what the user typed
-  let email: string = "";
+  let email = "";
+
+  $: email_password_href = email_password_href_prefix + `&email=${encodeURIComponent(email)}`;
 
 	const handleSubmit = (e: SubmitEvent) => {
 		e.preventDefault();
@@ -36,19 +38,17 @@
 	<form class="my-8" on:submit={handleSubmit}>
 		<div class={'mb-4 flex w-full flex-col space-y-2'}>
 			<Label htmlFor="email">Email Address</Label>
-			<Input id="email" placeholder="youremail@example.com" type="email" bind:value={email} />
-		</div>
-		<div class={cn('mb-4 flex w-full flex-col space-y-2')}>
-			<Label htmlFor="password">Password</Label>
-			<Input id="password" placeholder="••••••••" type="password" />
+			<EmailInput id="email" placeholder="youremail@example.com" bind:value={email} />
 		</div>
 
     <div>
-      <a href={email_password_href_prefix + `&email=${encodeURIComponent(email)}`} type="submit">
+      <a href={email_password_href}>
         <button
-          class="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+          class="group/btn text-center relative h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+          type="button"
         >
-          Sign in &rarr;
+
+          <span class="text-center">Sign in with Email &rarr;</span>
           <span
             class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
           />
@@ -67,7 +67,7 @@
         <a href={github_href}>
           <button
             class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            type="submit"
+            type="button"
           >
             <IconBrandGithub class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
             <span class="text-sm text-neutral-700 dark:text-neutral-300"> GitHub </span>
@@ -81,27 +81,27 @@
         </a>
 
         <!-- GOOGLE -->
-          <a href={google_href}>
-            <button
-              class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-              type="submit"
-            >
-              <IconBrandGoogle class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-              <span class="text-sm text-neutral-700 dark:text-neutral-300"> Google </span>
-              <span
-                class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
-              />
-              <span
-                class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
-              />
-            </button>
-          </a>
+        <a href={google_href}>
+          <button
+            class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
+            type="button"
+          >
+            <IconBrandGoogle class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+            <span class="text-sm text-neutral-700 dark:text-neutral-300"> Google </span>
+            <span
+              class="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"
+            />
+            <span
+              class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
+            />
+          </button>
+        </a>
 
         <!-- SLACK -->
         <a href={slack_href}>
           <button
             class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            type="submit"
+            type="button"
           >
             <IconBrandSlack class="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
             <span class="text-sm text-neutral-700 dark:text-neutral-300"> Slack </span>

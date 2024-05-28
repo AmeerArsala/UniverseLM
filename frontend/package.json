@@ -23,6 +23,7 @@
     "@fontsource-variable/manrope": "^5.0.20",
     "@fontsource-variable/plus-jakarta-sans": "^5.0.21",
     "@kinde-oss/kinde-auth-pkce-js": "^3.1.0",
+    "@kinde/management-api-js": "^0.6.0",
     "@nanostores/react": "^0.7.2",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-radio-group": "^1.1.3",

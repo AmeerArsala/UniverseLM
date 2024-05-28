@@ -47,7 +47,7 @@
 		class="group/input rounded-lg p-[2px] transition duration-300"
 	>
 		<input
-      type="text"
+      type="email"
       bind:value={value}
 			class={cn(
 				`dark:placeholder-text-neutral-600 duration-400 flex h-10 w-full rounded-md border-none bg-gray-50 px-3 py-2 text-sm text-black shadow-input  transition file:border-0
