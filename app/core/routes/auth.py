@@ -71,8 +71,10 @@ def register(request: Request):
 # In which case, it should attempt to write a user client session
 # As a result, the front end should probably invoke serverless functions to handle what is covered/implied by the /login and /register routes above and then call this route
 # Call this on when the redirect happens at https://universelm.org/callback
-@router.get("/kinde_callback")
-def callback(request: Request):
+@router.get("/kinde_callback/{mode}")
+def callback(mode: str, request: Request):
+    smart_mode: bool = mode == "smart"
+
     kinde_client = KindeApiClient(**clients.kinde_api_client_params)
     kinde_client.fetch_token(authorization_response=str(request.url))
 
@@ -82,14 +84,25 @@ def callback(request: Request):
     # Store in session
     request.session["user_id"] = user_id
 
-    # Update the user_clients cache with the client session
-    clients.write_user_client(user_id, kinde_client)
-
     # return RedirectResponse(config.KINDE_CALLBACK_URL)
     # This is for after the the /callback is navigated to on the front end, which will then call this function
     # From there, it will navigate back to the original
     # return RedirectResponse(app_global.url_path_for("read_root"))
-    return RedirectResponse(config.SITE_URL)
+    response = RedirectResponse(config.SITE_URL)
+
+    if smart_mode:
+        # Find out whether it is the first time the user is requesting (via this heuristic)
+        is_first_time: bool = clients.user_clients.get(user_id) is None
+
+        # Update the user_clients cache with the client session
+        clients.write_user_client(user_id, kinde_client)
+
+        return {"response": response, "is_first_time": is_first_time}
+    else:
+        # Update the user_clients cache with the client session
+        clients.write_user_client(user_id, kinde_client)
+
+        return response
 
 
 # Logout endpoint
@@ -117,3 +130,13 @@ def logout(request: Request):
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="AUTHENTICATE YOURSELF YOU SCOUNDREL!",
     )
+
+
+@router.get("/is_authenticated")
+async def get_is_authenticated(request: Request) -> bool:
+    kinde_client = KindeApiClient(**clients.kinde_api_client_params)
+
+    # TODO: maybe remove this if it doesn't help
+    kinde_client.fetch_token(authorization_response=str(request.url))
+
+    return kinde_client.is_authenticated()

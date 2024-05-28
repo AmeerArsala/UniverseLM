@@ -64,12 +64,12 @@ def get_kinde_client(request: Request) -> KindeApiClient:
         )
 
     # Manifest a session
-    if user_id not in user_clients:
+    if user_clients.get(user_id) is None:
         # If the client does not exist, create a new instance / session
         user_api_client = KindeApiClient()
         write_user_client(user_id, user_api_client)
 
-    kinde_client = user_clients[user_id]
+    kinde_client = user_clients.get(user_id)
 
     # Ensure the client is authenticated
     if not kinde_client.is_authenticated():

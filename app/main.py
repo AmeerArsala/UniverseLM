@@ -38,7 +38,7 @@ app = FastAPI(
     title="UniverseLM",
     description=description,
     version="0.0.1",
-    terms_of_service="https://ran.anemo.ai",
+    terms_of_service="https://universelm.org",
     contact={"name": "Ameer Arsala", "email": "aarsala@calpoly.edu"},
 )
 
