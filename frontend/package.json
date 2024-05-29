@@ -48,6 +48,7 @@
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-svelte": "^2.39.0",
     "framer-motion": "^11.2.4",
+    "js-cookie": "^3.0.5",
     "lucide-svelte": "^0.379.0",
     "nanostores": "^0.10.3",
     "prettier": "^3.2.5",

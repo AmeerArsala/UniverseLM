@@ -6,7 +6,57 @@
   import SignInDialog from "@components/AuthForms/SignInDialog.svelte";
   import SignUpDialog from "@components/AuthForms/SignUpDialog.svelte";
 
+  import { onMount } from "svelte";
+  import axios from "axios";
+  import { BACKEND_URL } from "$lib/utils/envconfig";
+
+  import Cookies from 'js-cookie';
+
+  let isAuthenticated: boolean = false;
+
 	let active: string | null = null;
+
+  onMount(async () => {
+    // Set authentication state
+
+    // Get the stored userId. If nothing is stored, don't even bother.
+    let userID: string = localStorage.getItem('user_id');
+    if (userID === null) {
+      userID = Cookies.get('user_id');
+
+      if (userID === null) {
+        console.log("No userID found");
+        isAuthenticated = false;
+        return;
+      }
+
+      localStorage.setItem("user_id", userID);
+      //Cookies.remove()
+    }
+
+    const userId: string = Cookies.get('user_id');
+    //const userId: string = localStorage.getItem('userId');
+
+    if (userId === null) {
+      console.log("no userId found");
+      isAuthenticated = false;
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${BACKEND_URL}/auth/is_authenticated`, {
+        params: {
+          user_id: userId
+        }
+      });
+      isAuthenticated = response.data;
+    } catch(error) {
+      console.log("ERROR FINDING OUT WHETHER USER IS AUTHENTICATED:");
+      console.log(error);
+
+      isAuthenticated = false;
+    }
+  });
 
   /**
    * NAVBAR ROUTES
@@ -70,35 +120,57 @@
           <GitHubStarView repo_link="https://github.com/AmeerArsala/UniverseLM"/>
         </div>
 
-        <!--Login Button-->
-        <Dialog.Root>
-          <Dialog.Trigger>
-            <button class="p-[3px] relative">
-              <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
-              <div class="px-4 py-1.5  bg-black rounded-full relative group transition duration-200 text-white hover:bg-transparent">
-                Login
-              </div>
-            </button>
-          </Dialog.Trigger>
+        {#if !isAuthenticated}
+          <!--Login Button-->
+          <Dialog.Root>
+            <Dialog.Trigger>
+              <button class="p-[3px] relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+                <div class="px-4 py-1.5  bg-black rounded-full relative group transition duration-200 text-white hover:bg-transparent">
+                  Login
+                </div>
+              </button>
+            </Dialog.Trigger>
 
-          <!-- Dialog content -->
-          <SignInDialog />
-        </Dialog.Root>
+            <!-- Dialog content -->
+            <SignInDialog />
+          </Dialog.Root>
 
-        <!--Sign Up Button-->
-        <Dialog.Root>
-          <Dialog.Trigger>
+          <!--Sign Up Button-->
+          <Dialog.Root>
+            <Dialog.Trigger>
+              <button class="group p-[3px] relative rounded-lg overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:animate-shimmer" />
+                <div class="px-4 py-1.5 relative group transition duration-200 text-white bg-transparent">
+                  Sign Up
+                </div>
+              </button>
+            </Dialog.Trigger>
+
+            <!-- Dialog content -->
+            <SignUpDialog />
+          </Dialog.Root>
+        {:else}
+          <!--Dashboard button-->
+          <a href="/dashboard">
             <button class="group p-[3px] relative rounded-lg overflow-hidden">
               <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:animate-shimmer" />
               <div class="px-4 py-1.5 relative group transition duration-200 text-white bg-transparent">
-                Sign Up
+                Dashboard
               </div>
             </button>
-          </Dialog.Trigger>
+          </a>
 
-          <!-- Dialog content -->
-          <SignUpDialog />
-        </Dialog.Root>
+          <!--Log out button-->
+          <a href={`${BACKEND_URL}/auth/logout`}>
+            <button class="p-[3px] relative">
+              <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
+              <div class="px-4 py-1.5  bg-black rounded-full relative group transition duration-200 text-white hover:bg-transparent">
+                Logout
+              </div>
+            </button>
+          </a>
+        {/if}
       </div>
 		</nav>
 	</div>

@@ -16,12 +16,20 @@ PROD_MODE: bool = os.getenv("MODE") == "PROD"
 SITE_HOST: str = "localhost"
 SITE_PORT: int = 4321
 
-SITE_URL = "https://universelm.org" if PROD_MODE else f"http://{SITE_HOST}:{SITE_PORT}"
+# Local development params for backend
+HOST: str = "localhost"
+PORT: int = 8080
 
+# What we're working with
+SITE_URL = "https://universelm.org" if PROD_MODE else f"http://{SITE_HOST}:{SITE_PORT}"
+BACKEND_URL = os.getenv("BACKEND_URL") if PROD_MODE else f"http://{HOST}:{PORT}"
 
 # Redirects
 LOGOUT_REDIRECT_URL = f"{SITE_URL}/logout"
-KINDE_CALLBACK_URL = f"{SITE_URL}/callback"
+KINDE_CALLBACK_URL = f"{BACKEND_URL}/auth/kinde_callback"
+
+POST_CALLBACK_REDIRECT_URL = f"{SITE_URL}/dashboard"
+FIRST_TIME_POST_CALLBACK_REDIRECT_URL = f"{SITE_URL}/"
 
 # Kinde Credentials
 CLIENT_ID = os.getenv("KINDE_CLIENT_ID")
