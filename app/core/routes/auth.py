@@ -74,7 +74,7 @@ def register(request: Request):
 # I believe this is post-login/register, but not logout
 # In which case, it should attempt to write a user client session
 # As a result, the front end should probably invoke serverless functions to handle what is covered/implied by the /login and /register routes above and then call this route
-# Call this on when the redirect happens at https://universelm.org/callback
+# login-success
 @router.get("/kinde_callback")
 async def callback(request: Request):
     kinde_client = KindeApiClient(**clients.kinde_api_client_params)
@@ -128,7 +128,16 @@ async def callback(request: Request):
     # response.headers["Location"] = redirect_url
 
     response = RedirectResponse(redirect_url)
-    response.set_cookie(key="user_id", value=user_id)
+    response.set_cookie(
+        key="user_id",
+        value=user_id,
+        domain=config.SITE_DOMAIN,
+        secure=config.USING_HTTPS,
+        httponly=False,  # we are NOT putting this shit in the header
+        samesite="none",
+    )
+
+    print(f"user_id: {user_id}")
 
     return response
 

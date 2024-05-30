@@ -10,7 +10,7 @@ from authlib.common.security import generate_token
 load_dotenv()
 
 # Must become true on prod
-IS_PROD_MODE = lambda: os.getenv("MODE") == "PROD"
+IS_PROD_MODE: bool = os.getenv("MODE") == "PROD"
 
 # Local development params for front end
 SITE_HOST: str = "localhost"
@@ -20,11 +20,13 @@ SITE_PORT: int = 4321
 HOST: str = "localhost"
 PORT: int = 8080
 
+# Other front end variables
+SITE_DOMAIN: str = "universelm.org" if IS_PROD_MODE else f"{SITE_HOST}:{SITE_PORT}"
+USING_HTTPS: bool = IS_PROD_MODE
+
 # What we're working with
-SITE_URL = (
-    "https://universelm.org" if IS_PROD_MODE() else f"http://{SITE_HOST}:{SITE_PORT}"
-)
-BACKEND_URL = os.getenv("BACKEND_URL") if IS_PROD_MODE() else f"http://{HOST}:{PORT}"
+SITE_URL = f"https://{SITE_DOMAIN}" if USING_HTTPS else f"http://{SITE_DOMAIN}"
+BACKEND_URL = os.getenv("BACKEND_URL") if IS_PROD_MODE else f"http://{HOST}:{PORT}"
 
 # Redirects
 LOGOUT_REDIRECT_URL = f"{SITE_URL}/logout"

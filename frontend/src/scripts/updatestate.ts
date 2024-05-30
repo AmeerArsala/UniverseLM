@@ -54,7 +54,7 @@ export async function updateAuthenticationState() {
   console.log(userID.length);*/
 
   // I FUCKING HATE JS WITH ITS BULLSHIT
-  const idNotFound = (id) => (id === null || id === "undefined" || id === "null");
+  const idNotFound = (id) => (id === null || id === "undefined" || id === "null" || id === undefined);
 
   if (idNotFound(userID.get())) {
     console.log("Trying again...");
@@ -63,9 +63,17 @@ export async function updateAuthenticationState() {
     console.log("userID (2nd attempt): " + cookieUserID);
 
     if (idNotFound(cookieUserID)) {
-      console.log("No userID found");
-      isAuthenticated.set(false);
-      return;
+      console.log("Trying ONE more time...");
+
+      console.log("Full cookie: " + document.cookie);
+      cookieUserID = `; ${document.cookie}`.split(`; user_id=`);
+      console.log(cookieUserID);
+
+      if (idNotFound(cookieUserID)) {
+        console.log("No userID found");
+        isAuthenticated.set(false);
+        return;
+      }
     }
 
     userID.set(cookieUserID); //localStorage.setItem("user_id", userID);
