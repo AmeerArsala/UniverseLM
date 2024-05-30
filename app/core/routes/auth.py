@@ -171,7 +171,7 @@ async def get_is_authenticated(request: Request) -> bool:
     user_id: str = request.query_params.get("user_id")
 
     if (user_id is None) or (clients.user_clients.get(user_id) is None):
-        print("User ID not found or supplied.")
+        print(f"User ID not found or supplied. User ID: {user_id}")
         return False
 
     # Next, get the corresponding client

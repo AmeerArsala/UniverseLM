@@ -60,6 +60,7 @@ export async function updateAuthenticationState() {
     console.log("Trying again...");
 
     let cookieUserID = Cookies.get('user_id');
+    console.log("userID (2nd attempt): " + cookieUserID);
 
     if (idNotFound(cookieUserID)) {
       console.log("No userID found");
