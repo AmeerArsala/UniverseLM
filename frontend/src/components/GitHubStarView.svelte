@@ -1,39 +1,30 @@
 <script lang='ts'>
   import { onMount } from "svelte";
+  import { numGitHubStars } from "$lib/data/stores";
+  import { updateStargazers } from "$lib/scripts/updatestate";
 
   export let repo_link: string = "https://github.com/AmeerArsala";
-  export let stars: number = 7984;
+  export let stars: number = $numGitHubStars;
   export let manual: boolean = false;
 
   onMount(async () => {
-    console.log("mounting...");
-    console.log(stars);
+    console.log("stargazers (initial): " + stars);
     if (manual) {
       // It was purposefully set--Don't touch it
       console.log("not touching");
       return;
     }
 
-    console.log("fetching stars...");
-
-    const prefixLength = ("https://github.com/").length;
-    let repo_id: string = repo_link.substring(prefixLength);
-
-    console.log(repo_id);
-
-    const response = await fetch(`https://api.github.com/repos/${repo_id}`);
-
-    if (response.ok) {
-      const data = await response.json();
-      stars = data.stargazers_count;
-    } else {
-      console.error("Failed to fetch repository data");
+    if ($numGitHubStars === -1) {
+      // actually calculate it
+      await updateStargazers(repo_link);
+      stars = $numGitHubStars;
     }
   });
 
   if (stars === -1) {
     // it was not set
-    stars = 7984;  //TODO: calculate the actual star count of the repo
+    stars = 7984;
   }
 </script>
 

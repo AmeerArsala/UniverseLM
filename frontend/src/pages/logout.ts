@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import axios from "axios";
-import { BACKEND_URL } from "$lib/utils/envconfig";
+import { BACKEND_URL } from "$lib/data/envconfig";
 
 // These files execute on the server and are API Endpoints
 export async function GET({params, request}) {

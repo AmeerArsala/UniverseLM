@@ -1,10 +1,109 @@
 ---
 import DefaultLayoutWithHeader from "@layouts/DefaultLayoutWithHeader.astro";
-import PricingPage from "./PricingPage.svelte";
----
 
+import PricingHeader from "@components/PricingPage/PricingHeader.astro"
+import PricingSwitch from "@components/PricingPage/PricingSwitch"
+import PricingCard from "@components/PricingPage/PricingCard.astro"
+
+import SignUpDialogButton from "./SignUpDialogButton.svelte"
+import ProTierButton from "./ProTierButton.svelte"
+
+import { Button } from "@components/ui/button"
+
+const FREE_PLAN = {
+  title: "Free",
+  monthlyPrice: 0.0001, // zero
+  yearlyPrice: 0.0001,  // zero
+  description: "Get all goodies for free, no credit card required.",
+  features: [
+    "Create 5 communities",
+    "Limited free queries"
+  ],
+  popular: false,
+  exclusive: false
+}
+
+const PRO_PLAN = {
+  title: "Pro",
+  monthlyPrice: 3.99,
+  yearlyPrice: 39.99,
+  description: "For those who love this product! Get more now!",
+  features: [
+    `All in the free plan plus`,
+    `Nearly Unlimited Communities`,
+    `Nearly Unlimited Queries`,
+    `Integration with third-party apps`,
+  ],
+  popular: true,
+  exclusive: false
+}
+
+const SCALE_PLAN = {
+  title: "Scale",
+  price: "Custom",
+  description: "When you need scale, you need more power and flexibility.",
+  features: [
+    `All in the pro plan plus`,
+    `Priority support`,
+    `Enterprise-grade security`,
+  ],
+  exclusive: true,
+  popular: false
+}
+---
 <DefaultLayoutWithHeader title="Pricing - UniverseLM">
-  <div>
-    <PricingPage client:load/>
+  <div class="py-8">
+    <PricingHeader title="Pricing Plans" subtitle="Choose the plan that's right for you" />
+    <PricingSwitch client:load/>
+    <section class="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-8 mt-8">
+      <!-- FREE TIER -->
+      <PricingCard
+        title={FREE_PLAN.title}
+        monthlyPrice={FREE_PLAN.monthlyPrice}
+        yearlyPrice={FREE_PLAN.yearlyPrice}
+        description={FREE_PLAN.description}
+        features={FREE_PLAN.features}
+        popular={FREE_PLAN.popular}
+        exclusive={FREE_PLAN.exclusive}
+      >
+        <SignUpDialogButton client:only="svelte"/>
+      </PricingCard>
+
+      <!-- PRO TIER -->
+      <PricingCard
+        title={PRO_PLAN.title}
+        monthlyPrice={PRO_PLAN.monthlyPrice}
+        yearlyPrice={PRO_PLAN.yearlyPrice}
+        description={PRO_PLAN.description}
+        features={PRO_PLAN.features}
+        popular={PRO_PLAN.popular}
+        exclusive={PRO_PLAN.exclusive}
+      >
+        <ProTierButton client:load
+          monthlyLink="https://buy.stripe.com/5kA02Qfkl73HeZy4gg"
+          yearlyLink="https://buy.stripe.com/14k2aY8VXew9bNm5kl"
+        />
+      </PricingCard>
+
+      <!-- SCALE TIER -->
+      <PricingCard
+        title={SCALE_PLAN.title}
+        description={SCALE_PLAN.description}
+        features={SCALE_PLAN.features}
+        popular={SCALE_PLAN.popular}
+        exclusive={SCALE_PLAN.exclusive}
+      >
+        <a href="/contact-us" class="relative inline-flex w-full items-center justify-center">
+          <Button class="w-full rounded-md bg-black text-white dark:bg-white px-6 font-medium  dark:text-black transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+            <div class="absolute -inset-0.5 -z-10 rounded-lg bg-gradient-to-b from-[#c7d2fe] to-[#8678f9] opacity-75 blur" />
+            Contact us
+          </Button>
+        </a>
+      </PricingCard>
+    </section>
   </div>
 </DefaultLayoutWithHeader>
+
+<!--
+
+ -->

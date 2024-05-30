@@ -12,37 +12,47 @@ const attentionWords = ["Multi-Agent Systems", "Communities", "a Text Adventure"
 ---
 
 <DefaultLayoutWithHeader title="UniverseLM">
-    <br/>
-    <br/>
+  <!-- SCRIPTS -->
+  <!-- IMPORTANT PAGE: UPDATE IMPORTANT VARIABLES  -->
+  <script>
+    import update from "$lib/scripts/updatestate";
 
-    <!-- HOOK ATTENTION GRABBER -->
-		<p class="font-bold text-7xl text-center mb-12 mt-0 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent inline ml-[27vw]">Simulate </p>
-    <FlipWords words={attentionWords} className='font-bold text-7xl text-center mb-7 mt-3 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text' client:only="react"/><br/>
+    // updates important states
+    await update();
+  </script>
 
-    <!-- BEGINNING OF PROMISE (THE THING) -->
-    <p class="mt-1 font-bold text-center text-2xl">Create communities of AI Agents right from your fingertips.</p>
+  <!-- PAGE -->
+  <br/>
+  <br/>
 
-    <!-- THE THING (DELIVER/EXCEED PROMISE) -->
-    <SocietyGenerator client:load/>
+  <!-- HOOK ATTENTION GRABBER -->
+  <p class="font-bold text-7xl text-center mb-12 mt-0 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent inline ml-[27vw]">Simulate </p>
+  <FlipWords words={attentionWords} className='font-bold text-7xl text-center mb-7 mt-3 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text' client:only="react"/><br/>
 
-    <!-- THE THING PART 2 (DELIVER/EXCEED PROMISE) -->
-    <div class="flex flex-col justify-center">
-      <p class="text-center text-2xl">...or join an existing one</p>
-      <div class="font-inter min-w-[35vw] ml-auto mr-auto">
-        <CommunitiesViewer client:only="svelte"/>
-      </div>
+  <!-- BEGINNING OF PROMISE (THE THING) -->
+  <p class="mt-1 font-bold text-center text-2xl">Create communities of AI Agents right from your fingertips.</p>
+
+  <!-- THE THING (DELIVER/EXCEED PROMISE) -->
+  <SocietyGenerator client:load/>
+
+  <!-- THE THING PART 2 (DELIVER/EXCEED PROMISE) -->
+  <div class="flex flex-col justify-center">
+    <p class="text-center text-2xl">...or join an existing one</p>
+    <div class="font-inter min-w-[35vw] ml-auto mr-auto">
+      <CommunitiesViewer client:only="svelte"/>
     </div>
+  </div>
 
-    <!-- YAP ABOUT WHY THIS IS SO GOOD -->
-    <Globe>
-      <h1 class="text-bold text-center font-bold text-4xl">UniverseLM is All You Need</h1>
-    </Globe>
+  <!-- YAP ABOUT WHY THIS IS SO GOOD -->
+  <Globe>
+    <h1 class="text-bold text-center font-bold text-4xl">UniverseLM is All You Need</h1>
+  </Globe>
 
-    <!-- JOIN WAITLIST -->
-    <JoinTheWaitlist client:visible/>
+  <!-- JOIN WAITLIST -->
+  <JoinTheWaitlist client:visible/>
 
-    <!-- FOOTER -->
-    <Footer />
+  <!-- FOOTER -->
+  <Footer />
 </DefaultLayoutWithHeader>
 
 <style>

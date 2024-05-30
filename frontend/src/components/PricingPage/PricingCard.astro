@@ -1,0 +1,52 @@
+---
+import { Card, CardContent, CardFooter } from "@components/ui/react-card/card";
+import CheckItem from "./CheckItem.astro";
+import { cn } from "$lib/utils"
+
+import PricingCardHeader from "./PricingCardHeader";
+
+interface Props {
+  title: string;
+  monthlyPrice?: number;
+  yearlyPrice?: number;
+  description: string;
+  features: string[];
+  popular?: boolean;
+  exclusive?: boolean;
+};
+
+const {
+  title,
+  monthlyPrice,
+  yearlyPrice,
+  description,
+  features,
+  popular = false,
+  exclusive = false
+} = Astro.props;
+---
+
+<Card
+  className={cn(`w-72 flex flex-col justify-between py-1 ${popular ? "border-rose-400" : "border-zinc-700"} mx-auto sm:mx-0`, {
+    "animate-background-shine bg-white dark:bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] transition-colors":
+      exclusive,
+  })}>
+  <div>
+    <PricingCardHeader
+      {title}
+      {description}
+      {monthlyPrice}
+      {yearlyPrice}
+      {popular}
+      client:load
+    />
+    <CardContent className="flex flex-col gap-2">
+      {features.map((feature: string) => (
+        <CheckItem text={feature} />
+      ))}
+    </CardContent>
+  </div>
+  <CardFooter className="mt-2">
+    <slot />
+  </CardFooter>
+</Card>

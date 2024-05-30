@@ -5,5 +5,13 @@ export const prerender = false;
 ---
 
 <DefaultLayoutWithHeader>
+  <!-- IMPORTANT PAGE: UPDATE IMPORTANT VARIABLES  -->
+  <script>
+    import update from "$lib/scripts/updatestate";
+
+    // updates important states
+    await update();
+  </script>
+
   <p>Coming soon...</p>
 </DefaultLayoutWithHeader>

@@ -4,7 +4,7 @@
 	import { Input, Label, EmailInput } from '@components/ui/SignupForm';
   import * as Dialog from "$lib/components/ui/dialog/index.js";
 
-  import { BACKEND_URL } from "$lib/utils/envconfig";
+  import { BACKEND_URL } from "$lib/data/envconfig";
 
   const email_password_href_prefix: string = `${BACKEND_URL}/auth/login?method=email_password`;
   const github_href: string = `${BACKEND_URL}/auth/login?method=github`;
