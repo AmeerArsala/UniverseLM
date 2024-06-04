@@ -54,7 +54,8 @@ export async function updateAuthenticationState() {
   console.log(userID.length);*/
 
   // I FUCKING HATE JS WITH ITS BULLSHIT
-  const idNotFound = (id) => (id === null || id === "undefined" || id === "null" || id === undefined);
+  const MIN_ID_LENGTH: number = 3;
+  const idNotFound = (id) => (id === null || id === undefined || id === "undefined" || id === "null" || id.length < MIN_ID_LENGTH);
 
   if (idNotFound(userID.get())) {
     console.log("Trying again...");
