@@ -3,18 +3,11 @@ import Cookies from 'js-cookie';
 
 import { REPO_URL } from "$lib/data/constants";
 import { BACKEND_URL } from "$lib/data/envconfig";
-import { githubStars, authState, authentication, shouldCheckAuthentication, userID } from "$lib/data/stores";
+import { githubStars, authState, authentication, userID } from "$lib/data/stores";
 
 // when to update all major values
 export default async function update() {
-  await attemptAuthUpdate();
-}
-
-export async function attemptAuthUpdate() {
-  if (shouldCheckAuthentication.get()) {
-    await updateAuthenticationState();
-    shouldCheckAuthentication.set(false);
-  }
+  await updateAuthentication();
 }
 
 export async function updateStargazers(repo_link: string = REPO_URL) {
@@ -39,8 +32,8 @@ export async function updateStargazers(repo_link: string = REPO_URL) {
   return stars;
 }
 
-export async function updateAuthenticationState() {
-  console.log("Updating authentication state...");
+export async function updateAuthentication() {
+  console.log("Updating authentication value...");
 
   // retrieve state of user ID
   console.log("Getting ID...");
@@ -91,8 +84,8 @@ export async function updateAuthenticationState() {
 
   //const userId: string = localStorage.getItem('userId');
 
-  // update user authentication state now
-  console.log("Fetching authentication state...");
+  // update user authentication now
+  console.log("Fetching authentication...");
   try {
     const response = await axios.get(`${BACKEND_URL}/auth/is_authenticated`, {
       params: {
@@ -101,7 +94,7 @@ export async function updateAuthenticationState() {
     });
     authentication.setIsAuthenticated(response.data);
 
-    console.log("Authentication State Fetched! Authenticated: " + authentication.isAuthenticated());
+    console.log("Authentication Fetched! Authenticated: " + authentication.isAuthenticated());
   } catch(error) {
     console.log("ERROR FINDING OUT WHETHER USER IS AUTHENTICATED:");
     console.log(error);

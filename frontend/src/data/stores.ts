@@ -16,8 +16,8 @@ export const githubStars = {
   getAtom: () => numGitHubStars
 };
 
-// auth is not persistent on purpose--oh wait we have shouldCheckAuthentication for that
-export const authState = persistentAtom("auth_state");
+// Usually auth would not be persistent on purpose, but we can always re-run the auth check
+export const authState = persistentAtom("auth_state");  // the actual STATE value from the authentication (a random string such as "BlueFox01")
 const authenticated = persistentAtom("is_authenticated");
 
 export const authentication = {
@@ -27,8 +27,6 @@ export const authentication = {
   },
   getAtom: () => authenticated
 };
-
-export const shouldCheckAuthentication = atom(true);
 
 // App Stores
 export const userID = persistentAtom("user_id"); //, null);

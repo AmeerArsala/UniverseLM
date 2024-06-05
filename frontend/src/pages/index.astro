@@ -1,4 +1,5 @@
 ---
+// Server-side logic
 import DefaultLayout from '@layouts/DefaultLayout.astro';
 import { FlipWords } from "@components/ui/flip-words";
 import { SocietyGenerator } from './SocietyGenerator';
@@ -15,7 +16,7 @@ const attentionWords = ["Multi-Agent Systems", "Communities", "a Text Adventure"
 
 <DefaultLayout title="UniverseLM" showHeader gridBG>
   <!-- SCRIPTS -->
-  <!-- IMPORTANT PAGE: UPDATE IMPORTANT VARIABLES  -->
+  <!-- IMPORTANT PAGE: UPDATE IMPORTANT CLIENT-SIDE VARIABLES  -->
   <script>
     import update from "$lib/scripts/updatestate";
     import { updateStargazers } from "$lib/scripts/updatestate";

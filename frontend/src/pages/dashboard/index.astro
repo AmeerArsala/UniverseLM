@@ -4,13 +4,19 @@ import DefaultLayout from '@layouts/DefaultLayout.astro';
 export const prerender = false;
 ---
 
-<DefaultLayout showHeader={true}>
-  <!-- IMPORTANT PAGE: UPDATE IMPORTANT VARIABLES  -->
+<DefaultLayout showHeader={false}>
+  <!-- IMPORTANT PAGE: UPDATE IMPORTANT CLIENT-SIDE VARIABLES  -->
   <script>
     import update from "$lib/scripts/updatestate";
+    import { authentication } from "$lib/data/stores";
 
     // updates important states
     await update();
+
+    if (!authentication.isAuthenticated()) {
+      // redirect to login; let it stay in the browser history
+      window.location.href = '/login';
+    }
   </script>
 
   <p>Dashboard Coming soon...</p>
