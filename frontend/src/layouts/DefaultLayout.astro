@@ -18,7 +18,7 @@ const { title = "UniverseLM", showHeader = false, gridBG = false } = Astro.props
 <Layout title={title} gridBG={gridBG}>
   <main>
     <!-- Header -->
-    {showHeader && <Navbar client:load/>}
+    {showHeader && <Navbar/>}
 
     <!-- Content -->
     <slot/>

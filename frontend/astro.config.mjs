@@ -12,6 +12,7 @@ import spotlightjs from "@spotlightjs/astro";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://universelm.org",
   integrations: [tailwind({
     applyBaseStyles: false
   }), svelte(), react(), mdx()],

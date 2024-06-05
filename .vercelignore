@@ -1,0 +1,12 @@
+app/
+notebooks/
+.dockerignore
+./.env.example
+Dockerfile
+./README.md
+*.py
+*.sql
+./environment.yml
+./environment-lock.yml
+./poetry.lock
+./pyproject.toml
