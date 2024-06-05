@@ -4,7 +4,7 @@
   import { updateStargazers } from "$lib/scripts/updatestate";
 
   export let repo_link: string = "https://github.com/AmeerArsala";
-  export let stars: number = githubStars.getNum();
+  export let stars: number = githubStars.getNum() ?? 0;
   export let manual: boolean = false;
   export let autoUpdateStars: boolean = false;
 
