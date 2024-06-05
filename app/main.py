@@ -38,12 +38,12 @@ app = FastAPI(
     title="UniverseLM",
     description=description,
     version="0.0.1",
-    terms_of_service="https://universelm.org",
+    terms_of_service="https://universelm.org/terms-of-service",
     contact={"name": "Ameer Arsala", "email": "aarsala@calpoly.edu"},
 )
 
 # For now, allow all
-origin_whitelist = ["*"]
+origin_whitelist = ["*", config.SITE_URL, "http://localhost:4321"]
 
 
 app.add_middleware(

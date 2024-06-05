@@ -15,6 +15,7 @@ export const githubStars = {
 };
 
 // auth is not persistent on purpose
+export const authState = persistentAtom("auth_state");
 export const isAuthenticated = atom(false);
 export const shouldCheckAuthentication = atom(true);
 

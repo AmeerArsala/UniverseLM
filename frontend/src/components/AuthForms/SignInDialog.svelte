@@ -4,9 +4,11 @@
 	import { Input, Label, EmailInput } from '@components/ui/SignupForm';
   import * as Dialog from "$lib/components/ui/dialog/index.js";
 
+  import AuthRedirect from "./AuthRedirect.svelte";
   import { BACKEND_URL } from "$lib/data/envconfig";
 
   const email_password_href_prefix: string = `${BACKEND_URL}/auth/login?method=email_password`;
+
   const github_href: string = `${BACKEND_URL}/auth/login?method=github`;
   const google_href: string = `${BACKEND_URL}/auth/login?method=google`;
   const slack_href: string = `${BACKEND_URL}/auth/login?method=slack`;
@@ -42,7 +44,7 @@
 		</div>
 
     <div>
-      <a href={email_password_href}>
+      <AuthRedirect href={email_password_href}>
         <button
           class="group/btn text-center relative h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
           type="button"
@@ -56,7 +58,7 @@
             class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
           />
         </button>
-      </a>
+      </AuthRedirect>
 
       <div
         class="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700"
@@ -64,7 +66,7 @@
 
       <div class="flex flex-col space-y-4">
         <!-- GITHUB -->
-        <a href={github_href}>
+        <AuthRedirect href={github_href}>
           <button
             class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="button"
@@ -78,10 +80,10 @@
               class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
             />
           </button>
-        </a>
+        </AuthRedirect>
 
         <!-- GOOGLE -->
-        <a href={google_href}>
+        <AuthRedirect href={google_href}>
           <button
             class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="button"
@@ -95,10 +97,10 @@
               class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
             />
           </button>
-        </a>
+        </AuthRedirect>
 
         <!-- SLACK -->
-        <a href={slack_href}>
+        <AuthRedirect href={slack_href}>
           <button
             class=" group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="button"
@@ -112,7 +114,7 @@
               class="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"
             />
           </button>
-        </a>
+        </AuthRedirect>
 
         <!-- joke buttons down here -->
 

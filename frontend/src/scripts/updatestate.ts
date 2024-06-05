@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 import { REPO_URL } from "$lib/data/constants";
 import { BACKEND_URL } from "$lib/data/envconfig";
-import { githubStars, isAuthenticated, shouldCheckAuthentication, userID } from "$lib/data/stores";
+import { githubStars, authState, isAuthenticated, shouldCheckAuthentication, userID } from "$lib/data/stores";
 
 // when to update all major values
 export default async function update() {
@@ -60,24 +60,33 @@ export async function updateAuthenticationState() {
   if (idNotFound(userID.get())) {
     console.log("Trying again...");
 
-    let cookieUserID = Cookies.get('user_id');
-    console.log("userID (2nd attempt): " + cookieUserID);
+    let user_id = Cookies.get('user_id');
+    console.log("userID (2nd attempt): " + user_id);
 
-    if (idNotFound(cookieUserID)) {
+    if (idNotFound(user_id)) {
       console.log("Trying ONE more time...");
 
       console.log("Full cookie: " + document.cookie);
-      cookieUserID = `; ${document.cookie}`.split(`; user_id=`);
-      console.log(cookieUserID);
+      user_id = `; ${document.cookie}`.split(`; user_id=`);
+      console.log(user_id);
 
-      if (idNotFound(cookieUserID)) {
-        console.log("No userID found");
-        isAuthenticated.set(false);
-        return;
+      if (idNotFound(user_id)) {
+        console.log("Ok, checking user_id via state");
+        let state: string = authState.get();
+
+        try {
+          const response = await axios.get(`${BACKEND_URL}/auth/get_user_id?state=${state}`);
+
+          user_id = response.data;
+        } catch(error) {
+          console.log("No userID found");
+          isAuthenticated.set(false);
+          return;
+        }
       }
     }
 
-    userID.set(cookieUserID); //localStorage.setItem("user_id", userID);
+    userID.set(user_id); //localStorage.setItem("user_id", userID);
     //Cookies.remove()
   }
 

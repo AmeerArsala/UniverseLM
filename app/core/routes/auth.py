@@ -13,21 +13,20 @@ from kinde_sdk.kinde_api_client import KindeApiClient
 router = APIRouter(tags=["auth"])
 
 
+# NOTE: have the login and register endpoints redirect from the front end
+# That is, the front end must request from them and save the 'state' as a cookie or localStorage (localStorage preferred)
+# And THEN do the redirect
+
+
 # Login endpoint
 # Call this to get the link to login
 @router.get("/login")
-def login(request: Request):
-    print("LOGGING IN...")
-
-    # Decipher query params first
-    method: str = request.query_params["method"]
-
-    print(f"VIA: {method}")
+def login(method: str, email: str = "", redirect: bool = True):
+    print(f"LOGGING IN VIA: {method} ...")
 
     auth_params: Dict = {"connection_id": config.CONNECTION_IDS[method]}
 
     if method == "email_password":
-        email: str = request.query_params["email"]
         auth_params["login_hint"] = email
 
     # print(auth_params)
@@ -38,26 +37,23 @@ def login(request: Request):
         additional_params={"auth_url_params": auth_params}
     )
 
-    # print(login_url)
+    print(login_url)
 
-    return RedirectResponse(login_url)
+    if redirect:
+        return RedirectResponse(login_url)
+    else:
+        return login_url
 
 
 # Register endpoint
 # Call this to get the link to register
 @router.get("/register")
-def register(request: Request):
-    print("REGISTERING...")
-
-    # Decipher query params first
-    method: str = request.query_params["method"]
-
-    print(f"VIA: {method}")
+def register(method: str, email: str = "", redirect: bool = True):
+    print(f"REGISTERING VIA: {method} ...")
 
     auth_params: Dict = {"connection_id": config.CONNECTION_IDS[method]}
 
     if method == "email_password":
-        email: str = request.query_params["email"]
         auth_params["login_hint"] = email
 
     # print(auth_params)
@@ -68,7 +64,12 @@ def register(request: Request):
         additional_params={"auth_url_params": auth_params}
     )
 
-    return RedirectResponse(register_url)
+    print(register_url)
+
+    if redirect:
+        return RedirectResponse(register_url)
+    else:
+        return register_url
 
 
 # I believe this is post-login/register, but not logout
@@ -127,17 +128,21 @@ async def callback(request: Request):
     # response.status_code = HTTP_301_MOVED_PERMANENTLY
     # response.headers["Location"] = redirect_url
 
+    # Write state just in case
+    state: str = request.query_params["state"]
+    clients.write_user_id(state, user_id)
+
     response = RedirectResponse(redirect_url)
     response.set_cookie(
         key="user_id",
         value=user_id,
-        domain=config.SITE_DOMAIN,
+        domain=f".{config.SITE_DOMAIN}",
         secure=config.USING_HTTPS,
-        httponly=False,  # we are NOT putting this shit in the header
+        httponly=True,
         samesite="none",
     )
 
-    print(f"user_id: {user_id}")
+    # print(f"user_id: {user_id}")
 
     return response
 
@@ -169,6 +174,13 @@ async def logout(request: Request):
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="AUTHENTICATE YOURSELF YOU SCOUNDREL!",
     )
+
+
+@router.get("/get_user_id")
+async def get_user_id(state: str) -> str:
+    user_id: str = clients.readex_user_id(state)
+
+    return user_id
 
 
 @router.get("/is_authenticated")

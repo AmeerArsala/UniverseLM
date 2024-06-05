@@ -92,6 +92,26 @@ def delete_user_client(user_id):
     user_clients.delete(user_id)
 
 
+# Will expire as soon as it is read
+# Otherwise, has a short expiration time
+def readex_user_id(state: str) -> str:
+    global user_clients
+
+    # Have it expire as soon as it is read
+    user_id: str = user_clients.getex(state, ex=0)
+    # retrieved_serialized_data = user_clients.getex(state, ex=0)
+    # retrieved_deserialized_client_data: Dict = json.loads(retrieved_serialized_data)
+
+    return user_id
+
+
+def write_user_id(state: str, user_id: str):
+    global user_clients
+
+    # Short expiration; 15 secs
+    user_clients.set(state, user_id, ex=15)
+
+
 def get_user_session_client(request: Request, manifest: bool = False) -> KindeApiClient:
     global user_clients
 

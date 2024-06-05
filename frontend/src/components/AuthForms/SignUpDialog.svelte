@@ -7,6 +7,7 @@
   import { BACKEND_URL } from "$lib/data/envconfig";
 
   const email_password_href_prefix: string = `${BACKEND_URL}/auth/register?method=email_password`;
+
   const github_href: string = `${BACKEND_URL}/auth/register?method=github`;
   const google_href: string = `${BACKEND_URL}/auth/register?method=google`;
   const slack_href: string = `${BACKEND_URL}/auth/register?method=slack`;
