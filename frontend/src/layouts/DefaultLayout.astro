@@ -7,9 +7,9 @@ import Navbar from "@components/NavBar/Navbar.astro";
 import { GridAndDotBackgroundsSmallGrid } from '@components/ui/GridAndDotBackground';
 
 interface Props {
-  title: string;
-  showHeader: boolean;
-  gridBG: boolean;
+  title?: string;
+  showHeader?: boolean;
+  gridBG?: boolean;
 }
 
 const { title = "UniverseLM", showHeader = false, gridBG = false } = Astro.props;
