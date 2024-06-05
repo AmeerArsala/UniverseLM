@@ -1,0 +1,11 @@
+---
+import DefaultLayout from "@layouts/DefaultLayout.astro";
+import TabbedSignIn from "@components/AuthForms/TabbedSignIn.svelte";
+---
+
+<DefaultLayout gridBG showHeader={false}>
+  <!-- Login/Register in Tabs -->
+  <div class="">
+    <TabbedSignIn client:load/>
+  </div>
+</DefaultLayout>
