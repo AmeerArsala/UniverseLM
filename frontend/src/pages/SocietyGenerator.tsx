@@ -1,5 +1,3 @@
-"use client";
-
 import { PlaceholdersAndVanishInput } from "@components/ui/placeholders-and-vanish-input";
 
 export function SocietyGenerator() {
