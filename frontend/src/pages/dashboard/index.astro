@@ -1,10 +1,10 @@
 ---
-import DefaultLayoutWithHeader from "@layouts/DefaultLayoutWithHeader.astro";
+import DefaultLayout from '@layouts/DefaultLayout.astro';
 
 export const prerender = false;
 ---
 
-<DefaultLayoutWithHeader>
+<DefaultLayout showHeader={true}>
   <!-- IMPORTANT PAGE: UPDATE IMPORTANT VARIABLES  -->
   <script>
     import update from "$lib/scripts/updatestate";
@@ -14,4 +14,4 @@ export const prerender = false;
   </script>
 
   <p>Dashboard Coming soon...</p>
-</DefaultLayoutWithHeader>
+</DefaultLayout>

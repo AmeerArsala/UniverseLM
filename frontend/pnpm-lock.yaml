@@ -143,6 +143,9 @@ dependencies:
   lucide-svelte:
     specifier: ^0.379.0
     version: 0.379.0(svelte@4.2.17)
+  mini-svg-data-uri:
+    specifier: ^1.4.4
+    version: 1.4.4
   nanostores:
     specifier: ^0.10.3
     version: 0.10.3
@@ -7691,7 +7694,6 @@ packages:
   /mini-svg-data-uri@1.4.4:
     resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
     hasBin: true
-    dev: true
 
   /minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}

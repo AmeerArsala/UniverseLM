@@ -1,5 +1,5 @@
 ---
-import DefaultLayoutWithHeader from "@layouts/DefaultLayoutWithHeader.astro";
+import DefaultLayout from '@layouts/DefaultLayout.astro';
 import { TracingBeam } from "@components/ui/tracing-beam";
 import { type BlogPostProps } from "$lib/types/blogposts";
 
@@ -17,13 +17,13 @@ const { frontmatter } = Astro.props;
 const { title, date, author, description, thumbnailPath = "/logo.png" } = frontmatter;
 ---
 
-<DefaultLayoutWithHeader title={title}>
+<DefaultLayout title={title} showHeader gridBG>
   <TracingBeam className="px-6" client:only="react">
     <article class="prose prose-neutral lg:prose-lg dark:prose-invert">
       <slot/>
     </article>
   </TracingBeam>
-</DefaultLayoutWithHeader>
+</DefaultLayout>
 
 <style>
 

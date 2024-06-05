@@ -7,9 +7,16 @@ import "$lib/styles/app.css";
 
 interface Props {
 	title: string;
+  gridBG: boolean;
 }
 
-const { title } = Astro.props;
+const { title, gridBG = false } = Astro.props;
+
+let bgClass: string = "p-2";
+
+if (gridBG) {
+  bgClass += " bg-white bg-grid-small-black/[0.2] dark:bg-black dark:bg-grid-small-white/[0.2]";
+}
 ---
 
 <!DOCTYPE html>
@@ -22,7 +29,7 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body class="p-2">
+	<body class={bgClass}>
 		<slot />
 	</body>
 </html>

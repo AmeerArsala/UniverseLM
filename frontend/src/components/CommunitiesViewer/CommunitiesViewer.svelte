@@ -125,7 +125,7 @@
       bind:value={$filterValue}
     />
   </div>
-  <div class="rounded-md border">
+  <div class="rounded-md border bg-background">
     <Table.Root {...$tableAttrs}>
       <!--TABLE HEADER-->
       <Table.Header>

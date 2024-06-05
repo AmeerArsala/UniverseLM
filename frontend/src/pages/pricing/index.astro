@@ -1,5 +1,5 @@
 ---
-import DefaultLayoutWithHeader from "@layouts/DefaultLayoutWithHeader.astro";
+import DefaultLayout from '@layouts/DefaultLayout.astro';
 
 import PricingHeader from "@components/PricingPage/PricingHeader.astro"
 import PricingSwitch from "@components/PricingPage/PricingSwitch"
@@ -51,7 +51,7 @@ const SCALE_PLAN = {
   popular: false
 }
 ---
-<DefaultLayoutWithHeader title="Pricing - UniverseLM">
+<DefaultLayout title="Pricing - UniverseLM" showHeader gridBG>
   <div class="py-8">
     <PricingHeader title="Pricing Plans" subtitle="Choose the plan that's right for you" />
     <PricingSwitch client:load/>
@@ -102,7 +102,7 @@ const SCALE_PLAN = {
       </PricingCard>
     </section>
   </div>
-</DefaultLayoutWithHeader>
+</DefaultLayout>
 
 <!--
 

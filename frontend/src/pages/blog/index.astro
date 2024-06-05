@@ -1,5 +1,5 @@
 ---
-import DefaultLayoutWithHeader from "@layouts/DefaultLayoutWithHeader.astro";
+import DefaultLayout from '@layouts/DefaultLayout.astro';
 import ParallaxMotion from "./ParallaxMotion.svelte";
 
 const newsPosts = await Astro.glob("./news/post/*.md");
@@ -10,7 +10,7 @@ const regularPosts = await Astro.glob("./posts/*.md");
 //export const prerender = false;
 ---
 
-<DefaultLayoutWithHeader title="Blog - UniverseLM">
+<DefaultLayout title="Blog - UniverseLM" showHeader>
   <ParallaxMotion newsPosts={newsPosts} researchPosts={researchPosts} regularPosts={regularPosts} client:only="svelte">
     <div class="relative left-0 top-0 mx-auto w-full max-w-7xl px-4 py-8 md:py-4">
       <h2 class="text-2xl font-bold dark:text-white md:text-7xl">
@@ -21,4 +21,4 @@ const regularPosts = await Astro.glob("./posts/*.md");
       </p>
     </div>
   </ParallaxMotion>
-</DefaultLayoutWithHeader>
+</DefaultLayout>
