@@ -7,10 +7,7 @@
   import SignUpDialog from "@components/AuthForms/SignUpDialog.svelte";
 
   import { onMount } from "svelte";
-  import update, { updateAuthenticationState } from "$lib/scripts/updatestate";
-  import { shouldCheckAuthentication } from "$lib/data/stores";
 
-  import axios from "axios";
   import { BACKEND_URL } from "$lib/data/envconfig";
 
   import { isAuthenticated } from "$lib/data/stores";
@@ -19,12 +16,12 @@
 
 	let active: string | null = null;
 
-  onMount(async () => {
-    /*if ($shouldCheckAuthentication) {
+  /*onMount(async () => {
+    if ($shouldCheckAuthentication) {
       await updateAuthenticationState();
       shouldCheckAuthentication.set(false);
-    }*/
-  });
+    }
+  });*/
 
   /**
    * NAVBAR ROUTES

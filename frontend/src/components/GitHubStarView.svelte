@@ -1,31 +1,32 @@
 <script lang='ts'>
   import { onMount } from "svelte";
-  import { numGitHubStars } from "$lib/data/stores";
+  import { githubStars } from "$lib/data/stores";
   import { updateStargazers } from "$lib/scripts/updatestate";
 
   export let repo_link: string = "https://github.com/AmeerArsala";
-  export let stars: number = $numGitHubStars;
+  export let stars: number = githubStars.getNum();
   export let manual: boolean = false;
+  export let autoUpdateStars: boolean = false;
 
   onMount(async () => {
     console.log("stargazers (initial): " + stars);
     if (manual) {
       // It was purposefully set--Don't touch it
-      console.log("not touching");
+      console.log("not touching the stargazers");
       return;
     }
 
-    if ($numGitHubStars === -1) {
+    if (autoUpdateStars) {
       // actually calculate it
-      await updateStargazers(repo_link);
-      stars = $numGitHubStars;
+      stars = await updateStargazers(repo_link);
+      // stars = githubStars.getNum();  // will update anyway so I commented this out
     }
   });
 
-  if (stars === -1) {
+  /*if (stars === -1) {
     // it was not set
     stars = 7984;
-  }
+  }*/
 </script>
 
 <a class="repo-element" href={repo_link} target="_blank">

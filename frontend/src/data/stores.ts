@@ -2,7 +2,15 @@ import { atom, map } from "nanostores";
 import { persistentAtom, persistentMap } from "@nanostores/persistent";
 
 // Web stores
-export const numGitHubStars = atom(-1);
+const numGitHubStars = persistentAtom("num_github_stars", "-1");
+
+export const githubStars = {
+  getNum: (): number => {
+    return parseInt(numGitHubStars.get());
+  },
+  setNum: (stars: number) => { numGitHubStars.set(stars.toString()); }
+};
+
 
 export const isAuthenticated = atom(false);
 export const shouldCheckAuthentication = atom(true);

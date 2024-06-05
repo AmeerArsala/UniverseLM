@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 import { REPO_URL } from "$lib/data/constants";
 import { BACKEND_URL } from "$lib/data/envconfig";
-import { numGitHubStars, isAuthenticated, shouldCheckAuthentication, userID } from "$lib/data/stores";
+import { githubStars, isAuthenticated, shouldCheckAuthentication, userID } from "$lib/data/stores";
 
 // when to update all major values
 export default async function update() {
@@ -19,7 +19,7 @@ export async function updateAll() {
 }
 
 export async function updateStargazers(repo_link: string = REPO_URL) {
-  let stars = numGitHubStars.get();
+  let stars: number = githubStars.getNum();
 
   console.log("Fetching stargazers...");
 
@@ -31,13 +31,13 @@ export async function updateStargazers(repo_link: string = REPO_URL) {
   if (response.ok) {
     const data = await response.json();
     stars = data.stargazers_count;
-    numGitHubStars.set(data.stargazers_count);
+    githubStars.setNum(data.stargazers_count);
     console.log("stargazers (fetched): " + stars);
   } else {
     console.error("Failed to fetch repository data");
   }
 
-  //return stars;
+  return stars;
 }
 
 export async function updateAuthenticationState() {
