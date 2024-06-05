@@ -10,9 +10,11 @@ export const githubStars = {
   },
   setNum: (stars: number) => {
     numGitHubStars.set(stars.toString());
-  }
+  },
+  getAtom: () => numGitHubStars
 };
 
+// auth is not persistent on purpose
 export const isAuthenticated = atom(false);
 export const shouldCheckAuthentication = atom(true);
 
@@ -20,4 +22,5 @@ export const shouldCheckAuthentication = atom(true);
 export const userID = persistentAtom("user_id"); //, null);
 
 // Core stores
+// stores relating to the core of the application
 export const community = atom({id: -1, name: ""});

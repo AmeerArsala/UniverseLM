@@ -22,7 +22,7 @@ def login(request: Request):
     # Decipher query params first
     method: str = request.query_params["method"]
 
-    print(method)
+    print(f"VIA: {method}")
 
     auth_params: Dict = {"connection_id": config.CONNECTION_IDS[method]}
 
@@ -52,7 +52,7 @@ def register(request: Request):
     # Decipher query params first
     method: str = request.query_params["method"]
 
-    # print(method)
+    print(f"VIA: {method}")
 
     auth_params: Dict = {"connection_id": config.CONNECTION_IDS[method]}
 

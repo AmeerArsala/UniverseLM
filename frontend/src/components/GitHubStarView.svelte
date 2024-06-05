@@ -9,11 +9,15 @@
   export let autoUpdateStars: boolean = false;
 
   onMount(async () => {
-    console.log("stargazers (initial): " + stars);
     if (manual) {
       // It was purposefully set--Don't touch it
       console.log("not touching the stargazers");
       return;
+    } else {
+      console.log("stargazers (initial): " + stars);
+      githubStars.getAtom().subscribe((value, oldValue) => {
+        stars = parseInt(value);
+      });
     }
 
     if (autoUpdateStars) {

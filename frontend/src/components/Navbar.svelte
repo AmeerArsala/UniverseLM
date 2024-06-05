@@ -2,26 +2,15 @@
 	import { MenuItem, ProductItem, HoveredLink } from "./ui/NavbarMenu";
   import GitHubStarView from "@components/GitHubStarView.svelte";
 
-  import * as Dialog from "$lib/components/ui/dialog/index.js";
+  import * as Dialog from "@components/ui/dialog/index.js";
   import SignInDialog from "@components/AuthForms/SignInDialog.svelte";
   import SignUpDialog from "@components/AuthForms/SignUpDialog.svelte";
-
-  import { onMount } from "svelte";
 
   import { BACKEND_URL } from "$lib/data/envconfig";
 
   import { isAuthenticated } from "$lib/data/stores";
 
-  //let isAuthenticated: boolean = false;
-
 	let active: string | null = null;
-
-  /*onMount(async () => {
-    if ($shouldCheckAuthentication) {
-      await updateAuthenticationState();
-      shouldCheckAuthentication.set(false);
-    }
-  });*/
 
   /**
    * NAVBAR ROUTES
