@@ -43,7 +43,7 @@ app = FastAPI(
 )
 
 # For now, allow all
-origin_whitelist = ["*", config.SITE_URL, "http://localhost:4321"]
+origin_whitelist = ["*", config.SITE_URL]
 
 
 app.add_middleware(

@@ -98,7 +98,7 @@ def readex_user_id(state: str) -> str:
     global user_clients
 
     # Have it expire as soon as it is read
-    user_id: str = user_clients.getex(state, ex=0)
+    user_id: str = user_clients.getex(state, px=10)  # expire after 10 ms
     # retrieved_serialized_data = user_clients.getex(state, ex=0)
     # retrieved_deserialized_client_data: Dict = json.loads(retrieved_serialized_data)
 
