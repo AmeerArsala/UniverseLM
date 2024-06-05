@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MenuItem, ProductItem, HoveredLink } from "./ui/NavbarMenu";
+	import { MenuItem, ProductItem, HoveredLink } from "@components/ui/NavbarMenu";
   import GitHubStarView from "@components/GitHubStarView.svelte";
 
   import * as Dialog from "@components/ui/dialog/index.js";
@@ -8,7 +8,7 @@
 
   import { BACKEND_URL } from "$lib/data/envconfig";
 
-  import { isAuthenticated } from "$lib/data/stores";
+  import { authentication } from "$lib/data/stores";
 
 	let active: string | null = null;
 
@@ -74,7 +74,7 @@
           <GitHubStarView repo_link="https://github.com/AmeerArsala/UniverseLM"/>
         </div>
 
-        {#if !$isAuthenticated}
+        {#if !authentication.isAuthenticated()}
           <!--Login Button-->
           <Dialog.Root>
             <Dialog.Trigger>

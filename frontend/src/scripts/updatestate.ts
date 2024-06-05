@@ -3,19 +3,18 @@ import Cookies from 'js-cookie';
 
 import { REPO_URL } from "$lib/data/constants";
 import { BACKEND_URL } from "$lib/data/envconfig";
-import { githubStars, authState, isAuthenticated, shouldCheckAuthentication, userID } from "$lib/data/stores";
+import { githubStars, authState, authentication, shouldCheckAuthentication, userID } from "$lib/data/stores";
 
 // when to update all major values
 export default async function update() {
+  await attemptAuthUpdate();
+}
+
+export async function attemptAuthUpdate() {
   if (shouldCheckAuthentication.get()) {
     await updateAuthenticationState();
     shouldCheckAuthentication.set(false);
   }
-}
-
-export async function updateAll() {
-  await updateStargazers();
-  await updateAuthenticationState();
 }
 
 export async function updateStargazers(repo_link: string = REPO_URL) {
@@ -80,7 +79,7 @@ export async function updateAuthenticationState() {
           user_id = response.data;
         } catch(error) {
           console.log("No userID found");
-          isAuthenticated.set(false);
+          authentication.setIsAuthenticated(false);
           return;
         }
       }
@@ -100,13 +99,13 @@ export async function updateAuthenticationState() {
         user_id: userID.get()
       }
     });
-    isAuthenticated.set(response.data);
+    authentication.setIsAuthenticated(response.data);
 
-    console.log("Authentication State Fetched! Authenticated: " + isAuthenticated.get());
+    console.log("Authentication State Fetched! Authenticated: " + authentication.isAuthenticated());
   } catch(error) {
     console.log("ERROR FINDING OUT WHETHER USER IS AUTHENTICATED:");
     console.log(error);
 
-    isAuthenticated.set(false);
+    authentication.setIsAuthenticated(false);
   }
 }

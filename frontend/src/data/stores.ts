@@ -14,9 +14,18 @@ export const githubStars = {
   getAtom: () => numGitHubStars
 };
 
-// auth is not persistent on purpose
+// auth is not persistent on purpose--oh wait we have shouldCheckAuthentication for that
 export const authState = persistentAtom("auth_state");
-export const isAuthenticated = atom(false);
+const authenticated = persistentAtom("is_authenticated");
+
+export const authentication = {
+  isAuthenticated: (): boolean => (authenticated.get() === 'true'),
+  setIsAuthenticated: (value: boolean) => {
+    authenticated.set(value.toString());
+  },
+  getAtom: () => authenticated
+};
+
 export const shouldCheckAuthentication = atom(true);
 
 // App Stores

@@ -1,6 +1,7 @@
 ---
 import Layout from './Layout.astro';
-import Navbar from '@components/Navbar.svelte';
+//import Navbar from '@components/Navbar.svelte';
+import Navbar from "@components/NavBar/Navbar.astro";
 
 interface Props {
   title?: string;
@@ -12,7 +13,7 @@ const { title = "UniverseLM" } = Astro.props;
 <Layout title={title}>
   <main>
     <!-- Header -->
-    <Navbar client:load/>
+    <Navbar/>
 
     <!-- Content -->
     <slot/>
