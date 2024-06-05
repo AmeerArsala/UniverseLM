@@ -1,6 +1,8 @@
 import { atom, map } from "nanostores";
 import { persistentAtom, persistentMap } from "@nanostores/persistent";
 
+import { type Community } from "$lib/types/core";
+
 // Web stores
 const numGitHubStars = persistentAtom("num_github_stars");
 
@@ -33,4 +35,7 @@ export const userID = persistentAtom("user_id"); //, null);
 
 // Core stores
 // stores relating to the core of the application
-export const community = atom({id: -1, name: ""});
+export const community = persistentAtom<Community>('active_community', {id: -1, name: ""}, {
+  encode: JSON.stringify,
+  decode: JSON.parse
+});
