@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS chunks_lore;
 DROP TABLE IF EXISTS lore;
 DROP TABLE IF EXISTS chunks;
 DROP TABLE IF EXISTS users_communities;
+DROP TABLE IF EXISTS eligible_users_for_communities;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS communities;
 
@@ -22,6 +23,16 @@ CREATE TABLE communities(
 
 -- Junction table between users and communities for many-to-many relationship
 CREATE TABLE users_communities(
+  user_id INTEGER REFERENCES users(id),
+  community_id INTEGER REFERENCES communities(id)
+);
+
+CREATE TABLE eligible_users_for_communities(
+  user_id INTEGER REFERENCES users(id),
+  community_id INTEGER REFERENCES communities(id)
+);
+
+CREATE TABLE communities_owners(
   user_id INTEGER REFERENCES users(id),
   community_id INTEGER REFERENCES communities(id)
 );

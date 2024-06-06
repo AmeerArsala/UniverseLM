@@ -53,6 +53,27 @@ def get_all_user_api_keys() -> List[str]:
     return api_keys
 
 
+def read_email_from_api_key(api_key: str):
+    account_id: str = CLOUDFLARE_ACCOUNT_ID
+    namespace_id: str = CLOUDFLARE_KV_NAMESPACE_ID
+    key_name: str = api_key
+
+    headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
+
+    # Get response from api
+    response = requests.get(
+        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{key_name}",
+        headers=headers,
+    )
+
+    # if isinstance(response, dict) and response["success"] is False:
+    #     return None
+
+    user_email: str = response
+
+    return user_email
+
+
 # user_id is hopefully a string
 def create_api_key(user_id) -> str:
     # Generate it first

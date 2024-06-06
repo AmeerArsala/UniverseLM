@@ -31,6 +31,7 @@
       // Do not store this in browser history, hence why we use replace and not just do `window.location.href = url;`
       window.location.replace(url);
     }).catch((error) => {
+      console.log(error);
       console.log("Error getting auth");
     })
   }

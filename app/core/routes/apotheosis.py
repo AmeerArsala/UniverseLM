@@ -8,6 +8,9 @@ from app.core.schemas.entities import Chunk
 
 from app.lib import society, states
 
+import sqlalchemy
+import app.core.db.database as db
+
 
 router = APIRouter(tags=["apotheosis"], dependencies=[Depends(api_auth.get_api_key)])
 
@@ -34,26 +37,91 @@ async def create_chunks(params: CreateChunksParams):
     return "OK"
 
 
-class CreateUserParams(BaseModel):
-    email: str
-
-
-@router.post("/user")
-async def create_user(params: CreateUserParams) -> int:
-    user_id: int = society.create_user(params.email)
-
-    return user_id
-
-
 class JoinCommunityParams(BaseModel):
     community_name: str
     user_email: str
 
 
+# NOTE: 2 things need to be enforced here
+# 1 - the user_email must be the same one they are using. This can be done by tying the API key to their email address in a KV storage
+# 2 - if the community is not public (if it doesn't have a '/' in the id), they will need to have the correct perms to access it
 @router.post("/community/join")
-async def join_community(params: JoinCommunityParams):
-    society.join_community(
-        user_email=params.user_email, community_name=params.community_name
-    )
+async def join_community(
+    params: JoinCommunityParams, api_key: str = Depends(api_auth.get_api_key)
+):
+    # It is already assumed that a valid api key exists by virtue of this route
+    email: str = api_auth.read_email_from_api_key(api_key)
 
-    return "OK"
+    # 1
+    if email != params.user_email:
+        return "Bruh use your own email stop tryna use other ppls accounts"
+
+    # Action
+    def join():
+        society.join_community(
+            user_email=params.user_email, community_name=params.community_name
+        )
+
+    # 2
+    is_public: bool = "/" not in params.community_name
+    if is_public:
+        join()
+        return "OK"
+
+    can_access_community: bool = False
+
+    with db.engine.begin() as conn:
+        # Get community id first
+        (community_id,) = conn.execute(
+            sqlalchemy.text("SELECT id FROM communities WHERE name = :name"),
+            {"name": params.community_name},
+        ).first()
+
+        query: str = """
+        SELECT COUNT(eligible_users_for_communities.user_id)
+        FROM users INNER JOIN eligible_users_for_communities ON users.id = eligible_users_for_communities.user_id
+        WHERE users.email = :email AND eligible_users_for_communities.community_id = :community_id
+        """
+
+        (num,) = conn.execute(
+            sqlalchemy.text(query), {"email": email, "community_id": community_id}
+        ).first()
+        can_access_community = num > 0
+
+    if can_access_community:
+        join()
+        return "OK"
+    else:
+        return "Access Denied"
+
+
+class WhitelistUsersParams(BaseModel):
+    whitelisted_emails: List[str]
+    community_name: str
+
+
+# ONLY allow this to be called on private communities.
+# Therefore, the assumption is that the community is private
+# Also check if the requestor has owner perms
+# (Like on the front end don't even let the option appear if the community is public)
+@router.post("/community/whitelist")
+async def whitelist_users(
+    params: WhitelistUsersParams, api_key: str = Depends(api_auth.get_api_key)
+):
+    # TODO: this
+
+    with db.engine.begin() as conn:
+        # Get community id first
+        (community_id,) = conn.execute(
+            sqlalchemy.text("SELECT id FROM communities WHERE name = :name"),
+            {"name": params.community_name},
+        ).first()
+
+        query: str = """
+        INSERT INTO eligible_users_for_communities
+        """
+        #
+        # (num,) = conn.execute(
+        #     sqlalchemy.text(query), {"email": email, "community_id": community_id}
+        # ).first()
+        # can_access_community = num > 0
