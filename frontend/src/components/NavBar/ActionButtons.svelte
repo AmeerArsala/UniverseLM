@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   import * as Dialog from "@components/ui/dialog/index.js";
   import SignInDialog from "@components/AuthForms/SignInDialog.svelte";
   import SignUpDialog from "@components/AuthForms/SignUpDialog.svelte";
@@ -6,10 +8,19 @@
   import { BACKEND_URL } from "$lib/data/envconfig";
 
   import { authentication } from "$lib/data/stores";
+
+  let authenticated: boolean = authentication.isAuthenticated();
+
+  onMount(() => {
+    authentication.getAtom().subscribe((value, oldValue) => {
+      // set authenticated to the parsed boolean
+      authenticated = (value === 'true');
+    })
+  });
 </script>
 
 <div class="space-x-2 flex flex-row">
-  {#if !authentication.isAuthenticated()}
+  {#if !authenticated}
     <!--Login Button-->
     <Dialog.Root>
       <Dialog.Trigger>

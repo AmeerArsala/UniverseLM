@@ -43,7 +43,7 @@ app = FastAPI(
 )
 
 # For now, allow all
-origin_whitelist = ["*", config.SITE_URL]
+origin_whitelist = ["*", config.SITE_URL, "http://localhost:4321"]
 
 
 app.add_middleware(
@@ -74,7 +74,7 @@ async def read_root():
 
 @app.get("/gatekeep")
 async def gatekeeping_test(
-    kinde_client: KindeApiClient = Depends(clients.get_kinde_client),
+    kinde_client: KindeApiClient = Depends(clients.get_user_kinde_client),
 ):
     return "You have entered the gate"
 

@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 import { REPO_URL } from "$lib/data/constants";
 import { BACKEND_URL } from "$lib/data/envconfig";
-import { githubStars, authState, authentication, userID } from "$lib/data/stores";
+import { githubStars, authState, authentication, coreRegistration, userID } from "$lib/data/stores";
 
 // when to update all major values
 export default async function update() {
@@ -66,13 +66,27 @@ export async function updateAuthentication() {
         console.log("Ok, checking user_id via state");
         let state: string = authState.get();
 
+        if (idNotFound(state)) {
+          console.log("No state exists. Aborting.");
+          return;
+        }
+
+        function onUserIDNotFound() {
+          console.log("No userID found");
+          authentication.setIsAuthenticated(false);
+        }
+
         try {
           const response = await axios.get(`${BACKEND_URL}/auth/get_user_id?state=${state}`);
 
-          user_id = response.data;
+          if (response.data === "NULL") {
+            onUserIDNotFound();
+            return;
+          } else {
+            user_id = response.data;
+          }
         } catch(error) {
-          console.log("No userID found");
-          authentication.setIsAuthenticated(false);
+          onUserIDNotFound();
           return;
         }
       }

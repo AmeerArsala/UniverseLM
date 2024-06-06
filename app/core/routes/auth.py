@@ -85,16 +85,16 @@ async def callback(request: Request):
 
     print(f"user: {user}")
 
-    user_id: str = user.get("id")
+    user_auth_id: str = user.get("id")
 
     # Store in session
-    request.session["user_id"] = user_id
+    request.session["user_id"] = user_auth_id
 
     # Find out whether it is the first time the user is requesting (via this heuristic)
-    is_first_time: bool = clients.user_clients.get(user_id) is None
+    is_first_time: bool = clients.user_clients.get(user_auth_id) is None
 
     # Update the user_clients cache with the client session
-    clients.write_user_client(user_id, kinde_client)
+    clients.write_user_client(user_auth_id, kinde_client)
 
     redirect_url: str = ""
     if is_first_time:
@@ -102,47 +102,23 @@ async def callback(request: Request):
     else:
         redirect_url = config.POST_CALLBACK_REDIRECT_URL
 
-    # js_code: str = f"""
-    # localStorage.setItem('userId', '{user_id}');
-    # console.log("DONE");
-    # """
-    #
-    # html_content: str = f"""
-    # <!DOCTYPE html>
-    # <html>
-    #     <head>
-    #         <meta http-equiv="refresh" content="0; URL='{redirect_url}'" />
-    #         <script>
-    #             {js_code}
-    #         </script>
-    #     </head>
-    # </html>
-    # """
-
-    # return RedirectResponse(app_global.url_path_for("read_root"))
-    # return RedirectResponse(redirect_url)
-    # return HTMLResponse(content=html_content, status_code=200)
-
-    # Custom response that redirects with a value
-    # response = Response(content=user_id, media="text/plain")
-    # response.status_code = HTTP_301_MOVED_PERMANENTLY
-    # response.headers["Location"] = redirect_url
-
     # Write state just in case
     state: str = request.query_params["state"]
-    clients.write_user_id(state, user_id)
+    clients.write_user_auth_id(state, user_auth_id)
+
+    print(f"Redirecting to: {redirect_url}")
 
     response = RedirectResponse(redirect_url)
     response.set_cookie(
         key="user_id",
-        value=user_id,
+        value=user_auth_id,
         domain=f".{config.SITE_DOMAIN}",
         secure=config.USING_HTTPS,
         httponly=True,
         samesite="none",
     )
 
-    # print(f"user_id: {user_id}")
+    # print(f"user_auth_id: {user_auth_id}")
 
     return response
 
@@ -152,18 +128,20 @@ async def callback(request: Request):
 async def logout(request: Request):
     print("LOGGING OUT...")
 
-    # First, let's get the user_id
-    user_id = request.session.get("user_id")
+    # First, let's get the user_auth_id
+    user_auth_id = request.session.get("user_id")
 
     # Now, let's log this mf out
-    if (user_id is not None) and (clients.user_clients.get(user_id) is not None):
-        kinde_user_client = clients.read_user_client(user_id)
+    if (user_auth_id is not None) and (
+        clients.user_clients.get(user_auth_id) is not None
+    ):
+        kinde_user_client = clients.read_user_client(user_auth_id)
 
         # LOG EM OUT
         logout_url = kinde_user_client.logout(redirect_to=config.LOGOUT_REDIRECT_URL)
 
         # REMOVE ALL TRACES OF 'EM!!!
-        clients.delete_user_client(user_id)
+        clients.delete_user_client(user_auth_id)
         request.session.pop("user_id", None)
 
         # LOG EM OUT
@@ -177,10 +155,14 @@ async def logout(request: Request):
 
 
 @router.get("/get_user_id")
-async def get_user_id(state: str) -> str:
-    user_id: str = clients.readex_user_id(state)
+async def get_user_auth_id(state: str) -> str:
+    if clients.user_clients.get(state) is None:
+        print("User Auth ID Not Found.")
+        return "NULL"
 
-    return user_id
+    user_auth_id: str = clients.readex_user_auth_id(state)
+
+    return user_auth_id
 
 
 @router.get("/is_authenticated")
@@ -189,14 +171,14 @@ async def get_is_authenticated(request: Request) -> bool:
     # print(request.query_params)
 
     # First, get the user_id
-    user_id: str = request.query_params.get("user_id")
+    user_auth_id: str = request.query_params.get("user_id")
 
-    if (user_id is None) or (clients.user_clients.get(user_id) is None):
-        print(f"User ID not found or supplied. User ID: {user_id}")
+    if (user_auth_id is None) or (clients.user_clients.get(user_auth_id) is None):
+        print(f"User ID not found or supplied. User ID: {user_auth_id}")
         return False
 
     # Next, get the corresponding client
-    user_client: KindeApiClient = clients.read_user_client(user_id)
+    user_client: KindeApiClient = clients.read_user_client(user_auth_id)
 
     # Finally, check the authentication state
     is_authenticated: bool = user_client.is_authenticated()

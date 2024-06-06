@@ -28,7 +28,21 @@ export const authentication = {
   getAtom: () => authenticated
 };
 
+// if user is registered with the core DB (Postgres)
+const userRegistered = persistentAtom("is_core_registered");
+
+export const coreRegistration = {
+  isUserRegistered: (): boolean => (userRegistered.get() === 'true'),
+  activateRegistration: () => {
+    userRegistered.set('true');
+  }
+};
+
+
 // App Stores
+
+// this is not to be confused with the user_id in the Postgres DB; this is for auth
+// you can use this to derive the Postgres one
 export const userID = persistentAtom("user_id"); //, null);
 
 // Core stores

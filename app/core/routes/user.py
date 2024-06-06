@@ -3,13 +3,14 @@ from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 
 from app.core import clients, api_auth
+from app.core.schemas.users import UserDetails
 
 from kinde_sdk.kinde_api_client import KindeApiClient
 
 
 router = APIRouter(
     tags=["user stuff (not relating to the simulation itself)"],
-    dependencies=[Depends(clients.get_kinde_client)],
+    dependencies=[Depends(clients.get_user_kinde_client)],
 )
 
 
@@ -19,9 +20,29 @@ async def create_api_key(request: Request) -> str:
     kinde_client.fetch_token(authorization_response=str(request.url))
 
     user = kinde_client.get_user_details()
-    user_id = user.get("id")
+    user_auth_id = user.get("id")
 
     # Make api key and store it
-    api_key: str = api_auth.create_api_key(user_id)
+    api_key: str = api_auth.create_api_key(user_auth_id)
 
     return api_key
+
+
+@router.get("/view_details")
+async def view_user_details(user_auth_id: str) -> UserDetails:
+    kinde_client: KindeApiClient = clients.read_user_client(user_auth_id)
+
+    user_details_dict: Dict[str, str] = kinde_client.get_user_details()
+    return UserDetails(**user_details_dict)
+
+
+class ManifestUserParams(BaseModel):
+    user_auth_id: str
+
+
+@router.post("/manifest")
+async def manifest_user(params: ManifestUserParams) -> int:
+    """Returns the user_id"""
+    # Get the corresponding user_id
+
+    # Check the DB to see if the user

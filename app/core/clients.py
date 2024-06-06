@@ -47,10 +47,10 @@ class KindeApiClientData(BaseModel):
         return api_client
 
 
-def read_user_client(user_id) -> KindeApiClient:
+def read_user_client(user_auth_id: str) -> KindeApiClient:
     global user_clients
 
-    retrieved_serialized_data = user_clients.get(user_id)
+    retrieved_serialized_data = user_clients.get(user_auth_id)
     retrieved_deserialized_client_data: Dict = json.loads(retrieved_serialized_data)
 
     user_api_client_data: KindeApiClientData = KindeApiClientData(
@@ -63,7 +63,7 @@ def read_user_client(user_id) -> KindeApiClient:
     return user_api_client
 
 
-def write_user_client(user_id, client: KindeApiClient):
+def write_user_client(user_auth_id: str, client: KindeApiClient):
     global user_clients
 
     # print(f"Writing user client {user_id}...")
@@ -79,37 +79,37 @@ def write_user_client(user_id, client: KindeApiClient):
 
     serialized_user_api_client_data = json.dumps(user_api_client_data_dict)
     user_clients.set(
-        user_id,
+        user_auth_id,
         serialized_user_api_client_data,
         # Expires in X seconds
         ex=user_api_client_data_dict["access_token_obj"]["expires_in"],
     )
 
 
-def delete_user_client(user_id):
+def delete_user_client(user_auth_id: str):
     global user_clients
 
-    user_clients.delete(user_id)
+    user_clients.delete(user_auth_id)
 
 
 # Will expire as soon as it is read
 # Otherwise, has a short expiration time
-def readex_user_id(state: str) -> str:
+def readex_user_auth_id(state: str) -> str:
     global user_clients
 
     # Have it expire as soon as it is read
-    user_id: str = user_clients.getex(state, px=10)  # expire after 10 ms
+    user_auth_id: str = user_clients.getex(state, px=10)  # expire after 10 ms
     # retrieved_serialized_data = user_clients.getex(state, ex=0)
     # retrieved_deserialized_client_data: Dict = json.loads(retrieved_serialized_data)
 
-    return user_id
+    return user_auth_id
 
 
-def write_user_id(state: str, user_id: str):
+def write_user_auth_id(state: str, user_auth_id: str):
     global user_clients
 
     # Short expiration; 15 secs
-    user_clients.set(state, user_id, ex=15)
+    user_clients.set(state, user_auth_id, ex=15)
 
 
 def get_user_session_client(request: Request, manifest: bool = False) -> KindeApiClient:
@@ -151,5 +151,5 @@ def get_user_session_client(request: Request, manifest: bool = False) -> KindeAp
 # Dependency to get the current user's KindeApiClient instance
 # Like an ID to a party or something except this party requires being an authenticated user
 # We will use dependency injection to GATEKEEP our routes! LOL!!!
-def get_kinde_client(request: Request) -> KindeApiClient:
+def get_user_kinde_client(request: Request) -> KindeApiClient:
     return get_user_session_client(request, manifest=True)
