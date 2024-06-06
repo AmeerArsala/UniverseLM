@@ -10,12 +10,13 @@ interface Props {
   title?: string;
   showHeader?: boolean;
   gridBG?: boolean;
+  padInitial?: boolean;
 }
 
-const { title = "UniverseLM", showHeader = false, gridBG = false } = Astro.props;
+const { title = "UniverseLM", showHeader = false, gridBG = false, padInitial = true } = Astro.props;
 ---
 
-<Layout title={title} gridBG={gridBG}>
+<Layout title={title} gridBG={gridBG} padInitial={padInitial}>
   <main>
     <!-- Header -->
     {showHeader && <Navbar/>}

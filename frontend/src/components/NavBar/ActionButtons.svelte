@@ -41,7 +41,7 @@
     </Dialog.Root>
   {:else}
     <!--Dashboard button-->
-    <a href="/dashboard">
+    <a href="/platform">
       <button class="group p-[3px] relative rounded-lg overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full group-hover:animate-shimmer" />
         <div class="px-4 py-1.5 relative group transition duration-200 text-white bg-transparent">

@@ -32,7 +32,7 @@ BACKEND_URL = os.getenv("BACKEND_URL") if IS_PROD_MODE else f"http://{HOST}:{POR
 LOGOUT_REDIRECT_URL = f"{SITE_URL}/logout"
 KINDE_CALLBACK_URL = f"{BACKEND_URL}/auth/kinde_callback"
 
-POST_CALLBACK_REDIRECT_URL = f"{SITE_URL}/dashboard"
+POST_CALLBACK_REDIRECT_URL = f"{SITE_URL}/platform"  # redirect to dashboard
 FIRST_TIME_POST_CALLBACK_REDIRECT_URL = f"{SITE_URL}/"
 
 # Kinde Credentials
