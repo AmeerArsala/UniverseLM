@@ -7,11 +7,19 @@
   function handleAuth() {
     let realHref: string = href + "&redirect=false";
 
-    axios.get(realHref).then((response) => {
+    fetch(realHref, {
+      method: 'GET',
+      headers: {
+        //'Accept': "application/json",
+      },
+      mode: 'cors'
+    })
+    .then((response) => response.json())  // wow, this worked better than response.text(). fuck you JS!!!
+    .then((text: string) => {
       console.log("DONE!")
-      console.log(response.data);
+      console.log(text);
 
-      const url: string = response.data;
+      const url: string = text;
 
       // Add the data to a store
       // get state first
@@ -33,7 +41,7 @@
     }).catch((error) => {
       console.log(error);
       console.log("Error getting auth");
-    })
+    });
   }
 </script>
 
