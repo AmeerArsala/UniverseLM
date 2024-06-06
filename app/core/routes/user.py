@@ -13,6 +13,7 @@ import app.core.db.database as db
 from kinde_sdk.kinde_api_client import KindeApiClient
 
 
+# prefix: /user
 router = APIRouter(
     tags=["user stuff (not relating to the simulation itself)"],
     dependencies=[Depends(clients.get_user_kinde_client)],

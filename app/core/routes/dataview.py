@@ -18,6 +18,7 @@ from app.lib.utils.logic import LogicMode
 import numpy as np
 
 
+# prefix: /view
 router = APIRouter(tags=["dataview"], dependencies=[Depends(api_auth.get_api_key)])
 
 

@@ -9,6 +9,8 @@ from app.core.schemas.info import Lore, Belonging
 from app.lib import society, states, users
 
 
+# prefix: /community
+# full prefix: /community/{community_id}
 router = APIRouter(
     prefix="/{community_id}",
     tags=["functions"],

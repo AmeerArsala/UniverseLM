@@ -10,6 +10,7 @@ from app.core import clients
 from kinde_sdk.kinde_api_client import KindeApiClient
 
 
+# prefix: /auth
 router = APIRouter(tags=["auth"])
 
 

@@ -6,6 +6,7 @@ from app.core import api_auth
 from app.lib import society, states, users
 
 
+# prefix: /admin
 router = APIRouter(tags=["admin"], dependencies=[Depends(api_auth.get_admin_api_key)])
 
 

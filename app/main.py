@@ -1,5 +1,4 @@
 import os
-from sys import prefix
 from typing import Union, Optional, List, Dict
 
 from fastapi import (
@@ -8,7 +7,6 @@ from fastapi import (
     HTTPException,
     status,
     Request,
-    APIRouter,
     exceptions,
 )
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,7 +25,8 @@ import logging
 from app import config
 from app.core import clients
 from app.core.routes import apotheosis, chat, functions, dataview, admin, auth, user
-from app.lib import society, states, users
+
+# from app.lib import society, states, users
 
 
 description = """
@@ -57,14 +56,22 @@ app.add_middleware(
 # Session/Auth management
 app.add_middleware(SessionMiddleware, secret_key=config.SECRET_KEY)
 
+# API Routers
 
+# Depends on: Nothing
+app.include_router(auth.router, prefix="/auth")
+
+# Depends on: User Session Authenticated
+app.include_router(user.router, prefix="/user")
+
+# Depends on: API Key (user or admin)
 app.include_router(apotheosis.router, prefix="/apotheosis")
 app.include_router(chat.router, prefix="/chat")
 app.include_router(functions.router, prefix="/community")
 app.include_router(dataview.router, prefix="/view")
+
+# Depends on: Admin API Key
 app.include_router(admin.router, prefix="/admin")
-app.include_router(auth.router, prefix="/auth")
-app.include_router(user.router, prefix="/user")
 
 
 @app.get("/")

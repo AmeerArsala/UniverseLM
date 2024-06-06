@@ -12,6 +12,7 @@ import sqlalchemy
 import app.core.db.database as db
 
 
+# prefix: /apotheosis
 router = APIRouter(tags=["apotheosis"], dependencies=[Depends(api_auth.get_api_key)])
 
 
@@ -108,8 +109,6 @@ class WhitelistUsersParams(BaseModel):
 async def whitelist_users(
     params: WhitelistUsersParams, api_key: str = Depends(api_auth.get_api_key)
 ):
-    # TODO: this
-
     with db.engine.begin() as conn:
         # Get community id first
         (community_id,) = conn.execute(
@@ -118,10 +117,49 @@ async def whitelist_users(
         ).first()
 
         query: str = """
-        INSERT INTO eligible_users_for_communities
+        INSERT INTO eligible_users_for_communities(user_id, community_id)
+        SELECT DISTINCT users.id, :community_id
+        FROM users
+        WHERE users.email IN :emails
         """
-        #
-        # (num,) = conn.execute(
-        #     sqlalchemy.text(query), {"email": email, "community_id": community_id}
-        # ).first()
-        # can_access_community = num > 0
+
+        # Execute the insertion
+        conn.execute(
+            sqlalchemy.text(query),
+            {"community_id": community_id, "emails": tuple(params.whitelisted_emails)},
+        )
+
+    return "OK"
+
+
+class PromoteOwnersParams(BaseModel):
+    new_owners_emails: List[str]
+    community_name: str
+
+
+@router.post("/community/add_owners")
+async def promote_owners(
+    params: PromoteOwnersParams, api_key: str = Depends(api_auth.get_api_key)
+):
+    # NOTE: same thing as the function above, just with adding to `communities_owners` rather than `eligible_users_for_communities`
+    with db.engine.begin() as conn:
+        # Get community id first
+        (community_id,) = conn.execute(
+            sqlalchemy.text("SELECT id FROM communities WHERE name = :name"),
+            {"name": params.community_name},
+        ).first()
+
+        query: str = """
+        INSERT INTO communities_owners(user_id, community_id)
+        SELECT DISTINCT users.id, :community_id
+        FROM users
+        WHERE users.email IN :emails
+        """
+
+        # Execute the insertion
+        conn.execute(
+            sqlalchemy.text(query),
+            {"community_id": community_id, "emails": tuple(params.new_owners_emails)},
+        )
+
+    return "OK"

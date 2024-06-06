@@ -1,5 +1,5 @@
 // Will be true on prod
-export const PROD_MODE: boolean = ((import.meta.env.PUBLIC_BACKEND_URL ?? process.env.PUBLIC_MODE) === "PROD");
+export const PROD_MODE: boolean = ((import.meta.env.PUBLIC_MODE ?? process.env.PUBLIC_MODE) === "PROD");
 
 // Local dev params
 export const SITE_HOST: string = "localhost";

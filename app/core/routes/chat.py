@@ -10,6 +10,7 @@ from app.lib.chat import AgentChat, AgentChatParams, manifest_chat
 from app.lib import users
 
 
+# prefix: /chat
 router = APIRouter(tags=["chat"], dependencies=[Depends(api_auth.get_api_key)])
 
 
