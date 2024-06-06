@@ -1,0 +1,44 @@
+---
+import DefaultLayout from '@layouts/DefaultLayout.astro';
+import SidebarView from "@components/Dashboard/SidebarView.svelte";
+import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
+
+interface Props {
+  title?: string;
+  gridBG?: boolean;
+  showHeader?: boolean;
+}
+
+const { title = "UniverseLM", gridBG = true, showHeader = false } = Astro.props;
+---
+
+<DefaultLayout title={title} showHeader={showHeader} padInitial={false} gridBG={gridBG}>
+  <!-- IMPORTANT PAGE: UPDATE IMPORTANT CLIENT-SIDE VARIABLES  -->
+  <!-- Gonna just leave it here in the layout since the use-case demands that all of em need this -->
+  <script>
+    import update from "$lib/scripts/updatestate";
+    import { authentication } from "$lib/data/stores";
+
+    // updates important states
+    await update();
+
+    // Redirect to login if not authenticated
+    if (!authentication.isAuthenticated()) {
+      // redirect to login; let it stay in the browser history
+      window.location.href = '/login';
+    }
+  </script>
+
+  <!-- Overall Container -->
+  <div class="">
+    <div class="flex flex-row">
+      <!-- Sidebar -->
+      <SidebarView client:load/>
+
+      <!-- Content -->
+      <main class="ml-auto mr-auto p-4">
+        <slot />
+      </main>
+    </div>
+  </div>
+</DefaultLayout>

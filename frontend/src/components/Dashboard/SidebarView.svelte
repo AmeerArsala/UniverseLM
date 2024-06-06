@@ -67,8 +67,10 @@
 
 <style>
   .sidebar {
+    position: fixed;
     color: white;
     background: #212121;
+    @apply drop-shadow-lg;
   }
 </style>
 

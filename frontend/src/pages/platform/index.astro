@@ -1,36 +1,9 @@
 ---
-import DefaultLayout from '@layouts/DefaultLayout.astro';
-import SidebarView from "./SidebarView.svelte";
+import DashboardLayout from '@layouts/DashboardLayout.astro';
 
 export const prerender = false;
 ---
 
-<DefaultLayout showHeader={false} padInitial={false} gridBG={true}>
-  <!-- IMPORTANT PAGE: UPDATE IMPORTANT CLIENT-SIDE VARIABLES  -->
-  <script>
-    import update from "$lib/scripts/updatestate";
-    import { authentication } from "$lib/data/stores";
-
-    // updates important states
-    await update();
-
-    // Redirect to login if not authenticated
-    if (!authentication.isAuthenticated()) {
-      // redirect to login; let it stay in the browser history
-      window.location.href = '/login';
-    }
-  </script>
-
-  <!-- Overall Container -->
-  <div class="">
-    <div class="flex flex-row">
-      <!-- Sidebar -->
-      <SidebarView client:load/>
-
-      <!-- Content -->
-      <main>
-
-      </main>
-    </div>
-  </div>
-</DefaultLayout>
+<DashboardLayout showHeader={false} gridBG={true}>
+  <!-- Content -->
+</DashboardLayout>
