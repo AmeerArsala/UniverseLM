@@ -48,6 +48,26 @@ async def view_user_details(request: Request) -> UserDetails:
     return UserDetails(**user_details_dict)
 
 
+@router.get("/view_details/email")
+async def view_user_email(request: Request) -> str:
+    user_client: KindeApiClient = user_kinde_client(request.url)
+
+    user_details_dict: Dict[str, str] = user_client.get_user_details()
+    return UserDetails(**user_details_dict).email
+
+
+@router.get("/view_details/user_core_id")
+async def view_user_id(request: Request) -> int:
+    user_client: KindeApiClient = user_kinde_client(request.url)
+
+    user_details_dict: Dict[str, str] = user_client.get_user_details()
+    user_details: UserDetails = UserDetails(**user_details_dict)
+
+    user_id: int = society.get_user_id(user_details.email)
+
+    return user_id
+
+
 @router.post("/manifest")
 async def manifest_user(request: Request) -> int:
     """Returns the user_id"""

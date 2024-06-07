@@ -37,6 +37,12 @@ export async function updateStargazers(repo_link: string = REPO_URL) {
 }
 
 export async function updateAuthentication() {
+  console.log("Updating related auth variables...");
+  if (!authentication.isAuthenticated()) {
+    // if user is not logged in, they are not registered
+    coreRegistration.deactivateRegistration();
+  }
+
   console.log("Updating authentication value...");
 
   // retrieve state of user ID
@@ -117,11 +123,7 @@ export async function updateAuthentication() {
 function postAuthentication() {
   if (!coreRegistration.isUserRegistered()) {
     // Call the route to manifest the user
-    axios.post(`${BACKEND_URL}/user/manifest`, {
-      params: {
-        user_auth_id: userAuthID.get()
-      }
-    }, {
+    axios.post(`${BACKEND_URL}/user/manifest`, {}, {
       withCredentials: true
     }).then((response) => {
       userCoreID.setID(response.data);

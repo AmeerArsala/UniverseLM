@@ -29,6 +29,10 @@ export const coreRegistration = {
   isUserRegistered: (): boolean => (userRegistered.get() === 'true'),
   activateRegistration: () => {
     userRegistered.set('true');
+  },
+  // this is only for when the user logs out
+  deactivateRegistration: () => {
+    userRegistered.set('false');
   }
 };
 
@@ -51,6 +55,8 @@ export const userAuthID = persistentAtom("user_id");
 // CORE STORES
 // stores relating to the core of the application
 const user_core_id = persistentAtom("user_core_id"); // this one's an int
+
+// probably don't RELY on this TOO much except as a cache. Functional is more secure
 export const userCoreID = {
   getID: (): number => (parseInt(user_core_id.get())),
   setID: (id: number) => {

@@ -9,6 +9,7 @@ from app.lib.states import RawInfo
 
 from app.core.schemas.entities import Chunk
 from app.core.schemas.info import Lore, Belonging
+from app.core.schemas.users import TierPlan
 
 from app.lib.llm.prompts import chunk_summarizer
 from app.lib.llm.prompts.chunk_generation import (
@@ -41,6 +42,18 @@ HOW THE SIMULATION WORKS:
 
 # CREATION
 # --------
+
+
+def is_community_name_available(name: str) -> bool:
+    with db.engine.begin() as conn:
+        result: Tuple = conn.execute(
+            sqlalchemy.text("SELECT COUNT(*) FROM communities WHERE name = :name"),
+            [{"name": name}],
+        ).first()
+
+    (count,) = result
+
+    return count == 0
 
 
 def create_community(name: str) -> int:
@@ -108,23 +121,38 @@ def create_user(email: str) -> int:
 
 def join_community(user_email: str, community_name: str):
     with db.engine.begin() as conn:
-        # First get the user_id and community_id
-        user_id: int = conn.execute(
-            sqlalchemy.text("SELECT id FROM users WHERE email = :email"),
-            [{"email": user_email}],
-        ).first()[0]
-
+        # First, get community_id
         community_id: int = conn.execute(
             sqlalchemy.text("SELECT id FROM communities WHERE name = :name"),
             [{"name": community_name}],
         ).first()[0]
 
         # Now link the user and the community by inserting them into the junction table
+        query = """
+        INSERT INTO users_communities(user_id, community_id)
+        SELECT users.id, :community_id 
+        FROM users
+        WHERE users.email = :user_email
+        """
+
         conn.execute(
-            sqlalchemy.text(
-                "INSERT INTO users_communities(user_id, community_id) VALUES (:user_id, :community_id)"
-            ),
-            [{"user_id": user_id, "community_id": community_id}],
+            sqlalchemy.text(query),
+            [{"community_id": community_id, "user_email": user_email}],
+        )
+
+
+def join_community_by_id(user_email: str, community_id: int):
+    with db.engine.begin() as conn:
+        query = """
+        INSERT INTO users_communities(user_id, community_id)
+        SELECT users.id, :community_id 
+        FROM users
+        WHERE users.email = :user_email
+        """
+
+        conn.execute(
+            sqlalchemy.text(query),
+            [{"community_id": community_id, "user_email": user_email}],
         )
 
 
@@ -567,13 +595,15 @@ def reset(community_id: int):
 
 # UTIL
 # --------
+def is_community_name_private(community_name: str) -> bool:
+    return "/" in community_name
 
 
 def get_user_id(user_email: str) -> int | None:
     with db.engine.begin() as conn:
         result = conn.execute(
             sqlalchemy.text("SELECT id FROM users WHERE email = :email"),
-            {"email": user_email},
+            [{"email": user_email}],
         ).first()
 
     if result is None:
@@ -586,10 +616,154 @@ def get_user_email(user_id: int) -> str | None:
     with db.engine.begin() as conn:
         result = conn.execute(
             sqlalchemy.text("SELECT email FROM users WHERE id = :id"),
-            {"id": user_id},
+            [{"id": user_id}],
         ).first()
 
     if result is None:
         return None
     else:
         return result[0]
+
+
+def get_user_tier_plan_from_id(user_id: int) -> TierPlan:
+    with db.engine.begin() as conn:
+        result = conn.execute(
+            sqlalchemy.text("SELECT tier_plan FROM users WHERE id = :id"),
+            [{"id": user_id}],
+        ).first()
+
+        tier_plan = TierPlan(result[0])
+
+    return tier_plan
+
+
+def get_user_tier_plan_from_email(user_email: int) -> TierPlan:
+    with db.engine.begin() as conn:
+        result = conn.execute(
+            sqlalchemy.text("SELECT tier_plan FROM users WHERE email = :email"),
+            [{"email": user_email}],
+        ).first()
+
+        tier_plan = TierPlan(result[0])
+
+    return tier_plan
+
+
+def user_is_owner(community_name: str, user_email: str) -> bool:
+    with db.engine.begin() as conn:
+        # Get community id first
+        (community_id,) = conn.execute(
+            sqlalchemy.text("SELECT id FROM communities WHERE name = :name"),
+            {"name": community_name},
+        ).first()
+
+        # Check if user is an owner
+        query = """
+        SELECT COUNT(*)
+        FROM users INNER JOIN communities_owners ON users.id = communities_owners.user_id
+        WHERE users.email = :email AND community_owners.community_id = :community_id
+        """
+        (occurrences_as_owner,) = conn.execute(
+            sqlalchemy.text(query),
+            [{"email": user_email, "community_id": community_id}],
+        ).first()
+
+    return occurrences_as_owner > 0
+
+
+def user_is_whitelisted(community_name: str, user_email: str) -> bool:
+    with db.engine.begin() as conn:
+        # Get community id first
+        (community_id,) = conn.execute(
+            sqlalchemy.text("SELECT id FROM communities WHERE name = :name"),
+            {"name": community_name},
+        ).first()
+
+        # Check if user is whitelisted
+        query = """
+        SELECT COUNT(*)
+        FROM users INNER JOIN eligible_users_for_communities ON users.id = eligible_users_for_communities.user_id
+        WHERE users.email = :email AND eligible_users_for_communities.community_id = :community_id
+        """
+        (occurrences_on_whitelist,) = conn.execute(
+            sqlalchemy.text(query),
+            [{"email": user_email, "community_id": community_id}],
+        ).first()
+
+    return occurrences_on_whitelist > 0
+
+
+def user_can_access_community(community_name: str, user_email: str) -> bool:
+    if not is_community_name_private(community_name):
+        return True
+    else:
+        # Community is Private
+        return user_is_whitelisted(community_name, user_email)
+
+
+def add_community_owners(community_id: int, owner_emails: List[str]):
+    with db.engine.begin() as conn:
+        query = """
+        INSERT INTO communities_owners(user_id, community_id)
+        SELECT users.id, :community_id FROM users
+        WHERE users.email IN :owner_emails
+        """
+
+        conn.execute(
+            sqlalchemy.text(query),
+            [{"community_id": community_id, "owner_emails": tuple(owner_emails)}],
+        )
+
+
+def add_users_to_community_whitelist(
+    community_id: int, whitelisted_emails: List[str], bypass_privacy_check: bool = False
+):
+    with db.engine.begin() as conn:
+        if not bypass_privacy_check:
+            # Check the community name to see if it is private
+            (community_name,) = conn.execute(
+                sqlalchemy.text("SELECT name FROM communities WHERE id = :id"),
+                [{"id": community_id}],
+            ).first()
+
+            is_public: bool = not is_community_name_private(community_name)
+
+            if is_public:  # you can't whitelist to public communities
+                return
+
+        # The community is assumed private from here on out
+        query = """
+        INSERT INTO eligible_users_for_communities(user_id, community_id)
+        SELECT users.id, :community_id FROM users
+        WHERE users.email IN :whitelisted_emails
+        """
+
+        conn.execute(
+            sqlalchemy.text(query),
+            [
+                {
+                    "community_id": community_id,
+                    "whitelisted_emails": tuple(whitelisted_emails),
+                }
+            ],
+        )
+
+
+def user_is_in_community(user_email: str, community_id: int) -> bool:
+    """Find out whether the user is in the specified community"""
+
+    with db.engine.begin() as conn:
+        query = """
+        SELECT COUNT(*)
+        FROM users 
+        INNER JOIN users_communities ON users.id = users_communities.user_id
+        WHERE users.email = :user_email AND users_communities.community_id = :community_id
+        """
+
+        # Realistically, this query will only ever return 0 or 1
+        (count,) = conn.execute(
+            sqlalchemy.text(query),
+            [{"user_email": user_email, "community_id": community_id}],
+        ).first()
+
+    return count > 0
