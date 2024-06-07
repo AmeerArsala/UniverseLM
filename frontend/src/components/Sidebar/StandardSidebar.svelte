@@ -12,14 +12,14 @@
 	const fadeIn = {
 		delay: 100,
 		duration: 200
-	};
+	}
 
 	const fadeOut = {
 		delay: 0,
 		duration: 100
-	};
+	}
 
-  export let isExpanded = false;
+  let isExpanded = false;
 
   $: tooltipText = isExpanded ? "Collapse sidebar (⌘ + B)" : "Expand sidebar (⌘ + B)";
 
@@ -72,8 +72,6 @@
   const sidebarStyle: string = `p-3 h-screen space-y-6 w-[${sidebarWidth}]`;
 
   export let sidebarItems: SidebarItem[] = [];
-
-  export let customIndex: number = -1;
 </script>
 
 <svelte:window
@@ -82,7 +80,7 @@
 />
 
 <nav class:expanded={isExpanded} class={sidebarStyle}>
-  <Tooltip.Root openDelay={250}>
+  <Tooltip.Root>
     <Tooltip.Trigger asChild let:builder>
       <!-- Icon for expand collapse -->
       <Button builders={[builder]} variant="ghost" on:click={() => isExpanded = !isExpanded} class="p-0 flex justify-start">
@@ -95,12 +93,8 @@
   </Tooltip.Root>
 
 	<div class="flex flex-col justify-center space-y-6 text-nowrap">
-		{#each sidebarItems as item, i}
-      {#if i === customIndex}
-        <slot />
-      {:else}
-        <a href={item.href} target={item.target} class={itemStyle}><svelte:component this={item.iconComponent} class={iconStyle}/>{#if isExpanded}<span class={spanStyle} in:fade="{fadeIn}" out:fade="{fadeOut}">{item.text}</span>{/if}</a>
-      {/if}
+		{#each sidebarItems as item}
+      <a href={item.href} target={item.target} class={itemStyle}><svelte:component this={item.iconComponent} class={iconStyle}/>{#if isExpanded}<span class={spanStyle} in:fade="{fadeIn}" out:fade="{fadeOut}">{item.text}</span>{/if}</a>
     {/each}
 	</div>
 </nav>

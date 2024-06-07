@@ -6,8 +6,11 @@ import { BACKEND_URL } from "$lib/data/envconfig";
 import {
   githubStars,
   authState, authentication, coreRegistration, userAuthID,
-  userCoreID
+  userCoreID,
+  apiKey
 } from "$lib/data/stores";
+
+import { retrieveAPIKey, idNotFound } from "$lib/data/datafunctions";
 
 // when to update all major values (where 'major' is defined by whether the whole site will break without correctly setting these values)
 export default async function update() {
@@ -48,10 +51,6 @@ export async function updateAuthentication() {
   // retrieve state of user ID
   console.log("Getting ID...");
   console.log("userAuthID: " + userAuthID.get());
-
-  // I FUCKING HATE JS WITH ITS BULLSHIT
-  const MIN_ID_LENGTH: number = 3;
-  const idNotFound = (id) => (id === null || id === undefined || id === "undefined" || id === "null" || id.length < MIN_ID_LENGTH);
 
   function onUserAuthIDNotFound() {
     console.log("No userAuthID found");
@@ -134,4 +133,13 @@ function postAuthentication() {
     // activate the registration
     coreRegistration.activateRegistration();
   }
+
+  // Check for and update API Key
+  retrieveAPIKey()
+    .then((api_key) => {
+      // It's already set by the function, so no need to do it again
+      console.log("API Key Retrieved.");
+    }).catch((error) => {
+      console.log("Error retrieving API Key: " + error.toString());
+    });
 }

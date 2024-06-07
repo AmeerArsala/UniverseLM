@@ -9,6 +9,8 @@ import requests
 
 from app.lib.utils import cryptography
 
+import pandas as pd
+
 
 dotenv.load_dotenv()
 
@@ -48,55 +50,46 @@ def get_all_user_api_keys() -> List[str]:
 
     results: List[Dict] = response["result"]
 
-    api_keys: List[str] = [result["name"] for result in results]
+    keys: List[str] = [result["name"] for result in results]
+
+    # Filter out the emails from the keys
+    keys_series = pd.Series(keys)
+
+    # Filter the series to exclude strings containing '@'
+    api_keys: List[str] = keys_series[~keys_series.str.contains("@")].tolist()
 
     return api_keys
 
 
-def read_api_key_from_email(email: str):
+# The KV is str -> str
+def _read_key(key_name: str) -> str:
     account_id: str = CLOUDFLARE_ACCOUNT_ID
     namespace_id: str = CLOUDFLARE_KV_NAMESPACE_ID
-    key_name: str = email
 
     headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
 
     # Get response from api
-    response = requests.get(
+    response: str = requests.get(
         f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{key_name}",
         headers=headers,
     )
 
-    # if isinstance(response, dict) and response["success"] is False:
-    #     return None
+    return response
 
-    api_key: str = response
+
+def read_api_key_from_email(email: str):
+    api_key: str = _read_key(email)
 
     return api_key
 
 
 def read_email_from_api_key(api_key: str):
-    account_id: str = CLOUDFLARE_ACCOUNT_ID
-    namespace_id: str = CLOUDFLARE_KV_NAMESPACE_ID
-    key_name: str = api_key
-
-    headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
-
-    # Get response from api
-    response = requests.get(
-        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{key_name}",
-        headers=headers,
-    )
-
-    # if isinstance(response, dict) and response["success"] is False:
-    #     return None
-
-    user_email: str = response
+    user_email: str = _read_key(api_key)
 
     return user_email
 
 
-# user_id is hopefully a string
-def create_api_key(user_email: str) -> str:
+def create_api_key(user_email: str, expiration_ttl: int = -1) -> str:
     # Generate it first
     api_key: str = cryptography.generate_api_key()
 
@@ -104,30 +97,37 @@ def create_api_key(user_email: str) -> str:
     account_id: str = CLOUDFLARE_ACCOUNT_ID
     namespace_id: str = CLOUDFLARE_KV_NAMESPACE_ID
 
-    headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
+    def make_url(key_name: str) -> str:
+        return f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{key_name}"
 
-    # Forward mapping: [email -> api_key]
-    query_params = {"base64": False, "key": user_email, "value": api_key}
+    headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer undefined",
+    }
 
-    response = requests.put(
-        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/bulk",
-        headers=headers,
-        params=query_params,
-    )
+    def make_request(key: str, val, expiration_ttl: int = -1):
+        url: str = make_url(key_name=key)
+
+        body = {"metadata": {}, "value": val}
+
+        if expiration_ttl != -1:
+            body["expiration_ttl"] = expiration_ttl
+
+        response = requests.request("PUT", url, headers=headers, json=body)
+        return response
+
+    # Forward mapping: [user_email -> api_key]
+    (K, V) = (user_email, api_key)
+    response = make_request(K, V, expiration_ttl=expiration_ttl)
 
     # Print results of call
     print("Forward Mapping:")
     print(response.status_code)
     print(response.text)
 
-    # Reverse Mapping: [api_key -> email]
-    query_params = {"base64": False, "key": api_key, "value": user_email}
-
-    response = requests.put(
-        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/bulk",
-        headers=headers,
-        params=query_params,
-    )
+    # Reverse Mapping: [api_key -> user_email]
+    (K, V) = (api_key, user_email)
+    response = make_request(K, V, expiration_ttl=expiration_ttl)
 
     # Print results of call
     print("Reverse Mapping:")

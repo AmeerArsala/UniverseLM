@@ -33,10 +33,29 @@ async def create_api_key(request: Request) -> str:
     user_details: UserDetails = UserDetails(**user_client.get_user_details())
 
     # user_auth_id: str = user_details.id
+    expiration_ttl = request.query_params.get("expiration_ttl_seconds")
+
+    # 'int'ify it
+    if expiration_ttl is None:
+        expiration_ttl = -1
+    else:
+        expiration_ttl = int(expiration_ttl)
 
     # Make api key and store it
-    api_key: str = api_auth.create_api_key(user_details.email)
+    api_key: str = api_auth.create_api_key(
+        user_details.email, expiration_ttl=expiration_ttl
+    )
 
+    return api_key
+
+
+# using post for the additional security
+@router.post("/get_apikey")
+async def get_api_key(request: Request) -> str:
+    user_client = user_kinde_client(request.url)
+    user_details: UserDetails = UserDetails(**user_client.get_user_details())
+
+    api_key: str = api_auth.read_api_key_from_email(user_details.email)
     return api_key
 
 

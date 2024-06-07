@@ -54,6 +54,7 @@ export const userAuthID = persistentAtom("user_id");
 
 // CORE STORES
 // stores relating to the core of the application
+export const apiKey = persistentAtom("api_key");
 const user_core_id = persistentAtom("user_core_id"); // this one's an int
 
 // probably don't RELY on this TOO much except as a cache. Functional is more secure

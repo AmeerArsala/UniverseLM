@@ -1,6 +1,13 @@
 import axios from "axios";
 import { BACKEND_URL } from "./envconfig";
-import { userCoreID } from "./stores";
+import { userCoreID, apiKey } from "./stores";
+
+const MIN_ID_LENGTH: number = 3;
+export const idNotFound = (id): boolean => (id === null || id === undefined || id === "undefined" || id === "null" || id.length < MIN_ID_LENGTH);
+
+export function hasAPIKey(): boolean {
+  return !idNotFound(apiKey.get());
+}
 
 export async function retrieveUserCoreID() {
   try {
@@ -49,5 +56,21 @@ export async function retrieveUserDetails() {
     return userDetails;
   } catch (error) {
     console.log("Error retrieving user details: " + error);
+  }
+}
+
+export async function retrieveAPIKey() {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/user/get_apikey`, {
+      withCredentials: true
+    });
+
+    const API_KEY: string = response.data;
+
+    // Update stored api key
+    apiKey.set(API_KEY);
+    return API_KEY;
+  } catch (error) {
+    console.log("Error retrieving user api key: " + error);
   }
 }

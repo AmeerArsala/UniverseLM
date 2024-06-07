@@ -74,6 +74,8 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
+    "@melt-ui/pp": "^0.3.2",
+    "@melt-ui/svelte": "^0.81.0",
     "flowbite": "^2.3.0",
     "flowbite-svelte": "^0.46.1",
     "svelte-headless-table": "^0.18.2"
