@@ -563,3 +563,33 @@ def reset(community_id: int):
             conn.execute(sqlalchemy.text(query), [dict(community_id=community_id)])
 
     return "OK"
+
+
+# UTIL
+# --------
+
+
+def get_user_id(user_email: str) -> int | None:
+    with db.engine.begin() as conn:
+        result = conn.execute(
+            sqlalchemy.text("SELECT id FROM users WHERE email = :email"),
+            {"email": user_email},
+        ).first()
+
+    if result is None:
+        return None
+    else:
+        return result[0]
+
+
+def get_user_email(user_id: int) -> str | None:
+    with db.engine.begin() as conn:
+        result = conn.execute(
+            sqlalchemy.text("SELECT email FROM users WHERE id = :id"),
+            {"id": user_id},
+        ).first()
+
+    if result is None:
+        return None
+    else:
+        return result[0]

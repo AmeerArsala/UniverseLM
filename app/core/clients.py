@@ -115,9 +115,9 @@ def write_user_auth_id(state: str, user_auth_id: str):
 def get_user_session_client(request: Request, manifest: bool = False) -> KindeApiClient:
     global user_clients
 
-    user_id = request.session.get("user_id")
-    if user_id is None:
-        print("User ID not found")
+    user_auth_id: str = request.session.get("user_id")
+    if user_auth_id is None:
+        print("User Auth ID not found")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated"
         )
@@ -126,13 +126,13 @@ def get_user_session_client(request: Request, manifest: bool = False) -> KindeAp
     should_write_client: bool = False
 
     # Manifest a session
-    if user_clients.get(user_id) is None:
+    if user_clients.get(user_auth_id) is None:
         # If the client does not exist, create a new instance / session
         user_api_client = KindeApiClient()
         should_write_client = True
         # write_user_client(user_id, user_api_client)
     else:
-        user_api_client = read_user_client(user_id)
+        user_api_client = read_user_client(user_auth_id)
 
     # Ensure the client is authenticated
     if not user_api_client.is_authenticated():
@@ -143,7 +143,7 @@ def get_user_session_client(request: Request, manifest: bool = False) -> KindeAp
         )
 
     if manifest and should_write_client:
-        write_user_client(user_id, user_api_client)
+        write_user_client(user_auth_id, user_api_client)
 
     return user_api_client
 

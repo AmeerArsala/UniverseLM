@@ -109,6 +109,7 @@ class WhitelistUsersParams(BaseModel):
 async def whitelist_users(
     params: WhitelistUsersParams, api_key: str = Depends(api_auth.get_api_key)
 ):
+
     with db.engine.begin() as conn:
         # Get community id first
         (community_id,) = conn.execute(

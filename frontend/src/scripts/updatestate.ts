@@ -3,9 +3,13 @@ import Cookies from 'js-cookie';
 
 import { REPO_URL } from "$lib/data/constants";
 import { BACKEND_URL } from "$lib/data/envconfig";
-import { githubStars, authState, authentication, coreRegistration, userID } from "$lib/data/stores";
+import {
+  githubStars,
+  authState, authentication, coreRegistration, userAuthID,
+  userCoreID
+} from "$lib/data/stores";
 
-// when to update all major values
+// when to update all major values (where 'major' is defined by whether the whole site will break without correctly setting these values)
 export default async function update() {
   await updateAuthentication();
 }
@@ -37,32 +41,31 @@ export async function updateAuthentication() {
 
   // retrieve state of user ID
   console.log("Getting ID...");
-  console.log("userID: " + userID.get());
-
-  /*console.log(userID === undefined);
-  console.log(typeof userID === "undefined");
-  console.log(userID === void 0);
-  console.log(userID === null);
-  console.log(userID.length);*/
+  console.log("userAuthID: " + userAuthID.get());
 
   // I FUCKING HATE JS WITH ITS BULLSHIT
   const MIN_ID_LENGTH: number = 3;
   const idNotFound = (id) => (id === null || id === undefined || id === "undefined" || id === "null" || id.length < MIN_ID_LENGTH);
 
-  if (idNotFound(userID.get())) {
+  function onUserAuthIDNotFound() {
+    console.log("No userAuthID found");
+    authentication.setIsAuthenticated(false);
+  }
+
+  if (idNotFound(userAuthID.get())) {
     console.log("Trying again...");
 
-    let user_id = Cookies.get('user_id');
-    console.log("userID (2nd attempt): " + user_id);
+    let user_auth_id = Cookies.get('user_id');
+    console.log("userID (2nd attempt): " + user_auth_id);
 
-    if (idNotFound(user_id)) {
+    if (idNotFound(user_auth_id)) {
       console.log("Trying ONE more time...");
 
       console.log("Full cookie: " + document.cookie);
-      user_id = `; ${document.cookie}`.split(`; user_id=`);
-      console.log(user_id);
+      user_auth_id = `; ${document.cookie}`.split(`; user_id=`);
+      console.log(user_auth_id);
 
-      if (idNotFound(user_id)) {
+      if (idNotFound(user_auth_id)) {
         console.log("Ok, checking user_id via state");
         let state: string = authState.get();
 
@@ -71,48 +74,62 @@ export async function updateAuthentication() {
           return;
         }
 
-        function onUserIDNotFound() {
-          console.log("No userID found");
-          authentication.setIsAuthenticated(false);
-        }
-
         try {
-          const response = await axios.get(`${BACKEND_URL}/auth/get_user_id?state=${state}`);
+          const response = await axios.get(`${BACKEND_URL}/auth/get_user_auth_id?state=${state}`);
 
           if (response.data === "NULL") {
-            onUserIDNotFound();
+            onUserAuthIDNotFound();
             return;
           } else {
-            user_id = response.data;
+            user_auth_id = response.data;
           }
         } catch(error) {
-          onUserIDNotFound();
+          onUserAuthIDNotFound();
           return;
         }
       }
     }
 
-    userID.set(user_id); //localStorage.setItem("user_id", userID);
+    userAuthID.set(user_auth_id); //localStorage.setItem("user_id", userAuthID);
     //Cookies.remove()
   }
-
-  //const userId: string = localStorage.getItem('userId');
 
   // update user authentication now
   console.log("Fetching authentication...");
   try {
     const response = await axios.get(`${BACKEND_URL}/auth/is_authenticated`, {
       params: {
-        user_id: userID.get()
+        user_auth_id: userAuthID.get()
       }
     });
     authentication.setIsAuthenticated(response.data);
 
     console.log("Authentication Fetched! Authenticated: " + authentication.isAuthenticated());
+    postAuthentication();
   } catch(error) {
     console.log("ERROR FINDING OUT WHETHER USER IS AUTHENTICATED:");
     console.log(error);
 
     authentication.setIsAuthenticated(false);
+  }
+}
+
+function postAuthentication() {
+  if (!coreRegistration.isUserRegistered()) {
+    // Call the route to manifest the user
+    axios.post(`${BACKEND_URL}/user/manifest`, {
+      params: {
+        user_auth_id: userAuthID.get()
+      }
+    }, {
+      withCredentials: true
+    }).then((response) => {
+      userCoreID.setID(response.data);
+    }).catch((error) => {
+      console.log("Error manifesting user:\n" + error);
+    });
+
+    // activate the registration
+    coreRegistration.activateRegistration();
   }
 }

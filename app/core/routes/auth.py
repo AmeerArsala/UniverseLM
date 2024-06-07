@@ -155,7 +155,7 @@ async def logout(request: Request):
     )
 
 
-@router.get("/get_user_id")
+@router.get("/get_user_auth_id")
 async def get_user_auth_id(state: str) -> str:
     if clients.user_clients.get(state) is None:
         print("User Auth ID Not Found.")
@@ -172,7 +172,7 @@ async def get_is_authenticated(request: Request) -> bool:
     # print(request.query_params)
 
     # First, get the user_id
-    user_auth_id: str = request.query_params.get("user_id")
+    user_auth_id: str = request.query_params.get("user_auth_id")
 
     if (user_auth_id is None) or (clients.user_clients.get(user_auth_id) is None):
         print(f"User ID not found or supplied. User ID: {user_auth_id}")

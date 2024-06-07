@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS lore;
 DROP TABLE IF EXISTS chunks;
 DROP TABLE IF EXISTS users_communities;
 DROP TABLE IF EXISTS eligible_users_for_communities;
+DROP TABLE IF EXISTS communities_owners;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS communities;
 
@@ -13,7 +14,9 @@ DROP TABLE IF EXISTS communities;
 -- Human Users
 CREATE TABLE users(
   id SERIAL PRIMARY KEY,
-  email TEXT NOT NULL UNIQUE
+  email TEXT NOT NULL UNIQUE,
+  readme TEXT DEFAULT '', -- markdown readme
+  tier_plan INTEGER DEFAULT 1 -- 1 == ('FREE_TIER' | 2 == 'PRO_TIER' | 3 == 'ENTERPRISE_TIER' | 4 == 'ADMIN_TIER')
 );
 
 CREATE TABLE communities(
@@ -70,3 +73,4 @@ CREATE TABLE belongings(
   content TEXT,
   owner BIGINT REFERENCES chunks(id)
 );
+

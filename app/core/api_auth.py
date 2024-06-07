@@ -75,7 +75,7 @@ def read_email_from_api_key(api_key: str):
 
 
 # user_id is hopefully a string
-def create_api_key(user_id) -> str:
+def create_api_key(user_email: str) -> str:
     # Generate it first
     api_key: str = cryptography.generate_api_key()
 
@@ -85,7 +85,7 @@ def create_api_key(user_id) -> str:
 
     headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
 
-    query_params = {"base64": False, "key": user_id, "value": api_key}
+    query_params = {"base64": False, "key": user_email, "value": api_key}
 
     response = requests.put(
         f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/bulk",

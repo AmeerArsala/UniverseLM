@@ -9,7 +9,6 @@
   */
 
   // ALSO make sure to include a search bar w/ keyboard shortcuts to shortcut actions
-  // TODO: create a layout for some of the common components within the '/platform' route
   import { Sidebar, type SidebarItem } from "@components/Sidebar";
 
   import {
