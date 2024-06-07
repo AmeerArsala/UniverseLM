@@ -40,12 +40,12 @@ class CreateCommunityParams(BaseModel):
 
 class CreateCommunityResponse(BaseModel):
     success: bool
-    name_allowed: bool
-    privacy_allowed: bool
+    name_allowed: bool = Field(default=True)
+    privacy_allowed: bool = Field(default=True)
 
     # these return "OK" if they are allowed and an error message otherwise
-    name_status_message: str
-    privacy_status_message: str
+    name_status_message: str = Field(default="OK")
+    privacy_status_message: str = Field(default="OK")
 
     community_id: int = Field(default=-1)
 
@@ -72,9 +72,9 @@ async def create_community(
             "You must be on a paid plan (Pro or beyond) to create private societies"
         )
         success = False
-    else:
-        response_dict["privacy_allowed"] = True
-        response_dict["privacy_status_message"] = "OK"
+    # else:
+    #     response_dict["privacy_allowed"] = True
+    #     response_dict["privacy_status_message"] = "OK"
 
     # Now, check if the name is valid
     def is_valid_name(name: str) -> bool:

@@ -13,7 +13,7 @@ from app.lib.utils import cryptography
 dotenv.load_dotenv()
 
 # Admin API Keys
-admin_api_keys: List = []
+admin_api_keys: List[str] = []
 
 admin_api_keys.append(os.environ.get("ADMIN_API_KEY"))
 admin_api_key_header = APIKeyHeader(name="admin_access_token", auto_error=False)
@@ -53,6 +53,27 @@ def get_all_user_api_keys() -> List[str]:
     return api_keys
 
 
+def read_api_key_from_email(email: str):
+    account_id: str = CLOUDFLARE_ACCOUNT_ID
+    namespace_id: str = CLOUDFLARE_KV_NAMESPACE_ID
+    key_name: str = email
+
+    headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
+
+    # Get response from api
+    response = requests.get(
+        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{key_name}",
+        headers=headers,
+    )
+
+    # if isinstance(response, dict) and response["success"] is False:
+    #     return None
+
+    api_key: str = response
+
+    return api_key
+
+
 def read_email_from_api_key(api_key: str):
     account_id: str = CLOUDFLARE_ACCOUNT_ID
     namespace_id: str = CLOUDFLARE_KV_NAMESPACE_ID
@@ -85,6 +106,7 @@ def create_api_key(user_email: str) -> str:
 
     headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
 
+    # Forward mapping: [email -> api_key]
     query_params = {"base64": False, "key": user_email, "value": api_key}
 
     response = requests.put(
@@ -94,6 +116,21 @@ def create_api_key(user_email: str) -> str:
     )
 
     # Print results of call
+    print("Forward Mapping:")
+    print(response.status_code)
+    print(response.text)
+
+    # Reverse Mapping: [api_key -> email]
+    query_params = {"base64": False, "key": api_key, "value": user_email}
+
+    response = requests.put(
+        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/bulk",
+        headers=headers,
+        params=query_params,
+    )
+
+    # Print results of call
+    print("Reverse Mapping:")
     print(response.status_code)
     print(response.text)
 
@@ -102,7 +139,7 @@ def create_api_key(user_email: str) -> str:
 
 
 # User API Keys
-user_api_key_header = APIKeyHeader(name="user_access_token", auto_error=False)
+user_api_key_header = APIKeyHeader(name="User-API-Key", auto_error=False)
 
 
 async def get_user_api_key(
@@ -119,7 +156,7 @@ async def get_user_api_key(
 
 
 # Now, for ALL api keys (admin api key is a God token)
-api_key_header = APIKeyHeader(name="universal_access_token", auto_error=False)
+api_key_header = APIKeyHeader(name="UniverseLM-API-Key", auto_error=False)
 
 
 async def get_api_key(request: Request, api_key_header: str = Security(api_key_header)):
