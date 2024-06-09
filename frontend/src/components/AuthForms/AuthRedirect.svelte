@@ -13,15 +13,11 @@
 
     let realHref: string = href + "&redirect=false";
 
-    fetch(realHref, {
-      method: 'GET',
-      headers: {
-        //'Accept': "application/json",
-      },
-      mode: 'cors'
-    })
-    .then((response) => response.json())  // wow, this worked better than response.text(). fuck you JS!!!
-    .then((text: string) => {
+    axios.get(realHref, { withCredentials: true })
+    //.then((response) => response.json())  // wow, this worked better than response.text(). fuck you JS!!!
+    .then((response) => {
+      const text: string = response.data;
+
       console.log("DONE!")
       console.log(text);
 
