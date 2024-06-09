@@ -10,7 +10,7 @@ import {
   apiKey
 } from "$lib/data/stores";
 
-import { retrieveAPIKey, idNotFound } from "$lib/data/datafunctions";
+import { idNotFound, retrieveAPIKey, retrieveUserCoreID } from "$lib/data/datafunctions";
 
 // when to update all major values (where 'major' is defined by whether the whole site will break without correctly setting these values)
 export default async function updateAll() {
@@ -111,7 +111,7 @@ export async function updateAuthentication() {
     authentication.setIsAuthenticated(response.data);
 
     console.log("Authentication Fetched! Authenticated: " + authentication.isAuthenticated());
-    postAuthentication();
+    await postAuthentication();
   } catch(error) {
     console.error("ERROR FINDING OUT WHETHER USER IS AUTHENTICATED: " + error);
 
@@ -119,7 +119,7 @@ export async function updateAuthentication() {
   }
 }
 
-function postAuthentication() {
+async function postAuthentication() {
   console.log("Post Authentication: Fetch core user ID if not registered");
   if (!coreRegistration.isUserRegistered()) {
     // Call the route to manifest the user
@@ -133,6 +133,11 @@ function postAuthentication() {
 
     // activate the registration
     coreRegistration.activateRegistration();
+  }
+
+  // Still fetch core user ID (implication is that the user is registered)
+  if (idNotFound(userCoreID.getAtom().get())) {
+    await retrieveUserCoreID();
   }
 }
 
