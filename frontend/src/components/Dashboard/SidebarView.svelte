@@ -139,7 +139,9 @@
             <div class="relative flex flex-row space-x-2 hover:bg-accent hover:text-accent-foreground" on:click={() => { createCommunityOpen = !createCommunityOpen; }}>
               <IconSquarePlus class="h-6 w-6 text-neutral-800 dark:text-neutral-300"/>
               {#if expanded}
-                <span class="absolute left-7" in:fade="{fadeIn}" out:fade="{fadeOut}">Create Community</span>
+                <div class="sidebar-item-text">
+                  <span class="absolute left-7" in:fade="{fadeIn}" out:fade="{fadeOut}">Create Community</span>
+                </div>
               {/if}
             </div>
           </Dialog.Trigger>

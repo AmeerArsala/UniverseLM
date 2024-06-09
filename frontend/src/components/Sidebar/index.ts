@@ -1,4 +1,3 @@
-import StandardSidebar from "./StandardSidebar.svelte";
 import Sidebar from "./Sidebar.svelte";
 
 
@@ -11,6 +10,5 @@ interface SidebarItem {
 
 export {
   type SidebarItem,
-  StandardSidebar,
   Sidebar
 };

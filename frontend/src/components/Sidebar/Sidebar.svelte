@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
+  import { onMount } from "svelte";
+  import { fade, slide } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
+
   import { Button } from "$lib/components/ui/button/index.js";
   //import * from '@tabler/icons-svelte';
   import {
@@ -26,6 +29,34 @@
   let isCtrlOrCmdDown: boolean = false;
   let isBKeyDown: boolean = false;
 
+  export let itemStyle: string = "flex flex-row space-x-2 hover:bg-accent hover:text-accent-foreground";
+  export let iconStyle: string = "h-6 w-6 text-neutral-800 dark:text-neutral-300";
+  export let spanStyle: string = "absolute left-10";
+
+  export let sidebarWidth: string = "60px";
+  let INITIAL_SIDEBAR_WIDTH: string;
+  export let expandedSidebarWidth: string = "250px";
+
+  export let sidebarItems: SidebarItem[] = [];
+
+  export let customIndex: number = -1;
+
+  onMount(() => {
+    INITIAL_SIDEBAR_WIDTH = sidebarWidth;
+  });
+
+  // Function to toggle the expanded state
+  function toggleExpansion() {
+    isExpanded = !isExpanded;
+
+    if (isExpanded) {
+      // Calculate the new width including the text
+      sidebarWidth = expandedSidebarWidth;
+    } else {
+      sidebarWidth = INITIAL_SIDEBAR_WIDTH; // Reset to initial width
+    }
+  }
+
   function handleKeyDown(event) {
     // Only want to handle first press
     if (event.repeat) {
@@ -46,7 +77,7 @@
     }
 
     if (isCtrlOrCmdDown && isBKeyDown) {
-      isExpanded = !isExpanded;
+      toggleExpansion();
     }
   }
 
@@ -63,17 +94,6 @@
         break;
     }
   }
-
-  export let itemStyle: string = "flex flex-row space-x-2 hover:bg-accent hover:text-accent-foreground";
-  export let iconStyle: string = "h-6 w-6 text-neutral-800 dark:text-neutral-300";
-  export let spanStyle: string = "absolute left-10";
-
-  export let sidebarWidth: string = "60px";
-  const sidebarStyle: string = `p-3 h-screen space-y-6 w-[${sidebarWidth}] bg-black drop-shadow-md`;
-
-  export let sidebarItems: SidebarItem[] = [];
-
-  export let customIndex: number = -1;
 </script>
 
 <svelte:window
@@ -81,11 +101,11 @@
   on:keyup={onKeyUp}
 />
 
-<nav class:expanded={isExpanded} class={sidebarStyle}>
+<nav class:expanded={isExpanded} class="p-3 h-screen space-y-6 bg-black drop-shadow-md" style="width: {sidebarWidth}; transition: width 0.125s ease-out; grid-area: nav; overflow: hidden;">
   <Tooltip.Root openDelay={250}>
     <Tooltip.Trigger asChild let:builder>
       <!-- Icon for expand collapse -->
-      <Button builders={[builder]} variant="ghost" on:click={() => isExpanded = !isExpanded} class="p-0 flex justify-start">
+      <Button builders={[builder]} variant="ghost" on:click={toggleExpansion} class="p-0 flex justify-start">
         <IconLayoutSidebar class="h-6 w-6 text-neutral-800 dark:text-neutral-300" />
       </Button>
     </Tooltip.Trigger>
@@ -99,21 +119,22 @@
       {#if i === customIndex}
         <slot />
       {:else}
-        <a href={item.href} target={item.target} class={itemStyle}><svelte:component this={item.iconComponent} class={iconStyle}/>{#if isExpanded}<span class={spanStyle} in:fade="{fadeIn}" out:fade="{fadeOut}">{item.text}</span>{/if}</a>
+        <a href={item.href} target={item.target} class={itemStyle}>
+          <svelte:component this={item.iconComponent} class={iconStyle}/>
+          {#if isExpanded}
+            <div class="sidebar-item-text">
+              <span class={spanStyle} in:fade="{fadeIn}" out:fade="{fadeOut}">{item.text}</span>
+            </div>
+          {/if}
+        </a>
       {/if}
     {/each}
 	</div>
 </nav>
 
 <style>
-	nav {
-		grid-area: nav;
-		transition: ease-out 200ms;
-		overflow: hidden;
-	}
-
 	.expanded {
-		transition: ease-out 200ms;
+		transition: width 0.125s ease-out;
 		width: 250px;
 	}
 </style>
