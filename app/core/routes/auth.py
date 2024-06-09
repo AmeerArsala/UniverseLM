@@ -110,14 +110,14 @@ async def callback(request: Request):
     print(f"Redirecting to: {redirect_url}")
 
     response = RedirectResponse(redirect_url)
-    response.set_cookie(
-        key="user_id",
-        value=user_auth_id,
-        domain=f".{config.SITE_DOMAIN}",
-        secure=config.USING_HTTPS,
-        httponly=True,
-        samesite="none",
-    )
+    # response.set_cookie(
+    #     key="user_id",
+    #     value=user_auth_id,
+    #     domain=f".{config.SITE_DOMAIN}",
+    #     secure=config.USING_HTTPS,
+    #     httponly=True,
+    #     samesite="none",
+    # )
 
     # print(f"user_auth_id: {user_auth_id}")
 
