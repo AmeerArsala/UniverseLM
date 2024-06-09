@@ -1,10 +1,15 @@
 <script lang="ts">
   import axios from "axios";
-  import { authState } from "$lib/data/stores";
+  import { authState, userAuthID } from "$lib/data/stores";
+
+  import { idNotFound } from "$lib/data/datafunctions";
 
   export let href: string;
 
   function handleAuth() {
+    // First things first: delete the current userAuthID if it exists
+    userAuthID.set("undefined")
+
     let realHref: string = href + "&redirect=false";
 
     fetch(realHref, {
