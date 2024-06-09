@@ -13,8 +13,9 @@ import {
 import { retrieveAPIKey, idNotFound } from "$lib/data/datafunctions";
 
 // when to update all major values (where 'major' is defined by whether the whole site will break without correctly setting these values)
-export default async function update() {
+export default async function updateAll() {
   await updateAuthentication();
+  await updateAPIKey();
 }
 
 export async function updateStargazers(repo_link: string = REPO_URL) {
@@ -133,12 +134,14 @@ function postAuthentication() {
     // activate the registration
     coreRegistration.activateRegistration();
   }
+}
 
+export function updateAPIKey() {
   // Check for and update API Key
   retrieveAPIKey()
     .then((api_key) => {
       // It's already set by the function, so no need to do it again
-      console.log("API Key Retrieved.");
+      //console.log("API Key Retrieved.");
     }).catch((error) => {
       console.log("Error retrieving API Key: " + error.toString());
     });

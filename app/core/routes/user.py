@@ -25,9 +25,9 @@ router = APIRouter(
 def _get_user_details(user_auth_id: str) -> UserDetails:
     user_client: KindeApiClient = clients.read_user_client(user_auth_id)
 
-    print("GETTING USER DETAILS...")
+    # print("GETTING USER DETAILS...")
     user_details_dict: Dict[str, str] = user_client.get_user_details()
-    print(user_details_dict)
+    # print(user_details_dict)
 
     return UserDetails(**user_details_dict)
 

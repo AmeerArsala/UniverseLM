@@ -19,11 +19,11 @@ const attentionWords = ["Multi-Agent Systems", "Communities", "a Text Adventure"
   <!-- IMPORTANT PAGE: UPDATE IMPORTANT CLIENT-SIDE VARIABLES  -->
   <script>
     import update from "$lib/scripts/updatestate";
-    import { updateStargazers } from "$lib/scripts/updatestate";
+    import { updateAuthentication, updateStargazers } from "$lib/scripts/updatestate";
 
     // updates important states
     await updateStargazers();
-    await update();
+    await updateAuthentication();
   </script>
 
   <!-- HOOK ATTENTION GRABBER (HERO) -->

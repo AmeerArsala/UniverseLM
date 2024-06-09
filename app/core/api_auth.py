@@ -6,6 +6,7 @@ import os
 import dotenv
 
 import requests
+import urllib.parse
 
 from app.lib.utils import cryptography
 
@@ -34,6 +35,7 @@ async def get_admin_api_key(
 
 CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID")
 CLOUDFLARE_KV_NAMESPACE_ID = os.getenv("CLOUDFLARE_KV_NAMESPACE_ID")
+CLOUDFLARE_API_KEY = os.getenv("CLOUDFLARE_API_KEY")
 
 
 def get_all_user_api_keys() -> List[str]:
@@ -41,10 +43,11 @@ def get_all_user_api_keys() -> List[str]:
     namespace_id: str = CLOUDFLARE_KV_NAMESPACE_ID
 
     headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
+    url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/keys"
 
     # Get response from api
     response: Dict = requests.get(
-        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/keys",
+        url,
         headers=headers,
     )
 
@@ -65,19 +68,36 @@ def get_all_user_api_keys() -> List[str]:
 def _read_key(key_name: str) -> str | None:
     account_id: str = CLOUDFLARE_ACCOUNT_ID
     namespace_id: str = CLOUDFLARE_KV_NAMESPACE_ID
+    encoded_key: str = urllib.parse.quote_plus(key_name)
 
-    headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
+    headers = {
+        "Authorization": f"Bearer {CLOUDFLARE_API_KEY}",
+        "Content-Type": "application/json",
+    }
 
-    # Get response from api
-    response = requests.get(
-        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{key_name}",
-        headers=headers,
-    )
+    url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{encoded_key}"
 
-    value: str = response.json()
-    print(value)
+    print(f"Requesting URL: {url}")
 
-    return value
+    try:
+        response = requests.get(url, headers=headers)
+        print(response)
+        response.raise_for_status()  # Raises an HTTPError if the response was unsuccessful
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+        return None
+
+    # Assuming the response structure is known and the value is within the first item of the list
+    json_response = response.json()
+    if json_response["result"]:
+        value: str = json_response["result"][0][
+            "content"
+        ]  # Adjust this line based on the actual response structure
+        print(f"Fetched Value: {value}")
+        return value
+    else:
+        print("No value found.")
+        return None
 
 
 def read_api_key_from_email(email: str) -> str | None:

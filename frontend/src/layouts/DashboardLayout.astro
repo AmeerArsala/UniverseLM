@@ -20,11 +20,11 @@ const { title = "UniverseLM", gridBG = true, showHeader = false, useCommandMenu 
   <!-- IMPORTANT PAGE: UPDATE IMPORTANT CLIENT-SIDE VARIABLES  -->
   <!-- Gonna just leave it here in the layout since the use-case demands that all of em need this -->
   <script>
-    import update from "$lib/scripts/updatestate";
+    import updateAll from "$lib/scripts/updatestate";
     import { authentication } from "$lib/data/stores";
 
     // updates important states
-    await update();
+    await updateAll();
 
     // Redirect to login if not authenticated
     if (!authentication.isAuthenticated()) {

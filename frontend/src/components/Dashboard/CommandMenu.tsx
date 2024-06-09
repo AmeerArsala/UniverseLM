@@ -239,8 +239,6 @@ export function CommandMenu() {
     suggestedGroup.push(removeItem(settingsGroup, GENERATE_API_KEY_IDX));
   }
 
-  console.log("SUGGESTED: " + suggestedGroup);
-
 	return (
 		<>
 			<Button
