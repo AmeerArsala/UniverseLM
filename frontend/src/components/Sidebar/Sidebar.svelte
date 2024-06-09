@@ -69,7 +69,7 @@
   export let spanStyle: string = "absolute left-10";
 
   export let sidebarWidth: string = "60px";
-  const sidebarStyle: string = `p-3 h-screen space-y-6 w-[${sidebarWidth}]`;
+  const sidebarStyle: string = `p-3 h-screen space-y-6 w-[${sidebarWidth}] bg-black drop-shadow-md`;
 
   export let sidebarItems: SidebarItem[] = [];
 

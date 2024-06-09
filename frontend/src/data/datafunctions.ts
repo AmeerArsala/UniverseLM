@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BACKEND_URL } from "./envconfig";
-import { userCoreID, apiKey } from "./stores";
+import { userCoreID, userAuthID, apiKey } from "./stores";
 
 const MIN_ID_LENGTH: number = 3;
 export const idNotFound = (id): boolean => (id === null || id === undefined || id === "undefined" || id === "null" || id.length < MIN_ID_LENGTH);
@@ -11,7 +11,7 @@ export function hasAPIKey(): boolean {
 
 export async function retrieveUserCoreID() {
   try {
-    const response = await axios.get(`${BACKEND_URL}/user/view_details/user_core_id`, {
+    const response = await axios.get(`${BACKEND_URL}/user/${userAuthID.get()}/view_details/user_core_id`, {
       withCredentials: true
     });
 
@@ -27,7 +27,7 @@ export async function retrieveUserCoreID() {
 
 export async function retrieveUserEmail() {
   try {
-    const response = await axios.get(`${BACKEND_URL}/user/view_details/email`, {
+    const response = await axios.get(`${BACKEND_URL}/user/${userAuthID.get()}/view_details/email`, {
       withCredentials: true
     });
 
@@ -48,7 +48,7 @@ export interface UserDetails {
 
 export async function retrieveUserDetails() {
   try {
-    const response = await axios.get(`${BACKEND_URL}/user/view_details`, {
+    const response = await axios.get(`${BACKEND_URL}/user/${userAuthID.get()}/view_details`, {
       withCredentials: true
     });
 
@@ -61,7 +61,9 @@ export async function retrieveUserDetails() {
 
 export async function retrieveAPIKey() {
   try {
-    const response = await axios.get(`${BACKEND_URL}/user/get_apikey`, {
+    const response = await axios.post(`${BACKEND_URL}/user/${userAuthID.get()}/get_apikey`, {
+      params: {}
+    }, {
       withCredentials: true
     });
 

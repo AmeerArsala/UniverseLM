@@ -60,7 +60,7 @@ pnpm run dev
 ## Other TODOs
 
 - [x] Finish API routes -> Make API keys for authenticated users who pay for no reason
-- [ ] Scale with PostgresML (move away from Neon) and/or Turso + Pinecone (move away from local)
+- [ ] Scale with Pinecone (move away from local)
 - [x] Move auth session management to a managed redis service like upstash rather than local
 
 ## Bloat

@@ -16,4 +16,3 @@ class TierPlan(IntEnum):
     PRO_TIER = 2
     SCALE_TIER = 3
     ADMIN_TIER = 4
-    ALMIGHTY_TIER = 9001

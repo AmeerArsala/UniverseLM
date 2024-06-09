@@ -239,7 +239,7 @@ def generate_chunks(
 # This is the update method and the main driver of the society
 def update(community_id: int):
     """Update the society by a tick"""
-
+    # TODO:
     return 0
 
 
@@ -632,9 +632,10 @@ def get_user_tier_plan_from_id(user_id: int) -> TierPlan:
             [{"id": user_id}],
         ).first()
 
-        tier_plan = TierPlan(result[0])
-
-    return tier_plan
+        if result is None:
+            return None
+        else:
+            return TierPlan(result[0])
 
 
 def get_user_tier_plan_from_email(user_email: int) -> TierPlan:
@@ -644,9 +645,25 @@ def get_user_tier_plan_from_email(user_email: int) -> TierPlan:
             [{"email": user_email}],
         ).first()
 
-        tier_plan = TierPlan(result[0])
+        if result is None:
+            return None
+        else:
+            return TierPlan(result[0])
 
-    return tier_plan
+
+def get_user_readme(user_email: str) -> str:
+    with db.engine.begin() as conn:
+        result = conn.execute(
+            sqlalchemy.text("SELECT readme FROM users WHERE email = :email"),
+            [{"email": user_email}],
+        ).first()
+
+        if result is None:
+            return None
+
+        (README,) = result
+
+    return README
 
 
 def user_is_owner(community_name: str, user_email: str) -> bool:

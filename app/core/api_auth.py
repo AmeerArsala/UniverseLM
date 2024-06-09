@@ -62,28 +62,31 @@ def get_all_user_api_keys() -> List[str]:
 
 
 # The KV is str -> str
-def _read_key(key_name: str) -> str:
+def _read_key(key_name: str) -> str | None:
     account_id: str = CLOUDFLARE_ACCOUNT_ID
     namespace_id: str = CLOUDFLARE_KV_NAMESPACE_ID
 
     headers = {"Authorization": "Bearer undefined", "Content-Type": "application/json"}
 
     # Get response from api
-    response: str = requests.get(
+    response = requests.get(
         f"https://api.cloudflare.com/client/v4/accounts/{account_id}/storage/kv/namespaces/{namespace_id}/values/{key_name}",
         headers=headers,
     )
 
-    return response
+    value: str = response.json()
+    print(value)
+
+    return value
 
 
-def read_api_key_from_email(email: str):
-    api_key: str = _read_key(email)
+def read_api_key_from_email(email: str) -> str | None:
+    api_key: str | None = _read_key(email)
 
     return api_key
 
 
-def read_email_from_api_key(api_key: str):
+def read_email_from_api_key(api_key: str) -> str:
     user_email: str = _read_key(api_key)
 
     return user_email

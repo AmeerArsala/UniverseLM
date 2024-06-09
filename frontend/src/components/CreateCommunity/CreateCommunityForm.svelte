@@ -187,7 +187,6 @@
           <div class="flex flex-col space-y-1.5">
             <Label for="owners-emails-input">Add Owners' Emails (optional)</Label>
             <TagsInput
-              id="owners-emails-input"
               placeholderText="yourfriend@example.com and press 'Enter'"
               bind:tag_names={invitedOwnersEmails}
             />
@@ -200,7 +199,6 @@
             <div class="flex flex-col space-y-1.5">
               <Label for="whitelisted-emails-input">Add Whitelisted Emails (optional)</Label>
               <TagsInput
-                id="whitelisted-emails-input"
                 placeholderText="yourfriend@example.com and press 'Enter'"
                 bind:tag_names={invitedWhitelistEmails}
               />

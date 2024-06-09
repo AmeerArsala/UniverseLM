@@ -41,6 +41,9 @@ dependencies:
   '@fontsource-variable/plus-jakarta-sans':
     specifier: ^5.0.21
     version: 5.0.21
+  '@internationalized/date':
+    specifier: ^3.5.4
+    version: 3.5.4
   '@kinde-oss/kinde-auth-pkce-js':
     specifier: ^3.1.0
     version: 3.1.0
@@ -143,6 +146,9 @@ dependencies:
   lucide-svelte:
     specifier: ^0.379.0
     version: 0.379.0(svelte@4.2.17)
+  marked:
+    specifier: ^12.0.2
+    version: 12.0.2
   mini-svg-data-uri:
     specifier: ^1.4.4
     version: 1.4.4
@@ -191,6 +197,9 @@ dependencies:
   typescript:
     specifier: ^5.4.5
     version: 5.4.5
+  zod:
+    specifier: ^3.23.8
+    version: 3.23.8
 
 devDependencies:
   '@melt-ui/pp':
@@ -7121,6 +7130,12 @@ packages:
 
   /markdown-table@3.0.3:
     resolution: {integrity: sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==}
+    dev: false
+
+  /marked@12.0.2:
+    resolution: {integrity: sha512-qXUm7e/YKFoqFPYPa3Ukg9xlI5cyAtGmyEIzMfW//m6kXwCy2Ps9DYf5ioijFKQ8qyuscrHoY04iJGctu2Kg0Q==}
+    engines: {node: '>= 18'}
+    hasBin: true
     dev: false
 
   /mdast-util-definitions@6.0.0:

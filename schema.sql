@@ -16,7 +16,7 @@ CREATE TABLE users(
   id SERIAL PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,
   readme TEXT DEFAULT '', -- markdown readme
-  tier_plan INTEGER DEFAULT 1 -- 1 == ('FREE_TIER' | 2 == 'PRO_TIER' | 3 == 'ENTERPRISE_TIER' | 4 == 'ADMIN_TIER')
+  tier_plan INTEGER DEFAULT 1 -- 1 == ('FREE_TIER' | 2 == 'PRO_TIER' | 3 == 'SCALE_TIER' | 4 == 'ADMIN_TIER')
 );
 
 CREATE TABLE communities(

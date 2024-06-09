@@ -1,7 +1,29 @@
 ---
 import DashboardLayout from '@layouts/DashboardLayout.astro';
+
+import ProfileCard from "./ProfileCard.svelte";
+import AccessTokens from "./AccessTokens.svelte";
+import ProfileStats from "./ProfileStats.svelte";
+import README from "./README.svelte";
+
+import { TracingBeam } from "@components/ui/tracing-beam";
 ---
+<script>
+
+</script>
 
 <DashboardLayout title="UniverseLM - Profile" gridBG>
-  <p>Coming soon...</p>
+  <div class="flex flex-col justify-center space-y-8">
+    <div class="ml-6">
+      <ProfileCard client:load/>
+      <AccessTokens client:load/>
+    </div>
+    <!-- <ProfileStats client:load/> -->
+
+    <div class="">
+      <TracingBeam className="px-6" client:only="react">
+        <README client:load/>
+      </TracingBeam>
+    </div>
+  </div>
 </DashboardLayout>

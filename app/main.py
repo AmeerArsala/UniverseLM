@@ -62,12 +62,12 @@ app.add_middleware(SessionMiddleware, secret_key=config.SECRET_KEY)
 app.include_router(auth.router, prefix="/auth")
 
 # Depends on: User Session Authenticated
-app.include_router(user.router, prefix="/user")
+app.include_router(user.router, prefix="/user")  # /{user_auth_id}
 
 # Depends on: API Key (user or admin)
 app.include_router(apotheosis.router, prefix="/apotheosis")
+app.include_router(functions.router, prefix="/community")  # /{community_id}
 app.include_router(chat.router, prefix="/chat")
-app.include_router(functions.router, prefix="/community")
 app.include_router(dataview.router, prefix="/view")
 
 # Depends on: Admin API Key

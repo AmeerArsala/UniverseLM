@@ -22,6 +22,7 @@
     "@fontsource-variable/inter": "^5.0.18",
     "@fontsource-variable/manrope": "^5.0.20",
     "@fontsource-variable/plus-jakarta-sans": "^5.0.21",
+    "@internationalized/date": "^3.5.4",
     "@kinde-oss/kinde-auth-pkce-js": "^3.1.0",
     "@kinde/management-api-js": "^0.6.0",
     "@nanostores/persistent": "^0.10.1",
@@ -56,6 +57,7 @@
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.379.0",
     "lucide-svelte": "^0.379.0",
+    "marked": "^12.0.2",
     "mini-svg-data-uri": "^1.4.4",
     "nanostores": "^0.10.3",
     "prettier": "^3.2.5",
@@ -71,7 +73,8 @@
     "tailwindcss": "^3.4.3",
     "three": "^0.164.1",
     "three-globe": "^2.31.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@melt-ui/pp": "^0.3.2",
