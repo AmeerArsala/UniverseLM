@@ -24,6 +24,8 @@
     IconUser,           // Profile
   } from '@tabler/icons-svelte';
 
+  import { createCommunityOpen } from "./dashboardStores";
+
   const sidebarItems: SidebarItem[] = [
     {
       text: "Home",
@@ -80,7 +82,11 @@
   let isCtrlOrCmdDown: boolean = false;
   let isPeriodDown: boolean = false;
 
-  let createCommunityOpen: boolean = false;
+  //let createCommunityOpen: boolean = false;
+
+  function toggleCreateCommunityOpen() {
+    createCommunityOpen.set(!$createCommunityOpen);
+  }
 
   function handleKeyDown(event) {
     // Only want to handle first press
@@ -105,7 +111,7 @@
     }
 
     if (isCtrlOrCmdDown && isPeriodDown) {
-      createCommunityOpen = true;
+      toggleCreateCommunityOpen();
     }
   }
 
@@ -134,9 +140,9 @@
     <!-- The custom item (the 'create a new community button') -->
     <Tooltip.Root openDelay={750}>
       <Tooltip.Trigger asChild={true}>
-        <Dialog.Root open={createCommunityOpen} onOpenChange={() => { createCommunityOpen = !createCommunityOpen; }}>
+        <Dialog.Root open={$createCommunityOpen} onOpenChange={toggleCreateCommunityOpen}>
           <Dialog.Trigger>
-            <div class="relative flex flex-row space-x-2 hover:bg-accent hover:text-accent-foreground" on:click={() => { createCommunityOpen = !createCommunityOpen; }}>
+            <div class="relative flex flex-row space-x-2 hover:bg-accent hover:text-accent-foreground" on:click={toggleCreateCommunityOpen}>
               <IconSquarePlus class="h-6 w-6 text-neutral-800 dark:text-neutral-300"/>
               {#if expanded}
                 <div class="sidebar-item-text">

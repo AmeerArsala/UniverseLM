@@ -67,7 +67,7 @@ async def get_api_key(user_auth_id: str) -> str:
 
     if api_key is None:
         print("NO API KEY FOUND")
-        return "NULL"
+        return "null"
 
     return api_key
 

@@ -1,15 +1,19 @@
 ---
 import DefaultLayout from '@layouts/DefaultLayout.astro';
 import SidebarView from "@components/Dashboard/SidebarView.svelte";
-import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
+import { CommandMenu } from "@components/Dashboard/CommandMenu.tsx";
+import { ScrollArea } from "@components/ui/scroll-area/index.js";
+
+import GenerateAPIKeyFullDialog from "@components/GenerateAPIKey/GenerateAPIKeyFullDialog.svelte";
 
 interface Props {
   title?: string;
   gridBG?: boolean;
   showHeader?: boolean;
+  useCommandMenu?: boolean;
 }
 
-const { title = "UniverseLM", gridBG = true, showHeader = false } = Astro.props;
+const { title = "UniverseLM", gridBG = true, showHeader = false, useCommandMenu = true } = Astro.props;
 ---
 
 <DefaultLayout title={title} showHeader={showHeader} padInitial={false} gridBG={gridBG}>
@@ -35,10 +39,21 @@ const { title = "UniverseLM", gridBG = true, showHeader = false } = Astro.props;
       <!-- Sidebar -->
       <SidebarView client:load/>
 
-      <!-- Content -->
-      <main class="ml-auto mr-auto p-4">
-        <slot />
-      </main>
+      <div class="ml-auto mr-auto p-4">
+        {useCommandMenu &&
+          <div class="absolute top-2 right-4 w-full flex-1 md:w-auto md:flex-none z-50">
+            <CommandMenu client:load />
+          </div>
+        }
+
+        <!-- Hidden Stuff  -->
+        <GenerateAPIKeyFullDialog client:load/>
+
+        <!-- Content -->
+        <main class="">
+          <slot />
+        </main>
+      </div>
     </div>
   </div>
 </DefaultLayout>

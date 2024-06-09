@@ -1,16 +1,12 @@
 <script lang="ts">
-  import axios from "axios";
-  import { BACKEND_URL } from "$lib/data/envconfig";
-  import { apiKey } from "$lib/data/stores";
-  import { hasAPIKey } from "$lib/data/datafunctions";
-
   import * as Card from "$lib/components/ui/card/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import { Button, LoadableButton } from "$lib/components/ui/button/index.js";
 
   import GenerateAPIKeyDialog from "@components/GenerateAPIKey/GenerateAPIKeyDialog.svelte";
+  import { generateAPIKeyOpen } from "@components/Dashboard/dashboardStores";
 
-  //let generateAPIKeyOpen: boolean = false;
+  const toggleGenerateAPIKeyOpen = () => { generateAPIKeyOpen.set(!$generateAPIKeyOpen); };
 </script>
 
 <Card.Root class="w-[45vw] min-h-[10vh] border-[#444460] bg-zinc-950 drop-shadow-md p-5 mt-4">
@@ -25,9 +21,9 @@
 
     <div class="flex flex-row justify-center">
       <!-- Button: Generate API Key -->
-      <Dialog.Root>
+      <Dialog.Root open={$generateAPIKeyOpen} onOpenChange={toggleGenerateAPIKeyOpen}>
         <Dialog.Trigger>
-          <Button>Generate API Key</Button>
+          <Button on:click={toggleGenerateAPIKeyOpen}>Generate API Key</Button>
         </Dialog.Trigger>
 
         <GenerateAPIKeyDialog />
