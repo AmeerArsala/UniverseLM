@@ -1,14 +1,15 @@
 <script lang="ts">
   import axios from "axios";
-  import { authState, userAuthID } from "$lib/data/stores";
+  import { authState/*, userAuthID, coreRegistration*/ } from "$lib/data/stores";
 
-  import { idNotFound } from "$lib/data/datafunctions";
+  import { idNotFound, onLogout } from "$lib/data/datafunctions";
 
   export let href: string;
 
   function handleAuth() {
     // First things first: delete the current userAuthID if it exists
-    userAuthID.set("undefined")
+    // Make sure the state is reset
+    onLogout();
 
     let realHref: string = href + "&redirect=false";
 
@@ -37,7 +38,7 @@
         state = state.substring(0, endIndex);
       }
 
-      // SET IT
+      // SET IT SO IT CAN BE USED LATER TO AUTHENTICATE
       authState.set(state);
 
       // Faciliate the redirect

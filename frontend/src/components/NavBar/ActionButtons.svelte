@@ -9,6 +9,8 @@
 
   import { authentication } from "$lib/data/stores";
 
+  import { onLogout } from "$lib/data/datafunctions";
+
   let authenticated: boolean = authentication.isAuthenticated();
 
   onMount(() => {
@@ -62,7 +64,10 @@
     </a>
 
     <!--Log out button-->
-    <a href={`${BACKEND_URL}/auth/logout`}>
+    <a on:click={() => {
+      onLogout();
+      window.location.href = `${BACKEND_URL}/auth/logout`;
+    }}>
       <button class="p-[3px] relative">
         <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />
         <div class="px-4 py-1.5  bg-black rounded-full relative group transition duration-200 text-white hover:bg-transparent">

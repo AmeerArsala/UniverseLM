@@ -1,12 +1,19 @@
 import axios from "axios";
 import { BACKEND_URL } from "./envconfig";
-import { userCoreID, userAuthID, apiKey } from "./stores";
+import { userCoreID, userAuthID, apiKey, authentication, coreRegistration } from "./stores";
 
 const MIN_ID_LENGTH: number = 3;
 export const idNotFound = (id): boolean => (id === null || id === undefined || id === "undefined" || id === "null" || id.length < MIN_ID_LENGTH);
 
 export function hasAPIKey(): boolean {
   return !idNotFound(apiKey.get());
+}
+
+// reset state
+export function onLogout() {
+  userAuthID.set("undefined");
+  authentication.setIsAuthenticated(false);
+  coreRegistration.deactivateRegistration();
 }
 
 export async function retrieveUserCoreID() {

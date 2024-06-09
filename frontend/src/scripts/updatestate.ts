@@ -113,22 +113,22 @@ export async function updateAuthentication() {
     console.log("Authentication Fetched! Authenticated: " + authentication.isAuthenticated());
     postAuthentication();
   } catch(error) {
-    console.log("ERROR FINDING OUT WHETHER USER IS AUTHENTICATED:");
-    console.log(error);
+    console.error("ERROR FINDING OUT WHETHER USER IS AUTHENTICATED: " + error);
 
     authentication.setIsAuthenticated(false);
   }
 }
 
 function postAuthentication() {
+  console.log("Post Authentication: Fetch core user ID if not registered");
   if (!coreRegistration.isUserRegistered()) {
     // Call the route to manifest the user
-    axios.post(`${BACKEND_URL}/user/manifest`, {}, {
+    axios.post(`${BACKEND_URL}/user/${userAuthID.get()}/manifest`, {}, {
       withCredentials: true
     }).then((response) => {
       userCoreID.setID(response.data);
     }).catch((error) => {
-      console.log("Error manifesting user:\n" + error);
+      console.error("Error manifesting user:\n" + error);
     });
 
     // activate the registration
@@ -143,6 +143,6 @@ export function updateAPIKey() {
       // It's already set by the function, so no need to do it again
       //console.log("API Key Retrieved.");
     }).catch((error) => {
-      console.log("Error retrieving API Key: " + error.toString());
+      console.error("Error retrieving API Key: " + error.toString());
     });
 }
